@@ -8,8 +8,8 @@ pdb = tinydb.TinyDB("portfolio_db.json")
 sdb = tinydb.TinyDB("new_shares_db.json")
 
 aws_region = "us-west-2"
-aws_access_key = "AKIAVYTUBMKT4PXAZIUE"
-aws_secret_access_key = "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"
+aws_access_key = ""
+aws_secret_access_key = ""
 BUCKET = "computershared-reddit-images"
 
 session = boto3.Session(aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_access_key)
