@@ -49,6 +49,7 @@ print (f'Std Dev: {stats.tstd(data)}')
 def value(e):
     return e["value"]
 portfolios.sort(key=value, reverse=True)
+purchases.sort(key=value, reverse=True)
 
 hist, bins = np.histogram(data, bins=np.geomspace(1, 16384, num=15))
 
@@ -69,16 +70,17 @@ plt.show()
 with open("shares.tsv", "w+") as f:
     f.write("shares\tu/\ttime\turls\n")
     for record in portfolios:
-        f.write(f'{str(record["value"])}\t{record["u"]}\t{record["time"]}\t{record["urls"]}\n')
+        f.write(f'{str(record["value"])}\t{record["u"]}\t{np.datetime64(datetime.utcfromtimestamp(record["time"]))}\t{record["urls"]}\n')
     for record in purchases:
         f.write(f'{str(record["value"] / 175.0)}\t{record["u"]}\t{record["time"]}\t{record["urls"]}\n')
 
 with open("shares.csv", "w+") as f:
     f.write("shares,u/,time,urls\n")
     for record in portfolios:
-        f.write(f'{str(record["value"])},{record["u"]},{record["time"]},{record["urls"]}\n')
+        f.write(f'{str(record["value"])},{record["u"]},{np.datetime64(datetime.utcfromtimestamp(record["time"]))},"{" ".join(record["urls"])}"\n')
     for record in purchases:
-        f.write(f'{str(record["value"] / 175.0)},{record["u"]},{record["time"]},{record["urls"]}\n')
+        if record["value"] > 0:
+            f.write(f'{str(record["value"] / 175.0)},{record["u"]},{np.datetime64(datetime.utcfromtimestamp(record["time"]))},"{" ".join(record["urls"])}"\n')
 
 
 with open("results.tsv", "w+") as f:
@@ -115,9 +117,20 @@ pf_shares_df = pf_shares_df[~(pf_shares_df['share_count'].isnull())]
 pur_shares_df = pur_shares_df[~(pur_shares_df['share_count'].isnull())]
 
 pf_shares_df.plot(kind="bar", figsize=(16,9), title="DRS Portfolios per Day")
+print(f"Shares today: {pf_shares_df._values[-1]}")
 pur_shares_df.plot(kind="bar", figsize=(16,9), title="DRS Purchases per Day")
 
-pf_df.groupby([pf_df[0].dt.month, pf_df[0].dt.day]).count().plot(kind="bar", figsize=(16,9), title="DRS Posts per Day")
+posts_per_day = pf_df.groupby([pf_df[0].dt.month, pf_df[0].dt.day]).count()
+
+print(f"PF posts today: {posts_per_day._values[-1]}")
+
+posts_per_day.plot(kind="bar", figsize=(16,9), title="DRS Posts per Day")
 pur_df.groupby([pur_df[0].dt.month, pur_df[0].dt.day]).count().plot(kind="bar", figsize=(16,9), title="Purchases per Day")
 
 print(f'Count of XXXX portfolios {len([x for x in all_shares if x > 999])}')
+
+for i in range(-28, 0):
+    days_ago = i
+    count_posts = posts_per_day._values[i][0]
+    count_shares = pf_shares_df._values[i][0]
+    print(f'day {i+1}: {str(count_shares / count_posts)}')

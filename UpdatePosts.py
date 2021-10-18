@@ -83,9 +83,10 @@ def download_images(sub):
 def pull_text_from_image(sub):
     q = tinydb.Query()
     with tinydb.TinyDB(f"{sub}.json", storage=CachingMiddleware(JSONStorage)) as db:
+        #for post in db.search(~(q.img_path=="") & ((q.image_text=="") | (q.image_text=="failed"))):
         for post in db.search(~(q.img_path=="") & (q.image_text=="")):
-            if post["id"] == "ps786k":
-                print("Found it")
+            # if post["id"] == "ps786k":
+            #     print("Found it")
             if not exists(post["img_path"]):
                 print(f'{post["img_path"]} not found.')
                 post["image_text"] = "failed"
@@ -93,9 +94,11 @@ def pull_text_from_image(sub):
                 img = cv2.imread(post["img_path"])
                 # extract the text from the image
                 try:
-                    text = pytesseract.image_to_string(img, timeout=12)
+                    text = pytesseract.image_to_string(img, timeout=30)
                 except Exception as e:
                     print(f"Failed on {post['permalink']} - {e}")
+                    with open("ocr_failures.txt", "a", encoding="utf-8") as f:
+                        f.write("https://reddit.com"+post["permalink"]+'\n')
                     text = "failed"
                 post["image_text"] = text
             db.update(post, doc_ids=[post.doc_id])

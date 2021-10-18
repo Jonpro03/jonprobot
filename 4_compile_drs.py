@@ -9,8 +9,8 @@ from datetime import datetime
 from time import mktime
 
 
-sdb = tinydb.TinyDB("new_shares_db.json")
-pdb = tinydb.TinyDB("portfolio_db.json")
+sdb = tinydb.TinyDB("new_shares_db.json", storage=CachingMiddleware(JSONStorage))
+pdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
 rdb = tinydb.TinyDB("results_db.json", storage=CachingMiddleware(JSONStorage))
 
 for post in sdb.all():

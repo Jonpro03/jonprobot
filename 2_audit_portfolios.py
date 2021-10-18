@@ -20,7 +20,8 @@ def get_reddit_post(post_id, sdb):
         "GME",
         "Superstonk",
         "GMEJungle",
-        "DDintoGME"
+        "DDintoGME",
+        "GME_Computershare",
     ]
     
     for sub in subs:
@@ -171,7 +172,7 @@ def identify_dupes():
             post["img_hash"] = img_hash
             sdb.update(post, doc_ids=[post.doc_id])
         else:
-            print(f'No image for {post["url"]}.')
+            pass #print(f'No image for {post["url"]}.')
     posts = sdb.search(~(q.img_hash == None) & ~(q.value == 0))
     print(f'Comparing {len(posts)} post images.')
     for post in posts:
@@ -191,8 +192,6 @@ if __name__ == "__main__":
     sdb = tinydb.TinyDB("portfolio_db.json")
     q = tinydb.Query()
     for post in sdb.all():
-        if len(post["image_text"]) > 0 and "1:44" in post["image_text"].splitlines()[0]:
-            print(post["id"])
         try:
             post["img_hash"]
         except:
@@ -213,4 +212,5 @@ if __name__ == "__main__":
         unique_users.append(post['u'])
     print(f'Total count of shares transferred so far: {total}')
     print(f'Total records of share transfers: {count}')
+    print(f'Count posts including dupes: {len(sdb.all())}')
     print(f'Unique transferrers: {len(set(unique_users))}')
