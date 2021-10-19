@@ -7,8 +7,13 @@ h2 {
 }
 
 main {
-  margin-bottom: 90px;
+  margin-bottom: 60px;
 }
+
+nav {
+  margin-bottom: 60px;
+}
+
 
 body {
   font-size: .875rem;
@@ -62,7 +67,7 @@ footer {
 
 .sidebar .nav-link {
   font-weight: 500;
-  color: #333;
+  color: #AAA;
 }
 
 .sidebar .nav-link .feather {
@@ -71,7 +76,7 @@ footer {
 }
 
 .sidebar .nav-link.active {
-  color: #2470dc;
+  color: #93186c;
 }
 
 .sidebar .nav-link:hover .feather,
