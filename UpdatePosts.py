@@ -199,7 +199,6 @@ if __name__ == '__main__':
         Process(target=update_posts, args=("amcstock",)),
         Process(target=update_posts, args=("infinitypool",)),
         Process(target=update_posts, args=("DDintoGME",))
-        #Process(target=update_posts, args=("others",))
     ]
 
     for proc in procs:
