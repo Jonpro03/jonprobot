@@ -77,6 +77,7 @@ function updateDonut(donut, donutData) {
   donut.data.labels = labels;
   donut.data.datasets[0].backgroundColor = colors;
 
+  donut.reset();
   donut.update();
 }
 
@@ -92,17 +93,18 @@ function buildDonut() {
         data: [],
         backgroundColor: []
       }]
+    },
+    options: {
+      tooltips: {
+        callbacks: {
+          label: function (tooltipItem, data) {
+            var value = data.datasets[0].data[tooltipItem.index];
+            var label = data.labels[tooltipItem.index];
+            return label + ": " +value.toLocaleString() + " shares";
+          }
+        }
+      }
     }
-    // options: {
-    //   tooltips: {
-    //     callbacks: {
-    //       label: function (tooltipItem, data) {
-    //         var value = data.datasets[0].data[tooltipItem.index];
-    //         return value.toLocaleString() + " shares";
-    //       }
-    //     }
-    //   }
-    // }
   });
   return shareLockerChart;
 }
@@ -208,7 +210,7 @@ function updateDonutData(donutData, stats) {
 
     if (etfEnabled) {
       etfObj.classList.remove("text-muted");
-      donutData.etfs = parseFloat(etfObj.innerHTML.replace('-','').replaceAll(",", ""));
+      donutData.etfs = parseFloat(etfObj.innerHTML.replace("-", "").replaceAll(",", "").replaceAll(".", ""));
     } else {
       etfObj.classList.add("text-muted");
       donutData.etfs = 0;
@@ -216,7 +218,7 @@ function updateDonutData(donutData, stats) {
 
     if (mfEnabled) {
       mfsObj.classList.remove("text-muted");
-      donutData.mfs = parseFloat(mfsObj.innerHTML.replace('-','').replaceAll(",", ""));
+      donutData.mfs = parseFloat(mfsObj.innerHTML.replace("-", "").replaceAll(",", "").replaceAll(".", ""));
     } else {
       mfsObj.classList.add("text-muted");
       donutData.mfs = 0;
@@ -224,7 +226,7 @@ function updateDonutData(donutData, stats) {
 
     if (otherEnabled) {
       otherObj.classList.remove("text-muted");
-      donutData.inst_fuckery = parseFloat(otherObj.innerHTML.replace('-','').replaceAll(",", ""));
+      donutData.inst_fuckery = parseFloat(otherObj.innerHTML.replace("-", "").replaceAll(",", "").replaceAll(".", ""));
     } else {
       otherObj.classList.add("text-muted");
       donutData.inst_fuckery = 0;
@@ -232,7 +234,7 @@ function updateDonutData(donutData, stats) {
 
     if (insiderEnabled) {
       insiderObj.classList.remove("text-muted");
-      donutData.insider = parseFloat(insiderObj.innerHTML.replace('-','').replaceAll(",", ""));
+      donutData.insider = parseFloat(insiderObj.innerHTML.replace("-", "").replaceAll(",", "").replaceAll(".", ""));
     } else {
       insiderObj.classList.add("text-muted");
       donutData.insider = 0;
@@ -240,7 +242,7 @@ function updateDonutData(donutData, stats) {
 
     if (apeEnabled) {
       apeObj.classList.remove("text-muted");
-      donutData.apeDrs = parseFloat(apeObj.innerHTML.replace('-','').replaceAll(",", ""));
+      donutData.apeDrs = parseFloat(apeObj.innerHTML.replace("-", "").replaceAll(",", "").replaceAll(".", ""));
     } else {
       apeObj.classList.add("text-muted");
       donutData.apeDrs = 0;
