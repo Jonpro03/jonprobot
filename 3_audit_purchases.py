@@ -212,9 +212,9 @@ if __name__ == "__main__":
             post["img_hash"] = None
             sdb.update(post, doc_ids=[post.doc_id])
 
+    #identify_dupes()
     audit_new()
     audit_all()
-    identify_dupes()
 
     total = 0
     unique_users = []

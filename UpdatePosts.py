@@ -18,7 +18,7 @@ def update_database(sub):
     headers = {'User-Agent': 'jonprobot/0.0.1'}
     while breakout is False:
         with tinydb.TinyDB(f"{sub}.json", storage=CachingMiddleware(JSONStorage)) as db:
-            url = f"https://www.reddit.com/r/{sub}/new.json?limit=100&t=hour"
+            url = f"https://www.reddit.com/r/{sub}/new.json?limit=100&t=week"
             if last is not None:
                 url += f"&after={last}"
             new_by_day = requests.get(url, headers=headers)
@@ -57,7 +57,7 @@ def download_images(sub):
     with tinydb.TinyDB(f"{sub}.json", storage=CachingMiddleware(JSONStorage)) as db:
         db.storage.WRITE_CACHE_SIZE = 300
         for post in db:
-            if post["img_path"] != "" or post["is_video"]:
+            if post["img_path"] != '' or post["is_video"]:
                 continue
             if post["selftext"] != "":
                 continue
@@ -71,10 +71,11 @@ def download_images(sub):
             post_id = post["id"]
             img_path = f"images/{post_id}.{img_ext}"
 
-            img_req = requests.get(img_url, stream=True, headers=headers)
-            img_req.raw.decode_content = True
-            with open(img_path, "wb") as f:
-                shutil.copyfileobj(img_req.raw, f)
+            if not exists(img_path):
+                img_req = requests.get(img_url, stream=True, headers=headers)
+                img_req.raw.decode_content = True
+                with open(img_path, "wb") as f:
+                    shutil.copyfileobj(img_req.raw, f)
             
             post["img_path"] = img_path
             db.update(post, doc_ids=[post.doc_id])
@@ -115,7 +116,7 @@ def classify_data(sub):
         if post["id"] == "pynt78":
             print("Found it")
         img_text = post["image_text"]
-        if "Portfolio" in img_text or "class a" in img_text.lower() or "Investment Summary" in img_text or 'Dtc Stock' in img_text:
+        if "(DRS) Advice" in img_text or "Portfolio" in img_text or "class a" in img_text.lower() or "Investment Summary" in img_text or 'Dtc Stock' in img_text:
             post["post_type"] = "portfolio"
             db.update(post, doc_ids=[post.doc_id])
             portfolio_posts += 1
@@ -196,7 +197,9 @@ if __name__ == '__main__':
         Process(target=update_posts, args=("wallstreetbets",)),
         Process(target=update_posts, args=("GME_Computershare",)),
         Process(target=update_posts, args=("amcstock",)),
+        Process(target=update_posts, args=("infinitypool",)),
         Process(target=update_posts, args=("DDintoGME",))
+        #Process(target=update_posts, args=("others",))
     ]
 
     for proc in procs:

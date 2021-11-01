@@ -22,6 +22,7 @@ def get_reddit_post(post_id, sdb):
         "GMEJungle",
         "DDintoGME",
         "GME_Computershare",
+        "infinitypool"
     ]
     
     for sub in subs:
@@ -33,6 +34,7 @@ def get_reddit_post(post_id, sdb):
                 "id": post["id"],
                 "image_text": post["image_text"],
                 "image_path": post["img_path"],
+                "img_hash": "",
                 "value": None,
                 "sub": post["subreddit"],
                 "u": post["author"],
@@ -57,6 +59,7 @@ def get_new_value(post, sdb):
         except:
             continue
         post["value"] = value
+        post["audited"] = True
         q = tinydb.Query()
         sdb.upsert(post, q.id == post["id"])
         return
@@ -123,7 +126,7 @@ def audit_cv_failures():
                 "url": input("URL? "),
                 "created": time.time(),
                 "audited": True,
-                "img_hash": ""
+                "img_hash": "None"
             }
             sdb.insert(post)
             get_new_value(post, sdb)
@@ -158,7 +161,7 @@ def identify_dupes():
     identified = []
     sdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
     q = tinydb.Query()
-    posts = sdb.search((q.img_hash == None) | (q.img_hash == ""))
+    posts = sdb.search((q.img_hash == "") & ~(q.value == 0))
     print(f'Hashing {len(posts)} post images.')
     for post in posts:
         if post["image_path"] and post["image_path"] != "None":
@@ -173,7 +176,7 @@ def identify_dupes():
             sdb.update(post, doc_ids=[post.doc_id])
         else:
             pass #print(f'No image for {post["url"]}.')
-    posts = sdb.search(~(q.img_hash == None) & ~(q.value == 0))
+    #posts = sdb.search(~(q.img_hash == "None") & ~(q.value == 0))
     print(f'Comparing {len(posts)} post images.')
     for post in posts:
         dupes = sdb.search((q.img_hash == post["img_hash"]) & ~(q.value == 0))
@@ -182,35 +185,24 @@ def identify_dupes():
                 identified.extend(dupes)
                 print("Dupe:")
                 for dupe in dupes:
-                    print(dupe["sub"],dupe["id"])
+                    if dupe["value"] != 0:
+                        print(dupe["sub"],dupe["id"])
     sdb.close()
     
-
-
-
 if __name__ == "__main__":
-    sdb = tinydb.TinyDB("portfolio_db.json")
-    q = tinydb.Query()
-    for post in sdb.all():
-        try:
-            post["img_hash"]
-        except:
-            post["img_hash"] = None
-            sdb.update(post, doc_ids=[post.doc_id])
-
-
+    # sdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
+    # q = tinydb.Query()
+    # for post in sdb.all():
+    #     post["created"] = int(post["created"])
+    #     try:
+    #         ih = post["img_hash"]
+    #         if ih is null:
+    #             post["img_hash"] = "None"
+    #     except:
+    #         post["img_hash"] = "None"
+    #     sdb.update(post, doc_ids=[post.doc_id])
+    # sdb.close()
+    
     identify_dupes()
     audit_cv_failures()
     audit_all()
-
-    total = 0
-    unique_users = []
-    posts = sdb.search(q.value > 0)
-    count = len(posts)
-    for post in posts:
-        total += post["value"]
-        unique_users.append(post['u'])
-    print(f'Total count of shares transferred so far: {total}')
-    print(f'Total records of share transfers: {count}')
-    print(f'Count posts including dupes: {len(sdb.all())}')
-    print(f'Unique transferrers: {len(set(unique_users))}')

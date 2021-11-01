@@ -1,22 +1,38 @@
 h2 {
-  color: #93186c
+  color: #E024A5
 }
 
 .h2 {
-  color: #93186c
+  color: #E024A5
 }
 
-main {
-  margin-bottom: 60px;
+#insiderSwitch:checked {
+  background-color: #A3962F
 }
 
-nav {
-  margin-bottom: 60px;
+#etfSwitch:checked {
+  background-color: #11979C;
 }
 
+#mfSwitch:checked {
+  background-color: #6FA142;
+}
 
-body {
+#instOtherBtn:checked {
+  background-color: #094D4F;
+}
+
+#apesSwitch:checked {
+  background-color: #93186c;
+}
+
+#main {
+  height: 100%;
+}
+
+html, body {
   font-size: .875rem;
+  height: 100%;
 }
 
 .feather {
@@ -27,7 +43,7 @@ body {
 
 footer {
   position: fixed;
-  height: 60px;
+  height: 30px;
   bottom: 0;
   width: 100%;
 }
@@ -121,4 +137,25 @@ footer {
 .form-control-dark:focus {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+}
+
+.dead-pixel-clickable {
+  height: 4.2px;
+  width: 6.9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 150px;
+  padding: 3px;
+  left: calc(100vw - 100px);
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.dead-pixel {
+  background-color: #fff;
+  width: 2px;
+  height: 2px;
+  opacity: 1;
 }

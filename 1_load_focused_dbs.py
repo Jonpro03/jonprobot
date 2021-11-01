@@ -2,6 +2,10 @@ import shutil
 import tinydb
 from tinydb.middlewares import CachingMiddleware
 from tinydb.storages import JSONStorage
+import yfinance as yf
+
+gme = yf.Ticker("GME")
+close_val = gme.info["regularMarketPreviousClose"]
 
 def get_share_db_object(post):
     value = None
@@ -20,7 +24,7 @@ def get_share_db_object(post):
         "sub": post["subreddit"],
         "u": post["author"],
         "url": "https://reddit.com"+post["permalink"],
-        "created": post["created"],
+        "created": int(post["created"]),
         "audited": False,
         "img_hash": ""
     }
@@ -61,7 +65,7 @@ def get_portfolio_db_object(post):
                 if '$' in line:
                     try:
                         line_value = "".join(c for c in line if c.isdigit() or c == ".")
-                        value = float(line_value) / 170.0 # probably the average price...
+                        value = float(line_value) / close_val
                     except:
                         print(f"Failed to get share count for {post['permalink']}")
                     break
@@ -73,7 +77,7 @@ def get_portfolio_db_object(post):
         "sub": post["subreddit"],
         "u": post["author"],
         "url": "https://reddit.com"+post["permalink"],
-        "created": post["created"],
+        "created": int(post["created"]),
         "audited": False,
         "img_hash": "",
     }
@@ -85,7 +89,8 @@ def update_shares_db():
         "Superstonk",
         "GMEJungle",
         "DDintoGME",
-        "GME_Computershare"
+        "GME_Computershare",
+        "infinitypool"
     ]
     share_db = tinydb.TinyDB(f"new_shares_db.json")
     for sub in subs:
@@ -106,6 +111,7 @@ def update_shares_db():
             except:
                 pass
             record["image_path"] = dest_path
+            record["gme_price"] = close_val
             share_db.insert(record)
             print(f'{record["url"]} added to new shares db.')
 
@@ -115,7 +121,8 @@ def update_portfolio_db():
         "Superstonk",
         "GMEJungle",
         "DDintoGME",
-        "GME_Computershare"
+        "GME_Computershare",
+        "infinitypool"
     ]
     added = 0
     portfolio_db = tinydb.TinyDB(f"portfolio_db.json")
@@ -147,44 +154,3 @@ if __name__ == "__main__":
     update_shares_db()
     print("Updating portfolio database.")
     update_portfolio_db()
-
-#     old_pdb = tinydb.TinyDB(f"portfolio_db - Copy.json", storage=CachingMiddleware(JSONStorage))
-#     new_pdb = tinydb.TinyDB(f"portfolio_db.json", storage=CachingMiddleware(JSONStorage))
-#     old_sdb = tinydb.TinyDB(f"new_shares_db - Copy.json", storage=CachingMiddleware(JSONStorage))
-#     new_sdb = tinydb.TinyDB(f"new_shares_db.json", storage=CachingMiddleware(JSONStorage))
-#     q = tinydb.Query()
-
-#     for opdb in old_pdb.all():
-#         try:
-#             if opdb["value"] is not None and opdb["value"] != 0 and opdb["audited"]:
-#                 results = new_pdb.search((q.id == opdb["id"]) & (q.audited == False))
-#                 if len(results) == 1:
-#                     npdb = results[0]
-#                     npdb["value"] = opdb["value"]
-#                     npdb["audited"] = opdb["audited"]
-#                     npdb["img_hash"] = opdb["img_hash"]
-#                     new_pdb.update(npdb, doc_ids=[npdb.doc_id])
-#                 else:
-#                     print(f'{opdb["id"]} not found in new db.')
-#         except:
-#             print(f'{opdb["id"]} had a problem.')
-
-#     for osdb in old_sdb.all():
-#         try:
-#             if osdb["value"] is not None and osdb["value"] != 0 and osdb["audited"]:
-#                 results = new_sdb.search((q.id == osdb["id"]) & (q.audited == False))
-#                 if len(results) == 1:
-#                     nsdb = results[0]
-#                     nsdb["value"] = osdb["value"]
-#                     nsdb["audited"] = osdb["audited"]
-#                     nsdb["img_hash"] = osdb["img_hash"]
-#                     new_sdb.update(nsdb, doc_ids=[nsdb.doc_id])
-#                 else:
-#                     print(f'{osdb["id"]} not found in new db.')
-#         except:
-#             print(f'{osdb["id"]} had a problem.')
-
-# old_pdb.close()
-# old_sdb.close()
-# new_pdb.close()
-# new_sdb.close()

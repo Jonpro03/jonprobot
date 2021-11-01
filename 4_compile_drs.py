@@ -7,7 +7,10 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from datetime import datetime
 from time import mktime
+import yfinance as yf
 
+gme = yf.Ticker("GME")
+close_val = gme.info["regularMarketPreviousClose"]
 
 sdb = tinydb.TinyDB("new_shares_db.json", storage=CachingMiddleware(JSONStorage))
 pdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
@@ -42,8 +45,8 @@ for share_post in sdb.search(q.value > 0):
         result_record = {
             "u": posts_user[0]['u'],
             "type": "purchase",
-            "value": sum([x["value"] for x in posts_user]),
-            "time": max([x["created"] for x in posts_user]),
+            "value": sum([x["value"]/x["gme_price"] for x in posts_user]),
+            "time": max([int(x["created"]) for x in posts_user]),
             "urls": [x["url"] for x in posts_user],
             "images": [x["image_path"].replace("new_purchase_images", "drs_images") for x in posts_user]
         }
@@ -55,11 +58,16 @@ for share_post in sdb.search(q.value > 0):
     else:
         # they made a single purchase post
         pu = posts_user[0]
+        val = 0
+        try:
+            val = pu["value"] / pu["gme_price"]
+        except:
+            val = pu["value"] / 175.0
         result_record = {
             "u": pu['u'],
             "type": "purchase",
-            "value": pu["value"],
-            "time": pu["created"],
+            "value": val,
+            "time": int(pu["created"]),
             "urls": [pu["url"]],
             "images": [pu["image_path"].replace("new_purchase_images", "drs_images")]
         }
@@ -93,7 +101,7 @@ for pf_post in pdb.search(q.value > 0):
         "u": pu['u'],
         "type": "portfolio",
         "value": pu["value"],
-        "time": pu["created"],
+        "time": int(pu["created"]),
         "urls": [pu["url"]],
         "images": [pu["image_path"].replace("portfolio_images", "drs_images")]
     }
@@ -114,13 +122,25 @@ for results_post in rdb.all():
         users_purchases = rdb.search((q.u == user) & (q.type == "purchase"))
         users_portfolios = rdb.search((q.u == user) & (q.type == "portfolio"))
         if len(users_purchases) > 0 and len(users_portfolios) > 0:
-            purchase = users_purchases[0]
-            portfolio_timestamp = rdb.search((q.u == user) & (q.type == "portfolio"))[0]["time"]
-            purchase_timestamp = purchase["time"]
-            if portfolio_timestamp > purchase_timestamp:
-                # print(f"Removing {user}'s purchase post b/c it's captured in their portfolio.")
-                # rdb.remove(doc_ids=[purchase.doc_id])
-                print(f"Zeroing {user}'s purchase post b/c it's captured in their portfolio.")
-                purchase["value"] = 0
-                rdb.update(purchase, doc_ids=[purchase.doc_id])
+            portfolio_timestamp = max([x["time"] for x in rdb.search((q.u == user) & (q.type == "portfolio"))])
+            for purchase in users_purchases:
+                purchase_timestamp = purchase["time"]
+                if portfolio_timestamp > purchase_timestamp:
+                    # print(f"Removing {user}'s purchase post b/c it's captured in their portfolio.")
+                    # rdb.remove(doc_ids=[purchase.doc_id])
+                    print(f"Zeroing {user}'s purchase post b/c it's captured in their portfolio.")
+                    purchase["value"] = 0
+                    rdb.update(purchase, doc_ids=[purchase.doc_id])
+                else:
+                    # Purchase happened after a portfolio was posted.
+                    # Add the value of the purchase to their portfolio
+                    # Don't know what the cost basis will be, so use today's closing price
+                    print(f"Adding {user}'s purchase post to their portfolio.")
+                    num_shares = purchase["value"]
+                    portfolio = rdb.search((q.u == user) & (q.type == "portfolio") & (q.time == portfolio_timestamp))[0]
+                    portfolio["value"] += num_shares
+                    portfolio["urls"].extend(purchase["urls"])
+                    rdb.update(portfolio, doc_ids=[portfolio.doc_id])
+                    rdb.remove(doc_ids=[purchase.doc_id])
+
 rdb.close()
