@@ -124,9 +124,11 @@ function updateDonutData(donutData, stats) {
     }
   }
 
-  donutData.remaining = donutData.total_outstanding - donutData.insider - donutData.etfs - donutData.mfs - donutData.inst_fuckery - donutData.apeDrs;
-  donutData.pctComplete = (donutData.apeDrs / (donutData.remaining + donutData.apeDrs)) * 100;
+  donutData.float = donutData.total_outstanding - donutData.insider - donutData.etfs - donutData.mfs - donutData.inst_fuckery;
+  donutData.remaining = donutData.float - donutData.apeDrs;
+  donutData.pctComplete = (donutData.apeDrs / donutData.float) * 100;
   document.getElementById("remainingValue").innerHTML = donutData.remaining.toLocaleString();
+  document.getElementById("floatTotal").innerHTML = donutData.float.toLocaleString();
   document.getElementById("floatLocked").innerHTML = donutData.pctComplete.toLocaleString() + "%";
 }
 
@@ -183,11 +185,11 @@ function updateDonutData(donutData, stats) {
   updateDonut(donut, donutData);
 
   document.getElementById("outstandingValue").innerHTML = donutData.total_outstanding.toLocaleString();
-  document.getElementById("insiderHolding").innerHTML = donutData.insider.toLocaleString();
-  document.getElementById("institutionalETFs").innerHTML = donutData.etfs.toLocaleString();
-  document.getElementById("institutionalMFs").innerHTML = donutData.mfs.toLocaleString();
-  document.getElementById("institutionalOther").innerHTML = donutData.inst_fuckery.toLocaleString();
-  document.getElementById("apeDrs").innerHTML = donutData.apeDrs.toLocaleString();
+  document.getElementById("insiderHolding").innerHTML = '-' + donutData.insider.toLocaleString();
+  document.getElementById("institutionalETFs").innerHTML = '-' +  donutData.etfs.toLocaleString();
+  document.getElementById("institutionalMFs").innerHTML = '-' + donutData.mfs.toLocaleString();
+  document.getElementById("institutionalOther").innerHTML = '-' + donutData.inst_fuckery.toLocaleString();
+  document.getElementById("apeDrs").innerHTML = '-' +  donutData.apeDrs.toLocaleString();
   document.getElementById("remainingValue").innerHTML = donutData.remaining.toLocaleString();
 
 
@@ -206,7 +208,7 @@ function updateDonutData(donutData, stats) {
 
     if (etfEnabled) {
       etfObj.classList.remove("text-muted");
-      donutData.etfs = parseFloat(etfObj.innerHTML.replaceAll(",", ""));
+      donutData.etfs = parseFloat(etfObj.innerHTML.replace('-','').replaceAll(",", ""));
     } else {
       etfObj.classList.add("text-muted");
       donutData.etfs = 0;
@@ -214,7 +216,7 @@ function updateDonutData(donutData, stats) {
 
     if (mfEnabled) {
       mfsObj.classList.remove("text-muted");
-      donutData.mfs = parseFloat(mfsObj.innerHTML.replaceAll(",", ""));
+      donutData.mfs = parseFloat(mfsObj.innerHTML.replace('-','').replaceAll(",", ""));
     } else {
       mfsObj.classList.add("text-muted");
       donutData.mfs = 0;
@@ -222,7 +224,7 @@ function updateDonutData(donutData, stats) {
 
     if (otherEnabled) {
       otherObj.classList.remove("text-muted");
-      donutData.inst_fuckery = parseFloat(otherObj.innerHTML.replaceAll(",", ""));
+      donutData.inst_fuckery = parseFloat(otherObj.innerHTML.replace('-','').replaceAll(",", ""));
     } else {
       otherObj.classList.add("text-muted");
       donutData.inst_fuckery = 0;
@@ -230,7 +232,7 @@ function updateDonutData(donutData, stats) {
 
     if (insiderEnabled) {
       insiderObj.classList.remove("text-muted");
-      donutData.insider = parseFloat(insiderObj.innerHTML.replaceAll(",", ""));
+      donutData.insider = parseFloat(insiderObj.innerHTML.replace('-','').replaceAll(",", ""));
     } else {
       insiderObj.classList.add("text-muted");
       donutData.insider = 0;
@@ -238,7 +240,7 @@ function updateDonutData(donutData, stats) {
 
     if (apeEnabled) {
       apeObj.classList.remove("text-muted");
-      donutData.apeDrs = parseFloat(apeObj.innerHTML.replaceAll(",", ""));
+      donutData.apeDrs = parseFloat(apeObj.innerHTML.replace('-','').replaceAll(",", ""));
     } else {
       apeObj.classList.add("text-muted");
       donutData.apeDrs = 0;

@@ -49,7 +49,6 @@
           <div id="asof" class="text">As of</div>
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group" role="group">
-              Works now ----->
               <button type="button" class="btn btn-secondary" style="pointer-events: none;">
                 <span data-feather="calendar"></span>
               </button>
@@ -83,11 +82,12 @@
 
                     <div class="row my-3">
                       <div class="form-check form-switch col-7">
-                        <input id="etfSwitch" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
+                        <input id="instOtherBtn" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
                           checked>
-                        <label class="form-check-label" for="etfSwitch" style="color:#13A9AD">ETFs:</label>
+                        <label class="form-check-label" for="instOtherBtn" style="color:#13A9AD"
+                          onclick="handleInstBtn">Institutional Fuckery:</label>
                       </div>
-                      <div class="col-5" id="institutionalETFs">loading...</div>
+                      <div class="col-5" id="institutionalOther">loading...</div>
                     </div>
 
                     <div class="row my-3">
@@ -101,15 +101,14 @@
 
                     <div class="row my-3">
                       <div class="form-check form-switch col-7">
-                        <input id="instOtherBtn" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
+                        <input id="etfSwitch" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
                           checked>
-                        <label class="form-check-label" for="instOtherBtn" style="color:#13A9AD"
-                          onclick="handleInstBtn">Institutional Fuckery:</label>
+                        <label class="form-check-label" for="etfSwitch" style="color:#13A9AD">ETFs:</label>
                       </div>
-                      <div class="col-5" id="institutionalOther">loading...</div>
+                      <div class="col-5" id="institutionalETFs">loading...</div>
                     </div>
 
-                    <div class="row my-3">
+                    <div class="row my-3 border-bottom">
                       <div class="form-check form-switch col-7">
                         <input id="insiderSwitch" class="form-check-input" type="checkbox" style="border-color:#A3962F"
                           checked>
@@ -117,8 +116,13 @@
                       </div>
                       <div class="col-5" id="insiderHolding">loading...</div>
                     </div>
+                    
+                    <div class="row my-3 pb-3">
+                      <div class="col-7">Float: </div>
+                      <div class="col-5" id="floatTotal">loading...</div>
+                    </div>
 
-                    <div class="row my-3">
+                    <div class="row my-3 border-bottom">
                       <div class="form-check form-switch col-7">
                         <input id="apesSwitch" class="form-check-input" type="checkbox" style="border-color:#E024A5"
                           checked>
@@ -139,7 +143,7 @@
 
                   </div>
 
-                  <div class="col-lg-7">
+                  <div class="col-lg-7 mb-5">
                     <canvas class="w-100" id="shareLocker" width="1024" height="1024"></canvas>
                     <!-- <div class="row">
                       <h5 class="d-flex justify-content-center" id="floatLocker">loading...</h5>
