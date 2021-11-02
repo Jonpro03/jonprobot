@@ -385,8 +385,8 @@ function updateDonutData(donutData, stats) {
       labels: chartData.labels,
       datasets: [{
         yAxisID: "shares",
-        data: chartData.accounts,
-        label: "Shares Discovered",
+        data: chartData.daily_shares,
+        label: "Shares Added",
         lineTension: 0,
         backgroundColor: 'transparent',
         borderColor: '#93186c',
@@ -394,10 +394,10 @@ function updateDonutData(donutData, stats) {
         pointBackgroundColor: '#93186c'
       },
       {
-        yAxisID: "posts",
-        data: chartData.posts,
+        yAxisID: "accts",
+        data: chartData.daily_accts,
         stack: "",
-        label: "Posts Discovered",
+        label: "Accounts Added",
         lineTension: 0,
         backgroundColor: 'transparent',
         borderColor: '#A3962F',
@@ -417,7 +417,7 @@ function updateDonutData(donutData, stats) {
           }
         },
         {
-          id: "posts",
+          id: "accts",
           position: "right",
           type: "linear",
           ticks: {

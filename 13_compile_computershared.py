@@ -52,8 +52,10 @@ def get_charts(start, delta, delta_unit="days"):
     averages = []
 
     range_unit = delta.days if delta_unit == "days" else 24
+    range_unit += 1
     s = mktime(start.timetuple())
 
+    # Aggregates
     for i in range(1, range_unit):
         end = start + (timedelta(days=i) if delta_unit == "days" else timedelta(hours=i))
         e = mktime(end.timetuple())
@@ -65,7 +67,7 @@ def get_charts(start, delta, delta_unit="days"):
         else:
             labels.append(str(end.hour))
 
-        r = rdb.search((q.time >= s) & (q.time < e))
+        r = rdb.search((q.time > s) & (q.time <= e))
         results = [x["value"] for x in r if x["value"] > 0]
 
         count_results = len(results)
@@ -77,11 +79,30 @@ def get_charts(start, delta, delta_unit="days"):
         shares.append("{:.2f}".format(sum_results))
         averages.append("{:.2f}".format(avg))
     
+    # Histogram
     data = np.array(results)
     hist, bins = np.histogram(data, bins=np.geomspace(1, 32768, num=16))
     hist = np.append(hist, [0])
     hist = [str(round(x)) for x in hist]
     bins = [str(round(x)) for x in bins]
+
+    # Dailies
+    daily_accts = []
+    daily_shares = []
+    delta = timedelta(days=1) if delta_unit == "days" else timedelta(hours=1)
+    for i in range(1, range_unit):
+        end = start + delta
+        s = mktime(start.timetuple())
+        e = mktime(end.timetuple())
+
+        r = rdb.search((q.time > s) & (q.time <= e))
+        accts = [x["value"] for x in r if x["value"] > 0]
+
+        count_results = len(accts)
+        sum_results = sum(accts)
+        daily_accts.append(count_results)
+        daily_shares.append("{:.2f}".format(sum_results))
+        start = end
 
     return {
         "labels": labels,
@@ -90,7 +111,9 @@ def get_charts(start, delta, delta_unit="days"):
         "shares": shares,
         "averages": averages,
         "dist_labels": bins,
-        "dist_values": hist
+        "dist_values": hist,
+        "daily_accts": daily_accts,
+        "daily_shares": daily_shares
     }
 
 
