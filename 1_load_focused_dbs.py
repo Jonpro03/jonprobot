@@ -80,6 +80,7 @@ def get_portfolio_db_object(post):
         "created": int(post["created"]),
         "audited": False,
         "img_hash": "",
+        "count_accounts": 1
     }
 
 

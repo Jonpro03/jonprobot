@@ -2,6 +2,11 @@ import tinydb
 from tinydb.middlewares import CachingMiddleware
 from tinydb.storages import JSONStorage
 from shutil import copy
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+from datetime import datetime
+from time import mktime
 import yfinance as yf
 
 gme = yf.Ticker("GME")

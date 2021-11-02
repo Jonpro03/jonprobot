@@ -40,13 +40,15 @@ def get_reddit_post(post_id, sdb):
                 "u": post["author"],
                 "url": "https://reddit.com"+post["permalink"],
                 "created": post["created"],
-                "audited": False
+                "audited": False,
+                "count_accounts": 1
             }
     return None
 
 def print_post(post):
     print(f'ID: {post["id"]}')
     print(f'SubReddit: {post["sub"]}')
+    print(f'Link: {post["url"]}')
     print(f'Author: {post["u"]}')
     print(f'Value: {post["value"]}')
 
@@ -78,6 +80,7 @@ def audit_cv_failures():
                 sdb.update(post, doc_ids=[post.doc_id])
                 continue
             system(f"codium {post['image_path']}")
+        print_post(post)
         ans = input("Is this a Computershare portfolio with visible value? Y/n ")
         if 'n' in ans.lower():
             post["value"] = 0
@@ -89,6 +92,9 @@ def audit_cv_failures():
                 pass
             continue
         get_new_value(post, sdb)
+
+def manual_audit():
+    sdb = tinydb.TinyDB("portfolio_db.json")
     while True:
         ans = input("Audit a record manually? Y/n ")
         if 'n' in ans.lower():
@@ -101,7 +107,7 @@ def audit_cv_failures():
             if '.' in post["image_path"]:
                 system(f"codium {post['image_path']}")
             print_post(post)
-            ans = input("What should change? Value | Delete | Skip ")
+            ans = input("What should change? Value | Delete | Skip | Accounts")
             if 's' in ans.lower():
                 continue
             if 'v' in ans.lower():
@@ -113,6 +119,16 @@ def audit_cv_failures():
                     remove(post['image_path'])
                 except:
                     pass
+            if 'a' in ans.lower():
+                ans = input("How many accounts?")
+                num_accts = 1
+                try:
+                    num_accts = int(ans)
+                except:
+                    pass
+                if num_accts == 1:
+                    continue
+                
         else:
             ans = input("Post not found. Add? ")
             if 'n' in ans.lower():
@@ -126,7 +142,8 @@ def audit_cv_failures():
                 "url": input("URL? "),
                 "created": time.time(),
                 "audited": True,
-                "img_hash": "None"
+                "img_hash": "None",
+                "count_accounts": 1
             }
             sdb.insert(post)
             get_new_value(post, sdb)
@@ -179,6 +196,8 @@ def identify_dupes():
     #posts = sdb.search(~(q.img_hash == "None") & ~(q.value == 0))
     print(f'Comparing {len(posts)} post images.')
     for post in posts:
+        if post["image_path"] == "":
+            continue
         dupes = sdb.search((q.img_hash == post["img_hash"]) & ~(q.value == 0))
         if len(dupes) > 1:
             if dupes[0] not in identified:
@@ -190,19 +209,19 @@ def identify_dupes():
     sdb.close()
     
 if __name__ == "__main__":
-    # sdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
-    # q = tinydb.Query()
-    # for post in sdb.all():
-    #     post["created"] = int(post["created"])
-    #     try:
-    #         ih = post["img_hash"]
-    #         if ih is null:
-    #             post["img_hash"] = "None"
-    #     except:
-    #         post["img_hash"] = "None"
-    #     sdb.update(post, doc_ids=[post.doc_id])
-    # sdb.close()
+    sdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
+    q = tinydb.Query()
+    for post in sdb.all():
+        try:
+            ih = post["count_accounts"]
+            if ih is null:
+                post["count_accounts"] = 1
+        except:
+            post["count_accounts"] = 1
+        sdb.update(post, doc_ids=[post.doc_id])
+    sdb.close()
     
     identify_dupes()
+    manual_audit()
     audit_cv_failures()
     audit_all()

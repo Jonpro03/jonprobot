@@ -1,26 +1,28 @@
 import boto3
 import tinydb
 from datetime import datetime, date, timedelta, timezone
+import pytz
 from time import mktime
+import calendar as cal
 import numpy as np
 import statistics
 import json
 
 aws_region = "us-west-2"
-aws_access_key = ""
-aws_secret_access_key = ""
+aws_access_key = "AKIAVYTUBMKTXUJLRXWR"
+aws_secret_access_key = "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"
 BUCKET = "computershared-assets"
 
 session = boto3.Session(aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_access_key)
 s3_client = session.client('s3')
 
 #today = datetime.today().replace(hour=19, minute=0, second=0)
-today = (datetime.utcnow() - timedelta(days=1)).replace(hour=23, minute=59, second=59)
+today = (datetime.utcnow() - timedelta(days=1)).replace(hour=23, minute=59, second=59, tzinfo=pytz.utc)
 
 def get_ownership(last_update):
     return {
         "last_update": last_update,
-        "computershare_accounts": 74000,
+        "computershare_accounts": 74100,
         "total_outstanding": 75591496,
         "insider": 14712003,
         "institutional": 23500000,
@@ -30,12 +32,13 @@ def get_ownership(last_update):
     }
 
 def get_statistics(data_set):
+
     return {
         "sampled_accounts": len(data_set),
         "sampled_shares": float(round(sum(data_set), 2)),
         "std_dev": float(round(statistics.stdev(data_set), 2)),
         "median": float(round(statistics.median(data_set), 2)),
-        "mode": float(round(statistics.mode(data_set), 2)),
+        "mode": float(round(statistics.mode([round(x, 2) for x in data_set]), 2)),
         "average": float(round(statistics.mean(data_set), 2))
     }
 
@@ -53,12 +56,12 @@ def get_charts(start, delta, delta_unit="days"):
 
     range_unit = delta.days if delta_unit == "days" else 24
     range_unit += 1
-    s = mktime(start.timetuple())
+    s = cal.timegm(start.utctimetuple())
 
     # Aggregates
     for i in range(1, range_unit):
         end = start + (timedelta(days=i) if delta_unit == "days" else timedelta(hours=i))
-        e = mktime(end.timetuple())
+        e = cal.timegm(end.utctimetuple())
         ppd = len(pfdb.search((q.created >= s) & (q.created < e)))
         ppd += len(nsdb.search((q.created >= s) & (q.created < e)))
         posts.append(ppd)
@@ -92,8 +95,8 @@ def get_charts(start, delta, delta_unit="days"):
     delta = timedelta(days=1) if delta_unit == "days" else timedelta(hours=1)
     for i in range(1, range_unit):
         end = start + delta
-        s = mktime(start.timetuple())
-        e = mktime(end.timetuple())
+        s = cal.timegm(start.utctimetuple())
+        e = cal.timegm(end.utctimetuple())
 
         r = rdb.search((q.time > s) & (q.time <= e))
         accts = [x["value"] for x in r if x["value"] > 0]
@@ -128,11 +131,11 @@ with open("aws_upload/ownership.json", "w+") as f:
 s3_client.upload_file("aws_upload/ownership.json", BUCKET, "ownership.json")
 
 # Get All Time
-start = datetime(2021, 9, 13, 0, 0)
+start = datetime(2021, 9, 12, 23, 59, tzinfo=pytz.utc)
 delta = today - start
-s = mktime(start.timetuple())
-e = mktime(today.timetuple())
-result_set = [r["value"] for r in rdb.search((q.value > 0) & (q.time > s) & (q.time <= e))]
+s = cal.timegm(start.utctimetuple())
+e = cal.timegm(today.utctimetuple())
+result_set = [r["value"] for r in rdb.search(q.value > 0)]
 all_time_stats = get_statistics(result_set)
 all_time_charts = get_charts(start, delta)
 
@@ -147,8 +150,8 @@ s3_client.upload_file("aws_upload/all_charts.json", BUCKET, "all_charts.json")
 # Get Month
 delta = timedelta(days=30)
 start = today - delta
-s = mktime(start.timetuple())
-e = mktime(today.timetuple())
+s = cal.timegm(start.utctimetuple())
+e = cal.timegm(today.utctimetuple())
 result_set = [r["value"] for r in rdb.search((q.value > 0) & (q.time > s) & (q.time <= e))]
 month_stats = get_statistics(result_set)
 month_charts = get_charts(start, delta)
@@ -166,8 +169,8 @@ s3_client.upload_file("aws_upload/month_charts.json", BUCKET, "month_charts.json
 # Get Week
 delta = timedelta(days=7)
 start = today - delta
-s = mktime(start.timetuple())
-e = mktime(today.timetuple())
+s = cal.timegm(start.utctimetuple())
+e = cal.timegm(today.utctimetuple())
 result_set = [r["value"] for r in rdb.search((q.value > 0) & (q.time > s) & (q.time <= e))]
 week_stats = get_statistics(result_set)
 week_charts = get_charts(start, delta)
@@ -184,8 +187,8 @@ s3_client.upload_file("aws_upload/week_charts.json", BUCKET, "week_charts.json")
 # Get Day
 delta = timedelta(days=1)
 start = today - delta
-s = mktime(start.timetuple())
-e = mktime(today.timetuple())
+s = cal.timegm(start.utctimetuple())
+e = cal.timegm(today.utctimetuple())
 result_set = [r["value"] for r in rdb.search((q.value > 0) & (q.time > s) & (q.time <= e))]
 day_stats = get_statistics(result_set)
 day_charts = get_charts(start, delta, delta_unit="hours")

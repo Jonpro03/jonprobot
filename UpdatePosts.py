@@ -18,7 +18,7 @@ def update_database(sub):
     headers = {'User-Agent': 'jonprobot/0.0.1'}
     while breakout is False:
         with tinydb.TinyDB(f"{sub}.json", storage=CachingMiddleware(JSONStorage)) as db:
-            url = f"https://www.reddit.com/r/{sub}/new.json?limit=100&t=week"
+            url = f"https://www.reddit.com/r/{sub}/new.json?limit=100&t=day"
             if last is not None:
                 url += f"&after={last}"
             new_by_day = requests.get(url, headers=headers)
@@ -199,6 +199,7 @@ if __name__ == '__main__':
         Process(target=update_posts, args=("amcstock",)),
         Process(target=update_posts, args=("infinitypool",)),
         Process(target=update_posts, args=("DDintoGME",))
+        #Process(target=update_posts, args=("others",))
     ]
 
     for proc in procs:
