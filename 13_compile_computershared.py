@@ -9,8 +9,8 @@ import statistics
 import json
 
 aws_region = "us-west-2"
-aws_access_key = "AKIAVYTUBMKTXUJLRXWR"
-aws_secret_access_key = "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"
+aws_access_key = ""
+aws_secret_access_key = ""
 BUCKET = "computershared-assets"
 
 session = boto3.Session(aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_access_key)
