@@ -1,34 +1,3 @@
-/* globals Chart:false, feather:false */
-function convertUTCDateToLocalDate(date) {
-  var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-  var offset = date.getTimezoneOffset() / 60;
-  var hours = date.getHours();
-  newDate.setHours(hours - offset);
-  return newDate;
-}
-
-function generateTable(table, data) {
-  for (let element of data) {
-    let row = table.insertRow();
-    let shares = parseFloat(element["shares"]["N"]).toFixed(2);
-    row.insertCell().appendChild(document.createTextNode(shares));
-    let u = element["u"]["S"];
-    row.insertCell().appendChild(document.createTextNode(u));
-    let timestamp = element["ts"]["S"].replace("T", " ") + " UTC";
-    //let timestamp = convertUTCDateToLocalDate(new Date(element["ts"]["S"])).toLocaleString();
-    //let timestamp = new Date(element["ts"]["S"]).toLocaleTimeString('en-US', {timeZone: 'UTC'}) + " " + new Date(element["ts"]["S"]).toLocaleDateString();
-    row.insertCell().appendChild(document.createTextNode(timestamp));
-    let url = element["urls"]["L"][0]["S"];
-    row.insertCell().appendChild(document.createTextNode(url));
-  }
-}
-
-function updateRegistered(status) {
-  document.getElementById("floatLockedEstimate").innerHTML = status.registered.toLocaleString() + " shares";
-  let floatPercent = (status.registered / (status.outstanding_float - status.etfs - status.mfs - status.insider - ((status.use_institution) ? status.institutional_unknown : 0))) * 100;
-  document.getElementById("floatLocker").innerHTML = floatPercent.toLocaleString() + '%';
-}
-
 function updateDonut(donut, donutData) {
   var data = [];
   var colors = [];
@@ -137,7 +106,7 @@ function updateDonutData(donutData, stats) {
 (async function () {
   'use strict'
   feather.replace({ 'aria-hidden': 'true' })
-
+  Chart.defaults.global.defaultFontColor = '#EEE';
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   let time = urlParams.get("time");
@@ -194,6 +163,12 @@ function updateDonutData(donutData, stats) {
   document.getElementById("apeDrs").innerHTML = '-' +  donutData.apeDrs.toLocaleString();
   document.getElementById("remainingValue").innerHTML = donutData.remaining.toLocaleString();
 
+  document.getElementById("donutDataEtfs").innerHTML = donutData.etfs;
+  document.getElementById("donutDataMfs").innerHTML = donutData.mfs;
+  document.getElementById("donutDataInst").innerHTML = donutData.inst_fuckery;
+  document.getElementById("donutDataInsider").innerHTML = donutData.insider;
+  document.getElementById("donutDataApe").innerHTML = donutData.apeDrs;
+
 
   function handleHoldingToggle() {
     let etfEnabled = document.getElementById("etfSwitch").checked;
@@ -202,15 +177,15 @@ function updateDonutData(donutData, stats) {
     let insiderEnabled = document.getElementById("insiderSwitch").checked;
     let apeEnabled = document.getElementById("apesSwitch").checked;
 
-    let etfObj = document.getElementById("institutionalETFs");
-    let mfsObj = document.getElementById("institutionalMFs");
-    let otherObj = document.getElementById("institutionalOther");
-    let insiderObj = document.getElementById("insiderHolding");
-    let apeObj = document.getElementById("apeDrs");
+    let etfObj = document.getElementById("donutDataEtfs");
+    let mfsObj = document.getElementById("donutDataMfs");
+    let otherObj = document.getElementById("donutDataInst");
+    let insiderObj = document.getElementById("donutDataInsider");
+    let apeObj = document.getElementById("donutDataApe");
 
     if (etfEnabled) {
       etfObj.classList.remove("text-muted");
-      donutData.etfs = parseFloat(etfObj.innerHTML.replace("-", "").replaceAll(",", "").replaceAll(".", ""));
+      donutData.etfs = parseFloat(etfObj.innerHTML);
     } else {
       etfObj.classList.add("text-muted");
       donutData.etfs = 0;
@@ -218,7 +193,7 @@ function updateDonutData(donutData, stats) {
 
     if (mfEnabled) {
       mfsObj.classList.remove("text-muted");
-      donutData.mfs = parseFloat(mfsObj.innerHTML.replace("-", "").replaceAll(",", "").replaceAll(".", ""));
+      donutData.mfs = parseFloat(mfsObj.innerHTML);
     } else {
       mfsObj.classList.add("text-muted");
       donutData.mfs = 0;
@@ -226,7 +201,7 @@ function updateDonutData(donutData, stats) {
 
     if (otherEnabled) {
       otherObj.classList.remove("text-muted");
-      donutData.inst_fuckery = parseFloat(otherObj.innerHTML.replace("-", "").replaceAll(",", "").replaceAll(".", ""));
+      donutData.inst_fuckery = parseFloat(otherObj.innerHTML);
     } else {
       otherObj.classList.add("text-muted");
       donutData.inst_fuckery = 0;
@@ -234,7 +209,7 @@ function updateDonutData(donutData, stats) {
 
     if (insiderEnabled) {
       insiderObj.classList.remove("text-muted");
-      donutData.insider = parseFloat(insiderObj.innerHTML.replace("-", "").replaceAll(",", "").replaceAll(".", ""));
+      donutData.insider = parseFloat(insiderObj.innerHTML);
     } else {
       insiderObj.classList.add("text-muted");
       donutData.insider = 0;
@@ -242,7 +217,7 @@ function updateDonutData(donutData, stats) {
 
     if (apeEnabled) {
       apeObj.classList.remove("text-muted");
-      donutData.apeDrs = parseFloat(apeObj.innerHTML.replace("-", "").replaceAll(",", "").replaceAll(".", ""));
+      donutData.apeDrs = parseFloat(apeObj.innerHTML);
     } else {
       apeObj.classList.add("text-muted");
       donutData.apeDrs = 0;
@@ -288,7 +263,8 @@ function updateDonutData(donutData, stats) {
       scales: {
         yAxes: [{
           ticks: {
-            beginAtZero: false
+            beginAtZero: false,
+            min: 0
           }
         }]
       },
@@ -412,8 +388,9 @@ function updateDonutData(donutData, stats) {
           position: "left",
           type: "linear",
           ticks: {
-            fontColor: "#93186c",
-            beginAtZero: true
+            fontColor: "#E024A5",
+            beginAtZero: true,
+            max: time === "day" ? 10000 : 100000
           }
         },
         {
@@ -421,10 +398,10 @@ function updateDonutData(donutData, stats) {
           position: "right",
           type: "linear",
           ticks: {
-            fontColor: "#A3962F",
+            fontColor: "#F0DC46",
             beginAtZero: true,
             min: 0,
-            max: 500
+            max: time === "day" ? 65 : 650
           }
         }]
       },
