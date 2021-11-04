@@ -141,6 +141,48 @@
                       <div class="col-5" id="floatLocked">loading...</div>
                     </div>
 
+                    <div class="row mt-5">
+                      <h2 class="border-bottom">Ape Statistics</h2>
+                      <select style="width:auto;" id="dataSourceSelector"
+                            class="form-select form-control-dark btn-outline-secondary col-lg-6" aria-label="">
+                            <option value="scraper" id="avgSlt" selected>Reddit Scraper</option>
+                            <option value="drsbot" id="medianSlt">DRSBot</option>
+                          </select>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-7">
+                        <h5>Sampled Shares</h5>
+                        <p id="identifiedShares">loading...</p>
+                        <h5>Sampled Accounts</h5>
+                        <p id="sampledAccounts">loading...</p>
+                        <h5>Number of CS accounts</h5>
+                        Source
+                        <a href="https://reddit.com/u/stopfuckingwithme/posts" target="_blank">u/stopfuckingwithme</a>
+                        <p id="highScore">loading...</p>
+                        <h5>Sample Size</h5>
+                        <p id="sampleSize">loading...</p>
+                      </div>
+                      <div class="col-md-5">
+                        <h5>Average per Account</h5>
+                        <p id="average">loading...</p>
+                        <h5>Median</h5>
+                        <p id="median">loading...</p>
+                        <h5>Mode</h5>
+                        <p id="mode">loading...</p>
+                        <h5>Standard Deviation</h5>
+                        <p id="stdDev">loading...</p>
+                        <h5 style="color:#E024A5">Estimate Using:</h5>
+                        <select style="width:auto;" id="avgSelector"
+                          class="form-select form-control-dark btn-outline-secondary col-lg-6" aria-label="">
+                          <option value="avg" id="avgSlt" selected>Average</option>
+                          <option value="median" id="medianSlt">Median</option>
+                          <option value="mode" id="modeSlt">Mode</option>
+                        </select>
+                      </div>
+
+                  </div>
+                    
+
                   </div>
 
                   <div class="col-lg-7 mb-5">
@@ -154,40 +196,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-lg-6 fs-4">
-                <h2 class="border-bottom">Statistics</h2>
-                <div class="row">
-                  <div class="col-md-6">
-                    <h5>Sampled Shares</h5>
-                    <p id="identifiedShares">loading...</p>
-                    <h5>Sampled Accounts</h5>
-                    <p id="sampledAccounts">loading...</p>
-                    <h5>Number of CS accounts</h5>
-                    Source
-                    <a href="https://reddit.com/u/stopfuckingwithme/posts" target="_blank">u/stopfuckingwithme</a>
-                    <p id="highScore">loading...</p>
-                    <h5>Sample Size</h5>
-                    <p id="sampleSize">loading...</p>
-                  </div>
-                  <div class="col-md-6">
-                    <h5>Average per Account</h5>
-                    <p id="average">loading...</p>
-                    <h5>Median</h5>
-                    <p id="median">loading...</p>
-                    <h5>Mode</h5>
-                    <p id="mode">loading...</p>
-                    <h5>Standard Deviation</h5>
-                    <p id="stdDev">loading...</p>
-                    <h5 style="color:#E024A5">Estimate Using:</h5>
-                    <select style="width:auto;" id="avgSelector"
-                      class="form-select form-control-dark btn-outline-secondary col-lg-6" aria-label="">
-                      <option value="avg" id="avgSlt" selected>Average</option>
-                      <option value="median" id="medianSlt">Median</option>
-                      <option value="mode" id="modeSlt">Mode</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
+              
             </div>
           </div>
           <div id="chartsRow" class="row">

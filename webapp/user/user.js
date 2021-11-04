@@ -1,43 +1,69 @@
 /* globals Chart:false, feather:false */
-function convertUTCDateToLocalDate(date) {
-  var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-  var offset = date.getTimezoneOffset() / 60;
-  var hours = date.getHours();
-  newDate.setHours(hours - offset);
-  return newDate;
+
+function handleApeNotFound(ape) {
+
 }
 
+function getPostHTML(posts) {
+  let postsDiv = document.createElement('div');
+  for (const post of posts) {
+    let imgFile = post.image_path.S.split('/').slice(-1)[0];
+    const docTemplate = document.getElementById("postTemplate");
+    const postDiv = document.importNode(docTemplate.content, true);
+    postDiv.querySelector('.postImage').textContent = "https://s3-us-west-2.amazonaws.com/computershared-reddit-images/" + imgFile;
+    postsDiv.appendChild(postDiv); 
+  }
+  return postsDiv;
+}
 
 (async function () {
   'use strict'
   feather.replace({ 'aria-hidden': 'true' })
-  var resultSet = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/results", {
+
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  let ape = urlParams.get("ape");
+  if (ape === null) {
+    handleApeNotFound(ape);
+    return;
+  }
+
+  var redditData = await fetch("https://www.reddit.com/user/"+ ape + "/about.json", {
     mode: 'cors'
   }).then(function (response) {
     return response.json();
   });
 
-  let records = resultSet.Items;
+  if ('error' in redditData){
+    handleApeNotFound(ape);
+    return;
+  }
 
-  records.sort(function(a, b) {
-    var keyA = new Date(a["ts"]["S"]),
-    keyB = new Date(b["ts"]["S"]);
-    if (keyA < keyB) return 1;
-    else return -1;
+  const u = redditData.data.name;
+  const displayName = redditData.data.subreddit.title;
+  document.getElementById('usernameTitle').innerHTML = "Reddit Username: " + displayName;
+
+  var userData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/posts/"+ u, {
+    mode: 'cors'
+  }).then(function (response) {
+    return response.json();
   });
 
-  records.sort(function (a, b) {
-    var keyA = parseFloat(a["shares"]["N"]),
-      keyB = parseFloat(b["shares"]["N"]);
-    if (keyA < keyB) return 1;
-    else return -1;
-  });
+  if (userData.Count === 0) {
+    handleApeNotFound(ape);
+    return;
+  }
 
-  var tableBody = document.getElementById("resultsTableBody");
-  generateTable(tableBody, records);
+  let records = [];
+  if (userData.Count == 1){
+    records.push(userData.Items[0]);
+  } else {
+    records = userData.Items;
+  }
 
-  var table = document.getElementById("resultsTable");
-  table.setAttribute("data-toggle","table");
+  let posts = getPostHTML(records);
+
+  document.getElementById('postsContainer').appendChild(posts);
 
 })()
 
