@@ -69,7 +69,7 @@ function buildDonut() {
           label: function (tooltipItem, data) {
             var value = data.datasets[0].data[tooltipItem.index];
             var label = data.labels[tooltipItem.index];
-            return label + ": " +value.toLocaleString() + " shares";
+            return label + ": " + value.toLocaleString() + " shares";
           }
         }
       }
@@ -100,6 +100,7 @@ function updateDonutData(donutData, stats) {
   donutData.pctComplete = (donutData.apeDrs / donutData.float) * 100;
   document.getElementById("remainingValue").innerHTML = donutData.remaining.toLocaleString();
   document.getElementById("floatTotal").innerHTML = donutData.float.toLocaleString();
+  document.getElementById("floatTotal2").innerHTML = donutData.float.toLocaleString();
   document.getElementById("floatLocked").innerHTML = donutData.pctComplete.toLocaleString() + "%";
 }
 
@@ -109,10 +110,22 @@ function updateDonutData(donutData, stats) {
   Chart.defaults.global.defaultFontColor = '#EEE';
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
+
+
+  let datasource = urlParams.get("bot");
+  datasource = datasource === null ? "scraper" : datasource
+  document.getElementById("botSelector").value = datasource;
+
   let time = urlParams.get("time");
   time = time === null ? "all" : time;
   document.getElementById("timeSelector").value = time;
-  document.getElementById("easterEgg").onclick = function() {window.location.replace("https://nft.gamestop.com/runner.html");}
+  if (datasource === "drsbot") {
+    document.getElementById("dataLearnMore").href = "https://www.reddit.com/r/Superstonk/comments/qap4je/drsbot_4x_now_online/";
+    document.getElementById("timeSelector").setAttribute("disabled", "");
+    document.getElementById("botLabel").innerHTML = "DRS Bot";
+  }
+  document.getElementById("easterEgg").onclick = function () { window.location.replace("https://nft.gamestop.com/runner.html"); }
+
   document.getElementById("timeSelector").onchange = function () {
     var url = window.location.href;
     if (url.indexOf("?") > 0) {
@@ -135,7 +148,27 @@ function updateDonutData(donutData, stats) {
     window.location.replace(url);
   }
 
-  const stats = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/stats?time=" + time, {
+  document.getElementById("botSelector").onchange = function () {
+    var url = window.location.href;
+    if (url.indexOf("?") > 0) {
+      url = url.substring(0, url.indexOf("?"));
+    }
+    switch (this.value) {
+      case "drsbot":
+        url += "?bot=drsbot";
+        break;
+      default:
+        url += "?bot=scraper";
+        break;
+    }
+    window.location.replace(url);
+  }
+
+  let statsUrl = "https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/stats?time=" + time;
+  statsUrl += "&bot=" + datasource;
+
+
+  const stats = await fetch(statsUrl, {
     mode: 'cors'
   }).then(function (response) {
     return response.json();
@@ -157,10 +190,11 @@ function updateDonutData(donutData, stats) {
 
   document.getElementById("outstandingValue").innerHTML = donutData.total_outstanding.toLocaleString();
   document.getElementById("insiderHolding").innerHTML = '-' + donutData.insider.toLocaleString();
-  document.getElementById("institutionalETFs").innerHTML = '-' +  donutData.etfs.toLocaleString();
+  document.getElementById("institutionalETFs").innerHTML = '-' + donutData.etfs.toLocaleString();
   document.getElementById("institutionalMFs").innerHTML = '-' + donutData.mfs.toLocaleString();
   document.getElementById("institutionalOther").innerHTML = '-' + donutData.inst_fuckery.toLocaleString();
-  document.getElementById("apeDrs").innerHTML = '-' +  donutData.apeDrs.toLocaleString();
+  document.getElementById("apeDrs").innerHTML = '-' + donutData.apeDrs.toLocaleString();
+  document.getElementById("apeDrsTotal").innerHTML = donutData.apeDrs.toLocaleString();
   document.getElementById("remainingValue").innerHTML = donutData.remaining.toLocaleString();
 
   document.getElementById("donutDataEtfs").innerHTML = donutData.etfs;
@@ -184,42 +218,42 @@ function updateDonutData(donutData, stats) {
     let apeObj = document.getElementById("donutDataApe");
 
     if (etfEnabled) {
-      etfObj.classList.remove("text-muted");
+      document.getElementById("institutionalETFs").classList.remove("text-muted");
       donutData.etfs = parseFloat(etfObj.innerHTML);
     } else {
-      etfObj.classList.add("text-muted");
+      document.getElementById("institutionalETFs").classList.add("text-muted");
       donutData.etfs = 0;
     }
 
     if (mfEnabled) {
-      mfsObj.classList.remove("text-muted");
+      document.getElementById("institutionalMFs").classList.remove("text-muted");
       donutData.mfs = parseFloat(mfsObj.innerHTML);
     } else {
-      mfsObj.classList.add("text-muted");
+      document.getElementById("institutionalMFs").classList.add("text-muted");
       donutData.mfs = 0;
     }
 
     if (otherEnabled) {
-      otherObj.classList.remove("text-muted");
+      document.getElementById("institutionalOther").classList.remove("text-muted");
       donutData.inst_fuckery = parseFloat(otherObj.innerHTML);
     } else {
-      otherObj.classList.add("text-muted");
+      document.getElementById("institutionalOther").classList.add("text-muted");
       donutData.inst_fuckery = 0;
     }
 
     if (insiderEnabled) {
-      insiderObj.classList.remove("text-muted");
+      document.getElementById("insiderHolding").classList.remove("text-muted");
       donutData.insider = parseFloat(insiderObj.innerHTML);
     } else {
-      insiderObj.classList.add("text-muted");
+      document.getElementById("insiderHolding").classList.add("text-muted");
       donutData.insider = 0;
     }
 
     if (apeEnabled) {
-      apeObj.classList.remove("text-muted");
+      document.getElementById("apeDrs").classList.remove("text-muted");
       donutData.apeDrs = parseFloat(apeObj.innerHTML);
     } else {
-      apeObj.classList.add("text-muted");
+      document.getElementById("apeDrs").classList.add("text-muted");
       donutData.apeDrs = 0;
     }
 
@@ -235,7 +269,49 @@ function updateDonutData(donutData, stats) {
   document.getElementById("insiderSwitch").addEventListener("click", handleHoldingToggle);
   document.getElementById("apesSwitch").addEventListener("click", handleHoldingToggle);
 
+
+  // Statistics
+  document.getElementById("sampledAccounts").innerHTML = stats.sampled_accounts.toLocaleString() + " accounts";
+  document.getElementById("identifiedShares").innerHTML = stats.sampled_shares.toLocaleString() + " shares";
+  let sampleSize = (stats.sampled_accounts / donutData.computershare_accounts) * 100;
+  document.getElementById("sampleSize").innerHTML = sampleSize.toLocaleString() + '%';
+  document.getElementById("average").innerHTML = stats.average.toLocaleString();
+  document.getElementById("metricVal").innerHTML = 'x ' + stats.average.toLocaleString();
+  document.getElementById("stdDev").innerHTML = stats.std_dev.toLocaleString();
+  document.getElementById("highScore").innerHTML = donutData.computershare_accounts.toLocaleString();
+  document.getElementById("median").innerHTML = stats.median.toLocaleString();
+  document.getElementById("mode").innerHTML = stats.mode.toLocaleString();
+
+  document.getElementById("avgSelector").onchange = function () {
+    switch (this.value) {
+      case "median":
+        document.getElementById("metricLabel").innerHTML = 'Median: ';
+        document.getElementById("metricVal").innerHTML = 'x ' + stats.median.toLocaleString();
+        donutData.apeDrs = stats.median * donutData.computershare_accounts;
+        break;
+      case "mode":
+        document.getElementById("metricLabel").innerHTML = 'Mode: ';
+        document.getElementById("metricVal").innerHTML = 'x ' + stats.mode.toLocaleString();
+        donutData.apeDrs = stats.mode * donutData.computershare_accounts;
+        break;
+      default:
+        document.getElementById("metricLabel").innerHTML = 'Average: ';
+        document.getElementById("metricVal").innerHTML = 'x ' + stats.average.toLocaleString();
+        donutData.apeDrs = stats.average * donutData.computershare_accounts;
+        break;
+    }
+    document.getElementById("apeDrsTotal").innerHTML = donutData.apeDrs.toLocaleString();
+    document.getElementById("apeDrs").innerHTML = '- ' + donutData.apeDrs.toLocaleString();
+    updateDonutData(donutData, stats);
+    updateDonut(donut, donutData);
+  };
+
   // Charts
+  if (datasource === "drsbot") {
+    document.getElementById("chartsRow").remove();
+    return;
+  }
+
   const chartData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/charts?time=" + time, {
     mode: 'cors'
   }).then(function (response) {
@@ -411,61 +487,7 @@ function updateDonutData(donutData, stats) {
     }
   });
 
-  // Statistics
-  document.getElementById("sampledAccounts").innerHTML = stats.sampled_accounts.toLocaleString() + " accounts";
-  document.getElementById("identifiedShares").innerHTML = stats.sampled_shares.toLocaleString() + " shares";
-  let sampleSize = (stats.sampled_accounts / donutData.computershare_accounts) * 100;
-  document.getElementById("sampleSize").innerHTML = sampleSize.toLocaleString() + '%';
-  document.getElementById("average").innerHTML = stats.average.toLocaleString();
-  document.getElementById("stdDev").innerHTML = stats.std_dev.toLocaleString();
-  document.getElementById("highScore").innerHTML = donutData.computershare_accounts.toLocaleString();
-  document.getElementById("median").innerHTML = stats.median.toLocaleString();
-  document.getElementById("mode").innerHTML = stats.mode.toLocaleString();
 
-  document.getElementById("avgSelector").onchange = function () {
-    switch (this.value) {
-      case "median":
-        donutData.apeDrs = stats.median * donutData.computershare_accounts;
-        break;
-      case "mode":
-        donutData.apeDrs = stats.mode * donutData.computershare_accounts;
-        break;
-      default:
-        donutData.apeDrs = stats.average * donutData.computershare_accounts;
-        break;
-    }
-    document.getElementById("apeDrs").innerHTML = donutData.apeDrs.toLocaleString();
-    updateDonutData(donutData, stats);
-    updateDonut(donut, donutData);
-  };
-
-  // var resultSet = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/results", {
-  //   mode: 'cors'
-  // }).then(function (response) {
-  //   return response.json();
-  // });
-
-  // let records = resultSet.Items;
-
-  // records.sort(function(a, b) {
-  //   var keyA = new Date(a["ts"]["S"]),
-  //   keyB = new Date(b["ts"]["S"]);
-  //   if (keyA < keyB) return 1;
-  //   else return -1;
-  // });
-
-  // records.sort(function (a, b) {
-  //   var keyA = parseFloat(a["shares"]["N"]),
-  //     keyB = parseFloat(b["shares"]["N"]);
-  //   if (keyA < keyB) return 1;
-  //   else return -1;
-  // });
-
-  // var tableBody = document.getElementById("resultsTableBody");
-  // generateTable(tableBody, records);
-
-  // var table = document.getElementById("resultsTable");
-  // table.setAttribute("data-toggle","table");
 
 })()
 
