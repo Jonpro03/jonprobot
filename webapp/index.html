@@ -49,23 +49,6 @@
           </div>
           <h1 class="h2">Gamestop Direct-Registered Float Calculator</h1>
           <div id="asof" class="text">As of</div>
-          <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group" role="group">
-              <button type="button" class="btn btn-secondary" style="pointer-events: none;">
-                <span data-feather="calendar"></span>
-              </button>
-              <select style="width:auto;" id="timeSelector"
-                class="btn form-select form-control-dark btn-outline-secondary col-lg-6" aria-label="">
-                <option value="all" id="avgSlt" selected>
-                  <a href="">All Time</a>
-                </option>
-                <option value="month" id="medianSlt">Month</option>
-                <option value="week" id="modeSlt">Week</option>
-                <option value="day" id="modeSlt">Day</option>
-              </select>
-            </div>
-
-          </div>
         </div>
 
         <div id="pageContent" class="container-xl text-white bg-dark">
@@ -73,134 +56,186 @@
             <!--<h2 class="border-bottom">Float Locker</h2> -->
             <div class="row">
               <div class="col-lg-12 fs-4">
-                <h2 class="border-bottom">Holdings</h2>
-                <div class="fs-6">
-                  Sources:
-                  <a href="https://www.reddit.com/r/Superstonk/comments/qci4nn/gamestop_float_institutional_ownership_etfs_and/"
-                    target="_blank">u/lawsondt</a>
-                  and
-                  <a href="https://fintel.io/n/us/gme" target="_blank">fintel</a>
-                </div>
+
                 <div class="row">
                   <div class="col-lg-5">
-
-                    <div class="row my-3 ">
-                      <div class="col-7">Issued: </div>
-                      <div class="col-5" id="outstandingValue">loading...</div>
-                    </div>
-
-                    <div class="row my-3">
-                      <div class="form-check form-switch col-7">
-                        <input id="instOtherBtn" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
-                          checked>
-                        <label class="form-check-label" for="instOtherBtn" style="color:#13A9AD"
-                          onclick="handleInstBtn">Institutional Fuckery:</label>
+                    <div id="maths">
+                      <h2>Float Calculator</h2>
+                      <div class="fs-6">
+                        Sources:
+                        <a href="https://www.reddit.com/r/Superstonk/comments/qci4nn/gamestop_float_institutional_ownership_etfs_and/"
+                          target="_blank">u/lawsondt</a>
+                        and
+                        <a href="https://fintel.io/n/us/gme" target="_blank">fintel</a>
                       </div>
-                      <div class="col-5" id="institutionalOther">loading...</div>
-                    </div>
 
-                    <div class="row my-3">
-                      <div class="form-check form-switch col-7">
-                        <input id="mfSwitch" class="form-check-input" type="checkbox" style="border-color:#6FA142"
-                          checked>
-                        <label class="form-check-label" for="mfSwitch" style="color:#6FA142">Mutual Funds:</label>
+                      <div class="row my-3 ">
+                        <div class="col-7">Issued: </div>
+                        <div class="col-5 text-center" id="outstandingValue">loading...</div>
                       </div>
-                      <div class="col-5" id="institutionalMFs">loading...</div>
-                    </div>
 
-                    <div class="row my-3">
-                      <div class="form-check form-switch col-7">
-                        <input id="etfSwitch" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
-                          checked>
-                        <label class="form-check-label" for="etfSwitch" style="color:#13A9AD">ETFs:</label>
+                      <div class="row my-3">
+                        <div class="form-check form-switch col-7">
+                          <input id="instOtherBtn" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
+                            checked>
+                          <label class="form-check-label" for="instOtherBtn" style="color:#13A9AD"
+                            onclick="handleInstBtn">Institutional Fuckery:</label>
+                        </div>
+                        <div class="col-5 text-center" id="institutionalOther">loading...</div>
                       </div>
-                      <div class="col-5" id="institutionalETFs">loading...</div>
-                    </div>
 
-                    <div class="row my-3 border-bottom">
-                      <div class="form-check form-switch col-7">
-                        <input id="insiderSwitch" class="form-check-input" type="checkbox" style="border-color:#A3962F"
-                          checked>
-                        <label class="form-check-label" for="insiderSwitch" style="color:#A3962F">Insider:</label>
+                      <div class="row my-3">
+                        <div class="form-check form-switch col-7">
+                          <input id="mfSwitch" class="form-check-input" type="checkbox" style="border-color:#6FA142"
+                            checked>
+                          <label class="form-check-label" for="mfSwitch" style="color:#6FA142">Mutual Funds:</label>
+                        </div>
+                        <div class="col-5 text-center" id="institutionalMFs">loading...</div>
                       </div>
-                      <div class="col-5" id="insiderHolding">loading...</div>
-                    </div>
 
-                    <div class="row my-3 pb-3">
-                      <div class="col-7">Float: </div>
-                      <div class="col-5" id="floatTotal">loading...</div>
-                    </div>
-
-                    <div class="row my-3 border-bottom">
-                      <div class="form-check form-switch col-7">
-                        <input id="apesSwitch" class="form-check-input" type="checkbox" style="border-color:#E024A5"
-                          checked>
-                        <label class="form-check-label" for="apesSwitch" style="color:#E024A5">Apes:</label>
+                      <div class="row my-3">
+                        <div class="form-check form-switch col-7">
+                          <input id="etfSwitch" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
+                            checked>
+                          <label class="form-check-label" for="etfSwitch" style="color:#13A9AD">ETFs:</label>
+                        </div>
+                        <div class="col-5 text-center" id="institutionalETFs">loading...</div>
                       </div>
-                      <div class="col-5" id="apeDrs">loading...</div>
+
+                      <div class="row my-3 border-bottom">
+                        <div class="form-check form-switch col-7">
+                          <input id="insiderSwitch" class="form-check-input" type="checkbox"
+                            style="border-color:#A3962F" checked>
+                          <label class="form-check-label" for="insiderSwitch" style="color:#A3962F">Insider:</label>
+                        </div>
+                        <div class="col-5 text-center" id="insiderHolding">loading...</div>
+                      </div>
+
+                      <div class="row my-3 pb-5">
+                        <div class="col-7">Float Total: </div>
+                        <div class="col-5 text-center" id="floatTotal">loading...</div>
+                      </div>
+
+                      <h2>DRS Calculator</h2>
+                      <div class="row my-3">
+                        <div class="col-7">Dataset:</div>
+                        <div class="col-5" id="">
+                          <select id="botSelector" class="form-select form-control-dark btn-outline-secondary"
+                            aria-label="">
+                            <option value="scraper" id="scraperSlt" selected>Reddit Scraper</option>
+                            <option value="drsbot" id="drsbotSlt">DRSBot</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="row my-3">
+                        <div class="col-7">Metric:</div>
+                        <div class="col-5" id="">
+                          <select id="avgSelector" class="form-select form-control-dark btn-outline-secondary"
+                            aria-label="">
+                            <option value="avg" id="avgSlt" selected>Average</option>
+                            <option value="median" id="medianSlt">Median</option>
+                            <option value="mode" id="modeSlt">Mode</option>
+                          </select>
+                        </div>
+                      </div>
+
+
+                      <div class="row my-3">
+                        <div class="col-7">Time Frame:</div>
+                        <div class="col-5" id="">
+                          <select id="timeSelector" class="form-select form-control-dark btn-outline-secondary"
+                            aria-label="">
+                            <option value="all" id="avgSlt" selected>
+                              <a href="">All Time</a>
+                            </option>
+                            <option value="month" id="medianSlt">Month</option>
+                            <option value="week" id="modeSlt">Week</option>
+                            <option value="day" id="modeSlt">Day</option>
+                          </select>
+                        </div>
+                      </div>
+
+
+                      <div class="row mt-3">
+                        <div class="col-7">Computershare Accounts: </div>
+                        <div class="col-5 text-center" id="highScore">loading...</div>
+                        <div class="fs-6 ms-3">
+                          Source
+                          <a href="https://reddit.com/u/stopfuckingwithme/posts" target="_blank">u/stopfuckingwithme</a>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3 border-bottom">
+                        <div id="metricLabel" class="col-7">Average: </div>
+                        <div id="metricVal" class="col-5 text-center" >loading...</div>
+                      </div>
+
+                      <div class="row my-3 pb-5">
+                        <div class="col-7">DRS Total: </div>
+                        <div class="col-5 text-center" id="apeDrsTotal">loading...</div>
+                      </div>
+
+                      <h2>Float Locker</h2>
+                      <div class="row my-3">
+                        <div class="col-7">Float: </div>
+                        <div class="col-5 text-center" id="floatTotal2">loading...</div>
+                      </div>
+
+                      <div class="row my-3 border-bottom">
+                        <div class="form-check form-switch col-7">
+                          <input id="apesSwitch" class="form-check-input" type="checkbox" style="border-color:#E024A5"
+                            checked>
+                          <label class="form-check-label" for="apesSwitch" style="color:#E024A5">Apes:</label>
+                        </div>
+                        <div class="col-5 text-center" id="apeDrs">loading...</div>
+                      </div>
+
+                      <div class="row my-3">
+                        <div class="col-7">Remaining: </div>
+                        <div class="col-5 text-center" id="remainingValue">loading...</div>
+                      </div>
+
+                      <div class="row my-3">
+                        <div class="col-7">Float Locked by Apes: </div>
+                        <div class="col-5 text-center" id="floatLocked">loading...</div>
+                      </div>
                     </div>
 
-                    <div class="row my-3">
-                      <div class="col-7">Remaining: </div>
-                      <div class="col-5" id="remainingValue">loading...</div>
-                    </div>
-
-                    <div class="row my-3">
-                      <div class="col-7">Float Locked by Apes: </div>
-                      <div class="col-5" id="floatLocked">loading...</div>
-                    </div>
-
+                    
                   </div>
 
-                  <div class="col-lg-7 mb-5">
+                  <div class="col-lg-6 m-2">
                     <canvas class="w-100" id="shareLocker" width="1024" height="1024"></canvas>
-                    <!-- <div class="row">
-                      <h5 class="d-flex justify-content-center" id="floatLocker">loading...</h5>
-                      <h5 class="d-flex justify-content-center" id="floatLockedEstimate">loading...</h5>
-                    </div> -->
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-6 fs-4">
-                <h2 class="border-bottom">Statistics</h2>
-                <div class="row">
-                  <div class="fs-6">
-                    <a href="https://www.reddit.com/user/jonpro03/comments/q7o6ra/drs_infographics_faqs/"
-                      target="_blank">Learn More
-                      about this data.</a>
-                  </div>
-                  <div class="col-md-6 my-3">
-                    <h5>Sampled Shares</h5>
-                    <p id="identifiedShares">loading...</p>
-                    <h5>Sampled Accounts</h5>
-                    <p id="sampledAccounts">loading...</p>
-                    <h5>Number of CS accounts</h5>
-                    <div class="fs-6">
-                      Source
-                      <a href="https://reddit.com/u/stopfuckingwithme/posts" target="_blank">u/stopfuckingwithme</a>
+                    <div id="stats" class="m-5">
+                      <div class="row">
+                        <h2 id="botLabel" class="col-8">Reddit Scraper</h2>
+                        <div class="fs-6 col-12">
+                          <a id="dataLearnMore" href="https://www.reddit.com/user/jonpro03/comments/q7o6ra/drs_infographics_faqs/"
+                            target="_blank">Learn More
+                            about this data.</a>
+                        </div>
+                        <div class="col-md-6 my-3">
+                          <h5>Sampled Shares</h5>
+                          <p id="identifiedShares">loading...</p>
+                          <h5>Sampled Accounts</h5>
+                          <p id="sampledAccounts">loading...</p>
+                          <h5>Sample Size</h5>
+                          <p id="sampleSize">loading...</p>
+                        </div>
+                        <div class="col-md-6">
+                          <h5>Average per Account</h5>
+                          <p id="average">loading...</p>
+                          <h5>Median</h5>
+                          <p id="median">loading...</p>
+                          <h5>Mode</h5>
+                          <p id="mode">loading...</p>
+                          <h5>Standard Deviation</h5>
+                          <p id="stdDev">loading...</p>
+
+                        </div>
+                      </div>
                     </div>
-                    <p id="highScore">loading...</p>
-                    <h5>Sample Size</h5>
-                    <p id="sampleSize">loading...</p>
-                  </div>
-                  <div class="col-md-6">
-                    <h5>Average per Account</h5>
-                    <p id="average">loading...</p>
-                    <h5>Median</h5>
-                    <p id="median">loading...</p>
-                    <h5>Mode</h5>
-                    <p id="mode">loading...</p>
-                    <h5>Standard Deviation</h5>
-                    <p id="stdDev">loading...</p>
-                    <h5 style="color:#E024A5">Estimate Using:</h5>
-                    <select style="width:auto;" id="avgSelector"
-                      class="form-select form-control-dark btn-outline-secondary col-lg-6" aria-label="">
-                      <option value="avg" id="avgSlt" selected>Average</option>
-                      <option value="median" id="medianSlt">Median</option>
-                      <option value="mode" id="modeSlt">Mode</option>
-                    </select>
                   </div>
                 </div>
               </div>
@@ -208,7 +243,7 @@
           </div>
         </div>
         <div id="chartsRow" class="row">
-          <h2 class="border-bottom">Reddit Scraper Stats</h2>
+          <h2 id="chartsLabel" class="border-bottom">Reddit Scraper</h2>
           <div class="row">
             <div class="col-lg-6 col-md-12">
               <canvas class="my-4 w-100" id="totalAcctsChart" width="1900" height="1080"></canvas>
@@ -234,6 +269,9 @@
           </p>
           <p class="text-muted">
             This site is not affiliated with ComputerShare nor GameStop.
+          </p>
+          <p class="text-muted">
+            Want to buy me a coffee on Layer2? jonpro03.loopring.eth
           </p>
         </div>
     </div>
