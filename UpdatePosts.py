@@ -105,7 +105,7 @@ def pull_text_from_image(sub):
             db.update(post, doc_ids=[post.doc_id])
 
 def classify_data(sub):
-    portfolio_posts = share_posts = purchase_posts = 0
+    portfolio_posts = share_posts = purchase_posts = donation_posts = 0
     q = tinydb.Query()
     db = tinydb.TinyDB(f"{sub}.json", storage=CachingMiddleware(JSONStorage))
     posts = db.search(~(q.image_text=="") & (q.post_type==""))
@@ -127,6 +127,12 @@ def classify_data(sub):
             db.update(post, doc_ids=[post.doc_id])
             share_posts += 1
             print(f'shares: {post["permalink"]}')
+            continue
+        elif "donation" in img_text.lower():
+            post["post_type"] = "donation"
+            db.update(post, doc_ids=[post.doc_id])
+            donation_posts += 1
+            print(f'donations: {post["permalink"]}')
             continue
         elif "PRODUCTS" in img_text or "PURCHASES" in img_text or "Subtotal" in img_text:
             post["post_type"] = "purchase"
