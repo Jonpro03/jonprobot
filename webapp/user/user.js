@@ -11,6 +11,7 @@ function getPostHTML(posts) {
     const docTemplate = document.getElementById("postTemplate");
     const postDiv = document.importNode(docTemplate.content, true);
     postDiv.querySelector('.postImage').textContent = "https://s3-us-west-2.amazonaws.com/computershared-reddit-images/" + imgFile;
+    postDiv.querySelector('.postImage').textContent = "https://s3-us-west-2.amazonaws.com/computershared-reddit-images/" + imgFile;
     postsDiv.appendChild(postDiv); 
   }
   return postsDiv;

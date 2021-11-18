@@ -30,13 +30,13 @@ function updateDonut(donut, donutData) {
   if (donutData.remaining != 0) {
     data.push(donutData.remaining);
     colors.push("#212529");
-    labels.push("Fuckery, probably");
+    labels.push("Held in Brokerages");
   }
 
   if (donutData.inst_fuckery != 0) {
     data.push(donutData.inst_fuckery);
     colors.push("#094D4F");
-    labels.push("Inst fuckery, probably");
+    labels.push("Inst Unknown");
   }
 
   donut.data.labels.pop();
