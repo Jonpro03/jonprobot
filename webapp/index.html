@@ -22,7 +22,7 @@
   <link href="dashboard.css" rel="stylesheet">
 </head>
 
-<body>
+<body id="main">
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
     <span class="navbar-brand col-md-3 col-lg-2 me-0 px-3">TEN.DERAHSRETUPMOC</span>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
@@ -30,12 +30,12 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <input class="form-control form-control-dark w-100" type="text"
-      placeholder="This searchbar still doesn't work yet. It's hard, okay?" aria-label="Search">
+      placeholder="This searchbar still doesn't WORK. Sorry RC" aria-label="Search">
     <div class="navbar-nav">
       <div class="nav-item text-nowrap">
         <!--<a class="nav-link px-3" href="#">Sign out</a> -->
       </div>
-    </div>
+    </div>`
   </header>
 
 
@@ -44,9 +44,9 @@
       <main class="col-md-12 col-lg-12 px-md-4 text-white">
         <div
           class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <div id="easterEgg" class="dead-pixel-clickable">
+          <!-- <div id="easterEgg" class="dead-pixel-clickable">
             <div class="dead-pixel"></div>
-          </div>
+          </div> -->
           <h1 class="h2">Gamestop Direct-Registered Float Calculator</h1>
           <div id="asof" class="text">As of</div>
         </div>
@@ -70,7 +70,7 @@
 
                       <div class="row my-3 ">
                         <div class="col-7">Issued: </div>
-                        <div class="col-5 text-center" id="outstandingValue">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="outstandingValue">loading...</div>
                       </div>
 
                       <div class="row my-3">
@@ -80,7 +80,7 @@
                           <label class="form-check-label" for="instOtherBtn" style="color:#13A9AD"
                             onclick="handleInstBtn">Institutional Unknown:</label>
                         </div>
-                        <div class="col-5 text-center" id="institutionalOther">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="institutionalOther">loading...</div>
                       </div>
 
                       <div class="row my-3">
@@ -89,7 +89,7 @@
                             checked>
                           <label class="form-check-label" for="mfSwitch" style="color:#6FA142">Mutual Funds:</label>
                         </div>
-                        <div class="col-5 text-center" id="institutionalMFs">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="institutionalMFs">loading...</div>
                       </div>
 
                       <div class="row my-3">
@@ -98,7 +98,7 @@
                             checked>
                           <label class="form-check-label" for="etfSwitch" style="color:#13A9AD">ETFs:</label>
                         </div>
-                        <div class="col-5 text-center" id="institutionalETFs">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="institutionalETFs">loading...</div>
                       </div>
 
                       <div class="row my-3 border-bottom">
@@ -107,12 +107,12 @@
                             style="border-color:#A3962F" checked>
                           <label class="form-check-label" for="insiderSwitch" style="color:#A3962F">Insider:</label>
                         </div>
-                        <div class="col-5 text-center" id="insiderHolding">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="insiderHolding">loading...</div>
                       </div>
 
                       <div class="row my-3 pb-5">
                         <div class="col-7">Float Total: </div>
-                        <div class="col-5 text-center" id="floatTotal">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="floatTotal">loading...</div>
                       </div>
 
                       <h2>DRS Calculator</h2>
@@ -156,27 +156,26 @@
 
                       <div class="row mt-3">
                         <div class="col-7">Computershare Accounts: </div>
-                        <div class="col-5 text-center" id="highScore">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="highScore">loading...</div>
                         <div class="fs-6 ms-3">
-                          Source
-                          <a href="https://reddit.com/u/stopfuckingwithme/posts" target="_blank">u/stopfuckingwithme</a>
+                          <a href="https://reddit.com/u/stopfuckingwithme/posts" target="_blank">Source</a>
                         </div>
                       </div>
 
                       <div class="row mb-3 border-bottom">
                         <div id="metricLabel" class="col-7">Average: </div>
-                        <div id="metricVal" class="col-5 text-center" >loading...</div>
+                        <div id="metricVal" class="col-5 text-monospace text-right">loading...</div>
                       </div>
 
                       <div class="row my-3 pb-5">
                         <div class="col-7">DRS Total: </div>
-                        <div class="col-5 text-center" id="apeDrsTotal">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="apeDrsTotal">loading...</div>
                       </div>
 
                       <h2>Float Locker</h2>
                       <div class="row my-3">
                         <div class="col-7">Float: </div>
-                        <div class="col-5 text-center" id="floatTotal2">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="floatTotal2">loading...</div>
                       </div>
 
                       <div class="row my-3 border-bottom">
@@ -185,21 +184,21 @@
                             checked>
                           <label class="form-check-label" for="apesSwitch" style="color:#E024A5">Apes:</label>
                         </div>
-                        <div class="col-5 text-center" id="apeDrs">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="apeDrs">loading...</div>
                       </div>
 
                       <div class="row my-3">
                         <div class="col-7">Remaining: </div>
-                        <div class="col-5 text-center" id="remainingValue">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="remainingValue">loading...</div>
                       </div>
 
                       <div class="row my-3">
                         <div class="col-7">Float Locked by Apes: </div>
-                        <div class="col-5 text-center" id="floatLocked">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="floatLocked">loading...</div>
                       </div>
                     </div>
 
-                    
+
                   </div>
 
                   <div class="col-lg-6 m-2">
@@ -208,7 +207,8 @@
                       <div class="row">
                         <h2 id="botLabel" class="col-8">Reddit Scraper</h2>
                         <div class="fs-6 col-12">
-                          <a id="dataLearnMore" href="https://www.reddit.com/user/jonpro03/comments/q7o6ra/drs_infographics_faqs/"
+                          <a id="dataLearnMore"
+                            href="https://www.reddit.com/user/jonpro03/comments/q7o6ra/drs_infographics_faqs/"
                             target="_blank">Learn More
                             about this data.</a>
                         </div>
@@ -239,23 +239,24 @@
             </div>
           </div>
         </div>
-        <div id="chartsRow" class="row">
-          <h2 id="chartsLabel" class="border-bottom">Reddit Scraper</h2>
-          <div class="row">
-            <div class="col-lg-6 col-md-12">
-              <canvas class="my-4 w-100" id="totalAcctsChart" width="1900" height="1080"></canvas>
-            </div>
-            <div class="col-lg-6 col-md-12">
+        <div class="container-xxl">
+          <div id="chartsRow" class="row">
+            <h2 id="chartsLabel" class="border-bottom">Reddit Scraper</h2>
+            <div class="col-md-12">
               <canvas class="my-4 w-100" id="myChart" width="1900" height="1080"></canvas>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-6 col-md-12">
+            <div class="col-md-12">
+              <canvas class="my-4 w-100" id="sharesChart" width="1900" height="1080"></canvas>
+            </div>
+            <div class="col-md-12">
+              <canvas class="my-4 w-100" id="totalAcctsChart" width="1900" height="1080"></canvas>
+            </div>
+            <div class="col-md-12">
               <canvas class="my-4 w-100" id="histogramChart" width="1900" height="1080"></canvas>
             </div>
-            <div class="col-lg-6 col-md-12">
+            <!-- <div class="col-md-12">
               <canvas class="my-4 w-100" id="regChart" width="1900" height="1080"></canvas>
-            </div>
+            </div> -->
           </div>
         </div>
         <div id="footerRow" class="row">

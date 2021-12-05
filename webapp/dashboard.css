@@ -48,6 +48,14 @@ footer {
   width: 100%;
 }
 
+.container-xxl {
+  max-width: 1920px;
+}
+
+.text-right {
+  text-align: right;
+}
+
 /*
  * Sidebar
  */
