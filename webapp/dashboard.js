@@ -356,15 +356,26 @@ function updateDonutData(donutData, stats) {
     label: "ohai",
     data: {
       labels: chartData.labels,
-      datasets: [{
-        data: chartData.averages,
-        label: "Average Shares",
-        lineTension: 0.4,
-        backgroundColor: 'transparent',
-        borderColor: '#E024A5',
-        borderWidth: 2,
-        pointBackgroundColor: '#93186c'
-      }]
+      datasets: [
+        {
+          data: chartData.averages,
+          label: "Average Shares",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#E024A5',
+          borderWidth: 2,
+          pointBackgroundColor: '#93186c'
+        },
+        {
+          data: chartData.medians,
+          label: "Median Shares",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#A3962F',
+          borderWidth: 2,
+          pointBackgroundColor: '#A3962F'
+        }
+      ]
     },
     options: {
       scales: {
@@ -457,11 +468,11 @@ function updateDonutData(donutData, stats) {
       labels: chartData.dist_labels,
       datasets: [{
         data: chartData.dist_values,
-        label: "Distribution of Shareholder Accounts",
+        label: "Distribution of Sampled Accounts",
         lineTension: 0.4,
         backgroundColor: '#93186c',
         borderColor: '#E024A5',
-        borderWidth: 2,
+        borderWidth: 4,
         pointBackgroundColor: '#93186c'
       }]
     },
