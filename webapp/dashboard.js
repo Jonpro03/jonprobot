@@ -108,6 +108,7 @@ function updateDonutData(donutData, stats) {
   'use strict'
   feather.replace({ 'aria-hidden': 'true' })
   Chart.defaults.global.defaultFontColor = '#EEE';
+  Chart.defaults.global.defaultLineColor = '#AAA';
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
 
@@ -124,7 +125,7 @@ function updateDonutData(donutData, stats) {
     document.getElementById("timeSelector").setAttribute("disabled", "");
     document.getElementById("botLabel").innerHTML = "DRS Bot";
   }
-  document.getElementById("easterEgg").onclick = function () { window.location.replace("https://nft.gamestop.com/runner.html"); }
+  //document.getElementById("easterEgg").onclick = function () { window.location.replace("https://nft.gamestop.com/runner.html"); }
 
   document.getElementById("timeSelector").onchange = function () {
     var url = window.location.href;
@@ -189,11 +190,11 @@ function updateDonutData(donutData, stats) {
   updateDonut(donut, donutData);
 
   document.getElementById("outstandingValue").innerHTML = donutData.total_outstanding.toLocaleString();
-  document.getElementById("insiderHolding").innerHTML = '-' + donutData.insider.toLocaleString();
-  document.getElementById("institutionalETFs").innerHTML = '-' + donutData.etfs.toLocaleString();
-  document.getElementById("institutionalMFs").innerHTML = '-' + donutData.mfs.toLocaleString();
-  document.getElementById("institutionalOther").innerHTML = '-' + donutData.inst_fuckery.toLocaleString();
-  document.getElementById("apeDrs").innerHTML = '-' + donutData.apeDrs.toLocaleString();
+  document.getElementById("insiderHolding").innerHTML = '- ' + donutData.insider.toLocaleString();
+  document.getElementById("institutionalETFs").innerHTML = '- ' + donutData.etfs.toLocaleString();
+  document.getElementById("institutionalMFs").innerHTML = '- ' + donutData.mfs.toLocaleString();
+  document.getElementById("institutionalOther").innerHTML = '- ' + donutData.inst_fuckery.toLocaleString();
+  document.getElementById("apeDrs").innerHTML = '- ' + donutData.apeDrs.toLocaleString();
   document.getElementById("apeDrsTotal").innerHTML = donutData.apeDrs.toLocaleString();
   document.getElementById("remainingValue").innerHTML = donutData.remaining.toLocaleString();
 
@@ -318,6 +319,36 @@ function updateDonutData(donutData, stats) {
     return response.json();
   });
 
+  var sharesChartCtx = document.getElementById('sharesChart');
+  var sharesChart = new Chart(sharesChartCtx, {
+    type: 'bar',
+    data: {
+      labels: chartData.labels,
+      datasets: [{
+        label: "New Accounts",
+        data: chartData.daily_shares_new,
+        backgroundColor: '#93186c'
+      },
+      {
+        label: "Existing Accounts",
+        data: chartData.daily_shares_growth,
+        backgroundColor: '#A3962F',
+        borderColor: '#A3962F'
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Shares Counted from'
+      },
+      responsive: true,
+      scales: {
+        xAxes: [{ stacked: true, color: "#AAA" }],
+        yAxes: [{ stacked: true }]
+      }
+    }
+  });
+
 
   var ctx = document.getElementById('myChart')
   var myChart = new Chart(ctx, {
@@ -327,11 +358,11 @@ function updateDonutData(donutData, stats) {
       labels: chartData.labels,
       datasets: [{
         data: chartData.averages,
-        label: "Average Shares per Sampled Computershare Account",
-        lineTension: 0,
+        label: "Average Shares",
+        lineTension: 0.4,
         backgroundColor: 'transparent',
-        borderColor: '#93186c',
-        borderWidth: 4,
+        borderColor: '#E024A5',
+        borderWidth: 2,
         pointBackgroundColor: '#93186c'
       }]
     },
@@ -356,32 +387,61 @@ function updateDonutData(donutData, stats) {
     label: "ohai",
     data: {
       labels: chartData.labels,
-      datasets: [{
-        data: chartData.accounts,
-        label: "Accounts Discovered",
-        lineTension: 0,
-        backgroundColor: 'transparent',
-        borderColor: '#93186c',
-        borderWidth: 4,
-        pointBackgroundColor: '#93186c'
-      },
-      {
-        data: chartData.posts,
-        label: "Posts Discovered",
-        lineTension: 0,
-        backgroundColor: 'transparent',
-        borderColor: '#A3962F',
-        borderWidth: 4,
-        pointBackgroundColor: '#A3962F'
-      }]
+      datasets: [
+        {
+          yAxisID: "total",
+          data: chartData.posts,
+          label: "Total Posts",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#A3962F',
+          borderWidth: 2,
+          pointBackgroundColor: '#A3962F'
+        },
+        {
+          yAxisID: "total",
+          data: chartData.accounts,
+          label: "Total Accounts",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#E024A5',
+          borderWidth: 2,
+          pointBackgroundColor: '#93186c'
+        },
+        {
+          yAxisID: "new",
+          data: chartData.daily_accts,
+          type: "bar",
+          label: "New Accounts",
+          backgroundColor: '#11979C',
+          borderColor: '#A3962F'
+        }
+      ]
     },
     options: {
       scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: false
+        yAxes: [
+          {
+            id: "total",
+            position: "left",
+            type: "linear",
+            ticks: {
+              fontColor: "#EEE",
+              beginAtZero: true,
+            }
+          },
+          {
+            id: "new",
+            position: "right",
+            type: "linear",
+            ticks: {
+              fontColor: "#11979C",
+              beginAtZero: true,
+              min: 0,
+              max: 500
+            }
           }
-        }]
+        ]
       },
       legend: {
         display: true
@@ -398,11 +458,11 @@ function updateDonutData(donutData, stats) {
       datasets: [{
         data: chartData.dist_values,
         label: "Distribution of Shareholder Accounts",
-        lineTension: 0,
-        backgroundColor: 'transparent',
-        borderColor: '#93186c',
-        borderWidth: 4,
-        pointBackgroundColor: '#E024A5'
+        lineTension: 0.4,
+        backgroundColor: '#93186c',
+        borderColor: '#E024A5',
+        borderWidth: 2,
+        pointBackgroundColor: '#93186c'
       }]
     },
     options: {
@@ -419,7 +479,7 @@ function updateDonutData(donutData, stats) {
         xAxes: [{
           scaleLabel: {
             display: true,
-            labelString: "shares"
+            labelString: "Shares >="
           }
         }]
       },
@@ -439,10 +499,10 @@ function updateDonutData(donutData, stats) {
         yAxisID: "shares",
         data: chartData.daily_shares,
         label: "Shares Added",
-        lineTension: 0,
+        lineTension: 0.4,
         backgroundColor: 'transparent',
         borderColor: '#93186c',
-        borderWidth: 4,
+        borderWidth: 2,
         pointBackgroundColor: '#93186c'
       },
       {
@@ -450,10 +510,10 @@ function updateDonutData(donutData, stats) {
         data: chartData.daily_accts,
         stack: "",
         label: "Accounts Added",
-        lineTension: 0,
+        lineTension: 0.4,
         backgroundColor: 'transparent',
         borderColor: '#A3962F',
-        borderWidth: 4,
+        borderWidth: 2,
         pointBackgroundColor: '#A3962F'
       }]
     },
