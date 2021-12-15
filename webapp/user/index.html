@@ -23,14 +23,32 @@
 </head>
 
 <body>
+
+  <template id="postTemplate">
+    <div class="row py-5">
+      <div class="col-lg-4">
+        <img class="postImage" src="https://s3-us-west-2.amazonaws.com/computershared-reddit-images/sadape.jpg">
+      </div>
+      <div class="col-lg-8">
+        <p>
+          <a class="link display-6" href="www.google.com">Post</a>
+        </p>
+        <p class="timestamp display-6">Loading...</p>
+        <p class="shares display-6">Loading...</p>
+        <h4>Image Text:</h4>
+        <p class="imgText"></p>
+      </div>
+    </div>
+  </template>
+
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <span class="navbar-brand col-md-3 col-lg-2 me-0 px-3">COMPUTERSHARED</span>
+    <span class="navbar-brand col-md-3 col-lg-2 me-0 px-3">COMPUTERSHARED.NET</span>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <input class="form-control form-control-dark w-100" type="text"
-      placeholder="This searchbar doesn't work yet. Soon..." aria-label="Search">
+    <input id="searchbar" class="form-control form-control-dark w-100" type="text"
+      placeholder="Search Records by Reddit Username" aria-label="Search">
     <div class="navbar-nav">
       <div class="nav-item text-nowrap">
         <!--<a class="nav-link px-3" href="#">Sign out</a> -->
@@ -43,57 +61,26 @@
     <div class="row">
       <main class="col-md-12 col-lg-12 px-md-4 text-white">
         <h2 id="usernameTitle" class="border-bottom">Reddit Username: loading...</h2>
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-8">
-              <h3 class="col justify-content-center" id="portfolioAvgText">Average Portfolio Value: loading...</h3>
-              <h3 class="col justify-content-center" id="lastUpdate">Last Update: loading...</h3>
-            </div>
-            <div class="col-sm-4"></div>
-          </div>
-          <div class="row border-bottom">
-            <div class="col">
-              <p>
-                <a href="www.google.com">url, probably</a>
-              </p>
-              <img src="https://s3-us-west-2.amazonaws.com/computershared-reddit-images/ppg1jq.jpg">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <p>url probably</p>
-              <img src="https://s3-us-west-2.amazonaws.com/computershared-reddit-images/ppg1jq.jpg">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <p>url probably</p>
-              <img src="https://s3-us-west-2.amazonaws.com/computershared-reddit-images/ppg1jq.jpg">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <p>url probably</p>
-              <img src="https://s3-us-west-2.amazonaws.com/computershared-reddit-images/ppg1jq.jpg">
-            </div>
-          </div>
+        <div id="postsContainer" class="container">
+          
         </div>
-
-        <p class="text-muted">
-          Interested in direct-registering shares in your own name?
-          <a href="https://www.reddit.com/r/Superstonk/comments/ptvaka/when_you_wish_upon_a_star_a_complete_guide_to/"
-            target="_blank">Click here.</a>
-        </p>
-        <p class="text-muted">
-          This site is not affiliated with ComputerShare nor GameStop.
-          <a href="https://www.reddit.com/user/jonpro03/comments/q7o6ra/drs_infographics_faqs/" target="_blank">Learn
-            More about this data.</a>
-        </p>
       </main>
     </div>
+    <div id="footerRow" class="row">
+      <p class="text-muted">
+        Interested in direct-registering shares in your own name?
+        <a href="https://www.reddit.com/r/Superstonk/comments/ptvaka/when_you_wish_upon_a_star_a_complete_guide_to/"
+          target="_blank">Click here.</a>
+      </p>
+      <p class="text-muted">
+        This site is not affiliated with ComputerShare nor GameStop.
+      </p>
+      <p class="text-muted">
+        Want to buy me a coffee on Layer2? jonpro03.loopring.eth
+      </p>
+    </div>
   </div>
-
-
+  
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 

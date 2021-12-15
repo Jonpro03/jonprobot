@@ -21,12 +21,14 @@ def get_share_db_object(post):
         "image_text": post["image_text"],
         "image_path": post["img_path"],
         "value": value,
+        "delta_value": 0,
         "sub": post["subreddit"],
         "u": post["author"],
         "url": "https://reddit.com"+post["permalink"],
         "created": int(post["created"]),
         "audited": False,
-        "img_hash": ""
+        "img_hash": "",
+        "duped_by": []
     }
 
 def get_portfolio_db_object(post):
@@ -74,12 +76,15 @@ def get_portfolio_db_object(post):
         "image_text": post["image_text"],
         "image_path": post["img_path"],
         "value": value,
+        "delta_value": 0,
         "sub": post["subreddit"],
         "u": post["author"],
         "url": "https://reddit.com"+post["permalink"],
         "created": int(post["created"]),
         "audited": False,
         "img_hash": "",
+        "count_accounts": 1,
+        "duped_by": []
     }
 
 
@@ -90,7 +95,9 @@ def update_shares_db():
         "GMEJungle",
         "DDintoGME",
         "GME_Computershare",
-        "infinitypool"
+        "infinitypool",
+        "Spielstopp",
+        "GMEOrphans"
     ]
     share_db = tinydb.TinyDB(f"new_shares_db.json")
     for sub in subs:
@@ -122,7 +129,9 @@ def update_portfolio_db():
         "GMEJungle",
         "DDintoGME",
         "GME_Computershare",
-        "infinitypool"
+        "infinitypool",
+        "Spielstopp",
+        "GMEOrphans"
     ]
     added = 0
     portfolio_db = tinydb.TinyDB(f"portfolio_db.json")
