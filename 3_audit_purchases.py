@@ -20,7 +20,10 @@ def get_reddit_post(post_id, sdb):
         "GME",
         "Superstonk",
         "GMEJungle",
-        "DDintoGME"
+        "DDintoGME",
+        "GME_Computershare",
+        "infinitypool",
+        "GMEOrphans"
     ]
     
     for sub in subs:
@@ -46,6 +49,12 @@ def print_post(post):
     print(f'SubReddit: {post["sub"]}')
     print(f'Author: {post["u"]}')
     print(f'Value: {post["value"]}')
+
+def post_time(post):
+    global earliest_update
+    post_time = post["created"]
+    if post_time < earliest_update:
+        earliest_update = post_time
 
 def get_new_value(post, sdb):
     while True:
@@ -209,12 +218,18 @@ if __name__ == "__main__":
         try:
             post["img_hash"]
         except:
-            post["img_hash"] = None
+            post["img_hash"] = ""
             sdb.update(post, doc_ids=[post.doc_id])
+
+    with open("earliest_update.txt", "r+") as f:
+        earliest_update = int(f.read())
 
     identify_dupes()
     audit_new()
     audit_all()
+
+    with open("earliest_update.txt", "w+") as f:
+        f.write(str(earliest_update))
 
     total = 0
     unique_users = []
