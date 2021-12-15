@@ -86,6 +86,9 @@ function updateDonutData(donutData, stats) {
       case "median":
         donutData.apeDrs = stats.median * donutData.computershare_accounts;
         break;
+      case "trmAvg":
+        donutData.apeDrs = stats.trimmed_average * donutData.computershare_accounts;
+        break;
       case "mode":
         donutData.apeDrs = stats.mode * donutData.computershare_accounts;
         break;
@@ -94,6 +97,7 @@ function updateDonutData(donutData, stats) {
         break;
     }
   }
+
 
   donutData.float = donutData.total_outstanding - donutData.insider - donutData.etfs - donutData.mfs - donutData.inst_fuckery;
   donutData.remaining = donutData.float - donutData.apeDrs;
@@ -112,42 +116,71 @@ function updateDonutData(donutData, stats) {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
 
+  document.getElementById("searchbar").value = "";
+  document.getElementById("searchbar").onkeydown = async function (event) {
+    let keyPressed = event.key;
+    if (keyPressed === "Enter") {
+      if (event.target.value === "") {
+        return;
+      } else if (["dfv", "deepfuckingvalue", "rc", "ryancohen", "jonpro03", "jonpro"].includes(event.target.value.toLowerCase())) {
+        window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ?autoplay=1"
+      }
+      var redditData = await fetch("https://www.reddit.com/user/" + event.target.value + "/about.json", {
+        mode: 'cors'
+      }).then(function (response) {
+        return response.json();
+      });
+
+      if ('error' in redditData) {
+        window.alert(event.target.value + " not found.");
+        return;
+      } else {
+        window.location.href = "user/index.html" + "?ape=" + redditData.data.name;
+      }
+    }
+  }
 
   let datasource = urlParams.get("bot");
   datasource = datasource === null ? "scraper" : datasource
   document.getElementById("botSelector").value = datasource;
 
-  let time = urlParams.get("time");
-  time = time === null ? "all" : time;
-  document.getElementById("timeSelector").value = time;
+  // let time = urlParams.get("time");
+  // time = time === null ? "all" : time;
+  let time = "all";
+  // document.getElementById("timeSelector").value = time;
   if (datasource === "drsbot") {
     document.getElementById("dataLearnMore").href = "https://www.reddit.com/r/Superstonk/comments/qap4je/drsbot_4x_now_online/";
-    document.getElementById("timeSelector").setAttribute("disabled", "");
+    // document.getElementById("timeSelector").setAttribute("disabled", "");
+    document.getElementById("trimAvgLabel").remove();
+    document.getElementById("trimAvg").remove();
     document.getElementById("botLabel").innerHTML = "DRS Bot";
+    document.getElementById("avgSelector").remove(0);
   }
+  document.getElementById("avgSelector").selectedIndex = 0;
+  
   //document.getElementById("easterEgg").onclick = function () { window.location.replace("https://nft.gamestop.com/runner.html"); }
 
-  document.getElementById("timeSelector").onchange = function () {
-    var url = window.location.href;
-    if (url.indexOf("?") > 0) {
-      url = url.substring(0, url.indexOf("?"));
-    }
-    switch (this.value) {
-      case "month":
-        url += "?time=month";
-        break;
-      case "week":
-        url += "?time=week";
-        break;
-      case "day":
-        url += "?time=day";
-        break;
-      default:
-        url += "?time=all";
-        break;
-    }
-    window.location.replace(url);
-  }
+  // document.getElementById("timeSelector").onchange = function () {
+  //   var url = window.location.href;
+  //   if (url.indexOf("?") > 0) {
+  //     url = url.substring(0, url.indexOf("?"));
+  //   }
+  //   switch (this.value) {
+  //     case "month":
+  //       url += "?time=month";
+  //       break;
+  //     case "week":
+  //       url += "?time=week";
+  //       break;
+  //     case "day":
+  //       url += "?time=day";
+  //       break;
+  //     default:
+  //       url += "?time=all";
+  //       break;
+  //   }
+  //   window.location.replace(url);
+  // }
 
   document.getElementById("botSelector").onchange = function () {
     var url = window.location.href;
@@ -277,7 +310,13 @@ function updateDonutData(donutData, stats) {
   let sampleSize = (stats.sampled_accounts / donutData.computershare_accounts) * 100;
   document.getElementById("sampleSize").innerHTML = sampleSize.toLocaleString() + '%';
   document.getElementById("average").innerHTML = stats.average.toLocaleString();
-  document.getElementById("metricVal").innerHTML = 'x ' + stats.average.toLocaleString();
+  if ("trimmed_average" in stats) {
+    document.getElementById("trimAvg").innerHTML = stats.trimmed_average.toLocaleString();
+    document.getElementById("metricVal").innerHTML = 'x ' + stats.trimmed_average.toLocaleString();
+  } else {
+    document.getElementById("metricVal").innerHTML = 'x ' + stats.average.toLocaleString();
+    document.getElementById("metricLabel").innerHTML = 'Average:';
+  }
   document.getElementById("stdDev").innerHTML = stats.std_dev.toLocaleString();
   document.getElementById("highScore").innerHTML = donutData.computershare_accounts.toLocaleString();
   document.getElementById("median").innerHTML = stats.median.toLocaleString();
@@ -289,6 +328,11 @@ function updateDonutData(donutData, stats) {
         document.getElementById("metricLabel").innerHTML = 'Median: ';
         document.getElementById("metricVal").innerHTML = 'x ' + stats.median.toLocaleString();
         donutData.apeDrs = stats.median * donutData.computershare_accounts;
+        break;
+      case "trmAvg":
+        document.getElementById("metricLabel").innerHTML = 'Trimmed Average: ';
+        document.getElementById("metricVal").innerHTML = 'x ' + stats.trimmed_average.toLocaleString();
+        donutData.apeDrs = stats.trimmed_average * donutData.computershare_accounts;
         break;
       case "mode":
         document.getElementById("metricLabel").innerHTML = 'Mode: ';
@@ -306,259 +350,6 @@ function updateDonutData(donutData, stats) {
     updateDonutData(donutData, stats);
     updateDonut(donut, donutData);
   };
-
-  // Charts
-  if (datasource === "drsbot") {
-    document.getElementById("chartsRow").remove();
-    return;
-  }
-
-  const chartData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/charts?time=" + time, {
-    mode: 'cors'
-  }).then(function (response) {
-    return response.json();
-  });
-
-  var sharesChartCtx = document.getElementById('sharesChart');
-  var sharesChart = new Chart(sharesChartCtx, {
-    type: 'bar',
-    data: {
-      labels: chartData.labels,
-      datasets: [{
-        label: "New Accounts",
-        data: chartData.daily_shares_new,
-        backgroundColor: '#93186c'
-      },
-      {
-        label: "Existing Accounts",
-        data: chartData.daily_shares_growth,
-        backgroundColor: '#A3962F',
-        borderColor: '#A3962F'
-      }]
-    },
-    options: {
-      title: {
-        display: true,
-        text: 'Shares Counted from'
-      },
-      responsive: true,
-      scales: {
-        xAxes: [{ stacked: true, color: "#AAA" }],
-        yAxes: [{ stacked: true }]
-      }
-    }
-  });
-
-
-  var ctx = document.getElementById('myChart')
-  var myChart = new Chart(ctx, {
-    type: 'line',
-    label: "ohai",
-    data: {
-      labels: chartData.labels,
-      datasets: [
-        {
-          data: chartData.averages,
-          label: "Average Shares",
-          lineTension: 0.4,
-          backgroundColor: 'transparent',
-          borderColor: '#E024A5',
-          borderWidth: 2,
-          pointBackgroundColor: '#93186c'
-        },
-        {
-          data: chartData.medians,
-          label: "Median Shares",
-          lineTension: 0.4,
-          backgroundColor: 'transparent',
-          borderColor: '#A3962F',
-          borderWidth: 2,
-          pointBackgroundColor: '#A3962F'
-        }
-      ]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: false,
-            min: 0
-          }
-        }]
-      },
-      legend: {
-        display: true
-      }
-    }
-  });
-
-  var totalAcctsCtx = document.getElementById('totalAcctsChart');
-  var totalAcctsChart = new Chart(totalAcctsCtx, {
-    type: 'line',
-    label: "ohai",
-    data: {
-      labels: chartData.labels,
-      datasets: [
-        {
-          yAxisID: "total",
-          data: chartData.posts,
-          label: "Total Posts",
-          lineTension: 0.4,
-          backgroundColor: 'transparent',
-          borderColor: '#A3962F',
-          borderWidth: 2,
-          pointBackgroundColor: '#A3962F'
-        },
-        {
-          yAxisID: "total",
-          data: chartData.accounts,
-          label: "Total Accounts",
-          lineTension: 0.4,
-          backgroundColor: 'transparent',
-          borderColor: '#E024A5',
-          borderWidth: 2,
-          pointBackgroundColor: '#93186c'
-        },
-        {
-          yAxisID: "new",
-          data: chartData.daily_accts,
-          type: "bar",
-          label: "New Accounts",
-          backgroundColor: '#11979C',
-          borderColor: '#A3962F'
-        }
-      ]
-    },
-    options: {
-      scales: {
-        yAxes: [
-          {
-            id: "total",
-            position: "left",
-            type: "linear",
-            ticks: {
-              fontColor: "#EEE",
-              beginAtZero: true,
-            }
-          },
-          {
-            id: "new",
-            position: "right",
-            type: "linear",
-            ticks: {
-              fontColor: "#11979C",
-              beginAtZero: true,
-              min: 0,
-              max: 500
-            }
-          }
-        ]
-      },
-      legend: {
-        display: true
-      }
-    }
-  });
-
-  var histogramCtx = document.getElementById('histogramChart');
-  var histogramChart = new Chart(histogramCtx, {
-    type: 'line',
-    label: "ohai",
-    data: {
-      labels: chartData.dist_labels,
-      datasets: [{
-        data: chartData.dist_values,
-        label: "Distribution of Sampled Accounts",
-        lineTension: 0.4,
-        backgroundColor: '#93186c',
-        borderColor: '#E024A5',
-        borderWidth: 4,
-        pointBackgroundColor: '#93186c'
-      }]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: "Number of Accounts"
-          },
-          ticks: {
-            beginAtZero: false
-          }
-        }],
-        xAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: "Shares >="
-          }
-        }]
-      },
-      legend: {
-        display: true
-      }
-    }
-  });
-
-  var regCtx = document.getElementById('regChart');
-  var registeredChart = new Chart(regCtx, {
-    type: 'bar',
-    label: "ohai",
-    data: {
-      labels: chartData.labels,
-      datasets: [{
-        yAxisID: "shares",
-        data: chartData.daily_shares,
-        label: "Shares Added",
-        lineTension: 0.4,
-        backgroundColor: 'transparent',
-        borderColor: '#93186c',
-        borderWidth: 2,
-        pointBackgroundColor: '#93186c'
-      },
-      {
-        yAxisID: "accts",
-        data: chartData.daily_accts,
-        stack: "",
-        label: "Accounts Added",
-        lineTension: 0.4,
-        backgroundColor: 'transparent',
-        borderColor: '#A3962F',
-        borderWidth: 2,
-        pointBackgroundColor: '#A3962F'
-      }]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          id: "shares",
-          position: "left",
-          type: "linear",
-          ticks: {
-            fontColor: "#E024A5",
-            beginAtZero: true,
-            max: time === "day" ? 10000 : 100000
-          }
-        },
-        {
-          id: "accts",
-          position: "right",
-          type: "linear",
-          ticks: {
-            fontColor: "#F0DC46",
-            beginAtZero: true,
-            min: 0,
-            max: time === "day" ? 65 : 650
-          }
-        }]
-      },
-      legend: {
-        display: true
-      }
-    }
-  });
-
-
 
 })()
 

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 
-<title>Computershared</title>
+<title>🍦💩🪑</title>
 
 <head>
   <meta charset="utf-8">
@@ -24,18 +24,18 @@
 
 <body id="main">
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <span class="navbar-brand col-md-3 col-lg-2 me-0 px-3">TEN.DERAHSRETUPMOC</span>
+    <span class="navbar-brand col-md-3 col-lg-2 me-0 px-3">COMPUTERSHARED.NET</span>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <input class="form-control form-control-dark w-100" type="text"
-      placeholder="This searchbar still doesn't WORK. Sorry RC" aria-label="Search">
+    <input id="searchbar" class="form-control form-control-dark w-100" type="text"
+      placeholder="Search Records by Reddit Username" aria-label="Search">
     <div class="navbar-nav">
       <div class="nav-item text-nowrap">
         <!--<a class="nav-link px-3" href="#">Sign out</a> -->
       </div>
-    </div>`
+    </div>
   </header>
 
 
@@ -117,8 +117,8 @@
 
                       <h2>DRS Calculator</h2>
                       <div class="row my-3">
-                        <div class="col-7">Dataset:</div>
-                        <div class="col-5" id="">
+                        <div class="col-6">Dataset:</div>
+                        <div class="col-6" id="">
                           <select id="botSelector" class="form-select form-control-dark btn-outline-secondary"
                             aria-label="">
                             <option value="scraper" id="scraperSlt" selected>Reddit Scraper</option>
@@ -128,20 +128,21 @@
                       </div>
 
                       <div class="row my-3">
-                        <div class="col-7">Metric:</div>
-                        <div class="col-5" id="">
+                        <div class="col-6">Metric:</div>
+                        <div class="col-6" id="">
                           <select id="avgSelector" class="form-select form-control-dark btn-outline-secondary"
                             aria-label="">
-                            <option value="avg" id="avgSlt" selected>Average</option>
+                            <option value="trmAvg" id="trmAvgSlt" selected>Trimmed Average</option>
+                            <option value="avg" id="avgSlt">Average</option>
                             <option value="median" id="medianSlt">Median</option>
                             <option value="mode" id="modeSlt">Mode</option>
                           </select>
                         </div>
                       </div>
 
-                      <div class="row my-3">
-                        <div class="col-7">Time Frame:</div>
-                        <div class="col-5" id="">
+                      <!-- <div class="row my-3">
+                        <div class="col-6">Time Frame:</div>
+                        <div class="col-6" id="">
                           <select id="timeSelector" class="form-select form-control-dark btn-outline-secondary"
                             aria-label="">
                             <option value="all" id="avgSlt" selected>
@@ -152,7 +153,7 @@
                             <option value="day" id="modeSlt">Day</option>
                           </select>
                         </div>
-                      </div>
+                      </div> -->
 
                       <div class="row mt-3">
                         <div class="col-7">Computershare Accounts: </div>
@@ -163,7 +164,7 @@
                       </div>
 
                       <div class="row mb-3 border-bottom">
-                        <div id="metricLabel" class="col-7">Average: </div>
+                        <div id="metricLabel" class="col-7">Trimmed Average: </div>
                         <div id="metricVal" class="col-5 text-monospace text-right">loading...</div>
                       </div>
 
@@ -221,7 +222,9 @@
                           <p id="sampleSize">loading...</p>
                         </div>
                         <div class="col-md-6">
-                          <h5>Average per Account</h5>
+                          <h5 id="trimAvgLabel">5% Trimmed Average</h5>
+                          <p id="trimAvg">loading...</p>
+                          <h5>Average</h5>
                           <p id="average">loading...</p>
                           <h5>Median</h5>
                           <p id="median">loading...</p>
@@ -243,16 +246,27 @@
           <div id="chartsRow" class="row">
             <h2 id="chartsLabel" class="border-bottom">Reddit Scraper</h2>
             <div class="col-md-12">
-              <canvas class="my-4 w-100" id="myChart" width="1900" height="1080"></canvas>
+              <div class="form-check form-switch col-7">
+                <label class="form-check-label" for="avgChartLogToggle">Log Scale</label>
+                <input id="avgChartLogToggle" class="form-check-input" type="checkbox"
+                  style="border-color:#E00">
+              </div>
+              <canvas class="my-4 w-100" id="estimatesChart" width="1900" height="1080"></canvas>
+            </div>
+            <div class="col-md-12">
+              <canvas class="my-4 w-100" id="statsChart" width="1900" height="1080"></canvas>
             </div>
             <div class="col-md-12">
               <canvas class="my-4 w-100" id="sharesChart" width="1900" height="1080"></canvas>
             </div>
             <div class="col-md-12">
-              <canvas class="my-4 w-100" id="totalAcctsChart" width="1900" height="1080"></canvas>
+              <canvas class="my-4 w-100" id="postsAcctsChart" width="1900" height="1080"></canvas>
             </div>
             <div class="col-md-12">
-              <canvas class="my-4 w-100" id="histogramChart" width="1900" height="1080"></canvas>
+              <canvas class="my-4 w-100" id="highScoreChart" width="1900" height="1080"></canvas>
+            </div>
+            <div class="col-md-12">
+              <canvas class="my-4 w-100" id="distributionChart" width="1900" height="1080"></canvas>
             </div>
             <!-- <div class="col-md-12">
               <canvas class="my-4 w-100" id="regChart" width="1900" height="1080"></canvas>
@@ -295,7 +309,7 @@
     integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
     crossorigin="anonymous"></script>
   <script src="dashboard.js"></script>
-  <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+  <script src="charts.js"></script>
 
 </body>
 

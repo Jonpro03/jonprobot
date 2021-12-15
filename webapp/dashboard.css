@@ -6,24 +6,46 @@ h2 {
   color: #E024A5
 }
 
+#avgChartLogToggle:checked {
+  background-color: #A00;
+}
+#avgChartLogToggle {
+  background-color: #333;
+}
+
 #insiderSwitch:checked {
   background-color: #A3962F
+}
+#insiderSwitch {
+  background-color: #333;
 }
 
 #etfSwitch:checked {
   background-color: #11979C;
 }
+#etfSwitch {
+  background-color: #333;
+}
 
 #mfSwitch:checked {
   background-color: #6FA142;
+}
+#mfSwitch {
+  background-color: #333;
 }
 
 #instOtherBtn:checked {
   background-color: #094D4F;
 }
+#instOtherBtn {
+  background-color: #333;
+}
 
 #apesSwitch:checked {
   background-color: #93186c;
+}
+#apesSwitch {
+  background-color: #333;
 }
 
 #main {
@@ -49,7 +71,14 @@ footer {
 }
 
 .container-xxl {
-  max-width: 1920px;
+  max-width: 85%;
+}
+
+@media (max-width: 480px) {
+  .container-xxl {
+    max-width: 100%;
+    padding: 8px;
+  }
 }
 
 .text-right {
