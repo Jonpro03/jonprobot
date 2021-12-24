@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TextExtractor": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}
