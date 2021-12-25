@@ -18,7 +18,7 @@ function updateDonut(donut, donutData) {
   if (donutData.insider != 0) {
     data.push(donutData.insider);
     colors.push("#A3962F");
-    labels.push("Insider");
+    labels.push("Insiders");
   }
 
   if (donutData.apeDrs != 0) {
@@ -64,6 +64,7 @@ function buildDonut() {
       }]
     },
     options: {
+      responsive: true,
       tooltips: {
         callbacks: {
           label: function (tooltipItem, data) {
@@ -153,34 +154,11 @@ function updateDonutData(donutData, stats) {
     // document.getElementById("timeSelector").setAttribute("disabled", "");
     document.getElementById("trimAvgLabel").remove();
     document.getElementById("trimAvg").remove();
-    document.getElementById("botLabel").innerHTML = "DRS Bot";
     document.getElementById("avgSelector").remove(0);
   }
   document.getElementById("avgSelector").selectedIndex = 0;
-  
-  //document.getElementById("easterEgg").onclick = function () { window.location.replace("https://nft.gamestop.com/runner.html"); }
 
-  // document.getElementById("timeSelector").onchange = function () {
-  //   var url = window.location.href;
-  //   if (url.indexOf("?") > 0) {
-  //     url = url.substring(0, url.indexOf("?"));
-  //   }
-  //   switch (this.value) {
-  //     case "month":
-  //       url += "?time=month";
-  //       break;
-  //     case "week":
-  //       url += "?time=week";
-  //       break;
-  //     case "day":
-  //       url += "?time=day";
-  //       break;
-  //     default:
-  //       url += "?time=all";
-  //       break;
-  //   }
-  //   window.location.replace(url);
-  // }
+  // document.getElementById("easterEgg").onclick = function () { window.location.href = "https://twitter.com/ryancohen"; }
 
   document.getElementById("botSelector").onchange = function () {
     var url = window.location.href;
@@ -221,6 +199,16 @@ function updateDonutData(donutData, stats) {
   updateDonutData(donutData, stats);
   var donut = buildDonut();
   updateDonut(donut, donutData);
+
+  // window.addEventListener("orientationchange", function() {
+  //   let size = Math.min(window.innerHeight, window.innerWidth) * 0.808;
+  //   let sl = this.document.getElementById("shareLocker");
+  //   sl.setAttribute("style", "display: block; max-width:"+size+"; max-height: "+size+"px;");
+  //   sl.setAttribute("height", size);
+  //   sl.setAttribute("width", size);
+  //   donut.update();
+  //   donut.render();
+  // });
 
   document.getElementById("outstandingValue").innerHTML = donutData.total_outstanding.toLocaleString();
   document.getElementById("insiderHolding").innerHTML = '- ' + donutData.insider.toLocaleString();
@@ -309,9 +297,9 @@ function updateDonutData(donutData, stats) {
   document.getElementById("identifiedShares").innerHTML = stats.sampled_shares.toLocaleString() + " shares";
   let sampleSize = (stats.sampled_accounts / donutData.computershare_accounts) * 100;
   document.getElementById("sampleSize").innerHTML = sampleSize.toLocaleString() + '%';
-  document.getElementById("average").innerHTML = stats.average.toLocaleString();
+  document.getElementById("average").innerHTML = stats.average.toLocaleString() + " shares";
   if ("trimmed_average" in stats) {
-    document.getElementById("trimAvg").innerHTML = stats.trimmed_average.toLocaleString();
+    document.getElementById("trimAvg").innerHTML = stats.trimmed_average.toLocaleString() + " shares";
     document.getElementById("metricVal").innerHTML = 'x ' + stats.trimmed_average.toLocaleString();
   } else {
     document.getElementById("metricVal").innerHTML = 'x ' + stats.average.toLocaleString();
@@ -351,5 +339,11 @@ function updateDonutData(donutData, stats) {
     updateDonut(donut, donutData);
   };
 
+
+
+  let t = new bootstrap.Toast(document.getElementById("alertToast"));
+  if (datasource === "scraper") {
+    //t.show();
+  }
 })()
 

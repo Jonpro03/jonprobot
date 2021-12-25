@@ -109,6 +109,13 @@ footer {
   }
 }
 
+@media screen and (orientation:landscape) {
+  #shareLocker {
+    max-height: 90vh;
+    max-width: 90vh;
+  }
+}
+
 .sidebar-sticky {
   position: relative;
   top: 0;
@@ -177,8 +184,8 @@ footer {
 }
 
 .dead-pixel-clickable {
-  height: 4.2px;
-  width: 6.9px;
+  height: 0px;
+  width: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -192,7 +199,7 @@ footer {
 
 .dead-pixel {
   background-color: #fff;
-  width: 2px;
-  height: 2px;
+  width: 0px;
+  height: 0px;
   opacity: 1;
 }

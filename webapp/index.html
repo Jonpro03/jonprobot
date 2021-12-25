@@ -62,7 +62,7 @@
                     <div id="maths">
                       <h2>Float Calculator</h2>
                       <div class="fs-6">
-                        <a href="https://www.reddit.com/r/Superstonk/comments/qp3bzy/bloomberg_update_on_float_institutional_ownership"
+                        <a href="https://www.reddit.com/r/Superstonk/comments/rlg6yu/update_on_float_institutional_ownership_etfs_and"
                           target="_blank">Source 1</a>
                         and
                         <a href="https://fintel.io/n/us/gme" target="_blank">Source 2</a>
@@ -248,8 +248,7 @@
             <div class="col-md-12">
               <div class="form-check form-switch col-7">
                 <label class="form-check-label" for="avgChartLogToggle">Log Scale</label>
-                <input id="avgChartLogToggle" class="form-check-input" type="checkbox"
-                  style="border-color:#E00">
+                <input id="avgChartLogToggle" class="form-check-input" type="checkbox" style="border-color:#E00">
               </div>
               <canvas class="my-4 w-100" id="estimatesChart" width="1900" height="1080"></canvas>
             </div>
@@ -286,30 +285,55 @@
             Want to buy me a coffee on Layer2? jonpro03.loopring.eth
           </p>
         </div>
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <img src="..." class="rounded me-2" alt="...">
+            <strong class="me-auto">Bootstrap</strong>
+            <small class="text-muted">11 mins ago</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">
+            Hello, world! This is a toast message.
+          </div>
+        </div>
     </div>
     <div id="donutDataEtfs" style="display:none;">1</div>
     <div id="donutDataMfs" style="display:none;">2</div>
     <div id="donutDataInst" style="display:none;"></div>
     <div id="donutDataInsider" style="display:none;">3</div>
     <div id="donutDataApe" style="display:none;"></div>
-  </div>
 
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+      <div id="alertToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto">IMPORTANT</strong>
+          <small class="text-muted">Erroneous data</small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          Some data presented here is invalid.
+          <a target="_blank"
+            href="https://www.reddit.com/r/Superstonk/comments/rman46/computersharednet_fuckup_ive_failed_you_in_the/">Please
+            Read.</a>
+        </div>
+      </div>
+    </div>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-    crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
-    integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
-    integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
-    crossorigin="anonymous"></script>
-  <script src="dashboard.js"></script>
-  <script src="charts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+      integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+      integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+      crossorigin="anonymous"></script>
+    <script src="dashboard.js"></script>
+    <script src="charts.js"></script>
 
 </body>
 
