@@ -1,7 +1,10 @@
 import boto3
 import tinydb
-from datetime import datetime, timedelta
+from tinydb.middlewares import CachingMiddleware
+from tinydb.storages import JSONStorage
+from datetime import datetime, date, timedelta, timezone
 import pytz
+from time import mktime
 import calendar as cal
 import numpy as np
 import statistics
@@ -15,6 +18,7 @@ BUCKET = "computershared-assets"
 session = boto3.Session(aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_access_key)
 s3_client = session.client('s3')
 
+#today = datetime.today().replace(hour=19, minute=0, second=0)
 today = (datetime.utcnow() - timedelta(days=1)).replace(hour=23, minute=59, second=59, tzinfo=pytz.utc)
 epoch = datetime(1970, 1, 1)
 
@@ -56,7 +60,9 @@ def get_accounts(start, delta, delta_unit="days"):
     
     return  {
         "daily": list(daily_accounts.values()),
-        "cumulative": list(cumulative_accounts.values())
+        "cumulative": list(cumulative_accounts.values()),
+        "count_apes": len(set(existing_apes.keys())),
+        "count_accounts": sum(existing_apes.values())
     }
 
 
@@ -206,12 +212,12 @@ def get_ownership(last_update, hs):
     return {
         "last_update": last_update,
         "computershare_accounts": hs / 100,
-        "total_outstanding": 75591496,
-        "insider": 15963714,
-        "institutional": 26017995,
-        "etfs": 6648347,
-        "mfs": 8586392,
-        "inst_fuckery": 10783256
+        "total_outstanding": 75950781,
+        "insider": 12612303,
+        "institutional": 24807015,
+        "etfs": 6690476,
+        "mfs": 7957066,
+        "inst_fuckery": 10159473
     }
 
 
@@ -229,7 +235,8 @@ def get_statistics(results):
         "median": float(round(statistics.median(data_set), 2)),
         "mode": float(round(statistics.mode([round(x, 2) for x in data_set]), 2)),
         "average": float(round(statistics.mean(data_set), 2)),
-        "trimmed_average": float(round(statistics.mean(trmd_results), 2))
+        "trimmed_average": float(round(statistics.mean(trmd_results), 2)),
+        "trm_std_dev": float(round(statistics.stdev(trmd_results), 2))
     }
 
 
@@ -241,6 +248,7 @@ def get_stats_history(start, end):
     modes = []
     trimmed_means = []
     std_devs = []
+    trm_std_devs = []
 
     for i in range(1, (end - start).days + 1):
         d = start + timedelta(days=i)
@@ -254,6 +262,7 @@ def get_stats_history(start, end):
         modes.append(stats["mode"])
         trimmed_means.append(stats["trimmed_average"])
         std_devs.append(stats["std_dev"])
+        trm_std_devs.append(stats["trm_std_dev"])
 
         print(f"Statistics {i}\r")
     
@@ -265,6 +274,7 @@ def get_stats_history(start, end):
         "modes": modes,
         "averages": averages,
         "trimmed_means": trimmed_means,
+        "trm_std_devs": trm_std_devs
     }
 
 
@@ -293,7 +303,6 @@ def get_histogram(accounts):
         "values": hist
     }
 
-
 def get_estimates(stats, highs):
     averages = []
     medians = []
@@ -315,6 +324,7 @@ def get_estimates(stats, highs):
 
 
 start = datetime(2021, 9, 12, 23, 59, tzinfo=pytz.utc)
+#start = datetime(2021, 12, 5, 23, 59, tzinfo=pytz.utc)
 rdb = tinydb.TinyDB("results_db_new.json")
 q = tinydb.Query()
 
@@ -367,8 +377,25 @@ todays_stats = {
     "mode": stats_history["modes"][-1],
     "average": stats_history["averages"][-1],
     "trimmed_average": stats_history["trimmed_means"][-1],
+    "trm_std_dev": stats_history["trm_std_devs"][-1],
 }
 
 with open("aws_upload/all_stats.json", "w+") as f:
     json.dump(todays_stats, f)
 s3_client.upload_file("aws_upload/all_stats.json", BUCKET, "all_stats.json")
+
+audit_start = int(float(hs_payload["high_labels"][-2])/1000.0)
+ars = rdb.search(q.time > audit_start)
+highest = ""
+hs = 0
+for ar in ars:
+    if ar["delta_value"] > hs:
+        hs = ar["delta_value"]
+        highest = ar["id"]
+print(highest, hs)
+
+
+with open("shares.csv", "w+", encoding="utf-8") as f:
+    f.write("time,u/,accounts,displayed_shares,delta_shares,url,image\n")
+    for record in rdb.all():
+        f.write(f'{np.datetime64(datetime.utcfromtimestamp(record["time"]))},{record["u"]},{record["accounts"]},{str(record["displayed_value"])},{str(record["delta_value"])},"{str(record["url"])}","https://s3-us-west-2.amazonaws.com/computershared-reddit-images/{str(record["image"]).replace("drs_images/", "")}"\n')

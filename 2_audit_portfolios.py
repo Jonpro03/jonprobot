@@ -230,6 +230,7 @@ def identify_dupes():
             sdb.update(post, doc_ids=[post.doc_id])
         else:
             pass #print(f'No image for {post["url"]}.')
+    #posts = sdb.search((q.duped_by == []) & ~(q.value == 0) & ~(q.img_hash == "") & ~(q.img_hash == "None"))
     print(f'Comparing {len(posts)} post images.')
     for post in posts:
         if post["image_path"] == "":
@@ -243,11 +244,30 @@ def identify_dupes():
                 dupe["value"] = 0
                 sdb.update(dupe, doc_ids=[dupe.doc_id])
                 print(f'{dupe["url"]} marked as duped by {post["url"]}')
+
+            # if dupes[0] not in identified:
+            #     identified.extend(dupes)
+            #     print("Dupe:")
+            #     for dupe in dupes:
+            #         if dupe["value"] != 0:
+            #             print(dupe["sub"],dupe["id"])
     sdb.close()
 
-earliest_update = 999999999999
-
+earliest_update = 999999999999   
 if __name__ == "__main__":
+    
+    # sdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
+    # q = tinydb.Query()
+    # for post in sdb.all():
+    #     try:
+    #         ih = post["delta_value"]
+    #         if ih is null:
+    #             post["delta_value"] = 0
+    #     except:
+    #         post["delta_value"] = 0
+    #     sdb.update(post, doc_ids=[post.doc_id])
+    # sdb.close()
+
     with open("earliest_update.txt", "r+") as f:
         earliest_update = int(f.read())
     

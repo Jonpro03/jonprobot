@@ -204,7 +204,10 @@ if __name__ == '__main__':
         Process(target=update_posts, args=("GME_Computershare",)),
         Process(target=update_posts, args=("amcstock",)),
         Process(target=update_posts, args=("infinitypool",)),
-        Process(target=update_posts, args=("DDintoGME",))
+        Process(target=update_posts, args=("GMEOrphans",)),
+        Process(target=update_posts, args=("DDintoGME",)),
+        Process(target=update_posts, args=("Spielstopp",))
+        #Process(target=update_posts, args=("others",))
     ]
 
     for proc in procs:

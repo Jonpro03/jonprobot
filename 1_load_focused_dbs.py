@@ -7,6 +7,11 @@ import yfinance as yf
 gme = yf.Ticker("GME")
 close_val = gme.info["regularMarketPreviousClose"]
 
+def get_time():
+    with open("earliest_update.txt", "r") as f:
+            start_time_str = f.read()
+            return int(start_time_str)
+
 def get_share_db_object(post):
     value = None
     for line in post["image_text"].splitlines():
@@ -87,7 +92,6 @@ def get_portfolio_db_object(post):
         "duped_by": []
     }
 
-
 def update_shares_db():
     subs = [
         "GME",
@@ -103,7 +107,7 @@ def update_shares_db():
     for sub in subs:
         db = tinydb.TinyDB(f"{sub}.json")
         q = tinydb.Query()
-        posts = db.search(q.post_type=="shares")
+        posts = db.search((q.post_type=="shares") & (q.created > get_time()))
         for post in posts:
             pid = post["id"]
             if len(share_db.search(q.id == pid)) > 0:
@@ -134,11 +138,12 @@ def update_portfolio_db():
         "GMEOrphans"
     ]
     added = 0
-    portfolio_db = tinydb.TinyDB(f"portfolio_db.json")
+    portfolio_db = tinydb.TinyDB(f"portfolio_db.json", storage=CachingMiddleware(JSONStorage))
     for sub in subs:
-        db = tinydb.TinyDB(f"{sub}.json")
+        db = tinydb.TinyDB(f"{sub}.json", storage=CachingMiddleware(JSONStorage))
         q = tinydb.Query()
-        posts = db.search(q.post_type=="portfolio")
+        posts = db.search((q.post_type=="portfolio") & (q.created > get_time()))
+        #posts = db.search((q.post_type=="portfolio"))
         for post in posts:
             pid = post["id"]
             if len(portfolio_db.search(q.id == pid)) > 0:
@@ -156,6 +161,7 @@ def update_portfolio_db():
             portfolio_db.insert(record)
             print(f'{record["url"]} added to portfolio db.')
             added += 1
+    portfolio_db.close()
     print(f'Added {added} new portfolios.')
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ from decimal import Decimal
 from boto3.dynamodb.conditions import Key, Attr
 import pytz
 
-anon_apes = [""]
+anon_apes = []
 
 pdb = tinydb.TinyDB("portfolio_db.json")
 sdb = tinydb.TinyDB("new_shares_db.json")
@@ -21,12 +21,12 @@ ddb = session.resource("dynamodb", region_name=aws_region)
 posts_table = ddb.Table("computershared_posts")
 s3_client = session.client('s3')
 
-starting_at = 1639281307
+starting_at = 1642006339
 
-for pd in pdb.search(q.created > starting_at):
+for pd in pdb.search(q.created >= starting_at):
     if (pd['u'] in anon_apes):
         continue
-    if pd["value"] == 0 or pd["audited"] == False:
+    if pd["value"] == 0 or pd["audited"] == False:# or pd["image_path"] in ["", "None"]:
         continue
     a = posts_table.query(
         KeyConditionExpression=Key('u').eq(pd['u']) & Key('id').eq(pd['id'])

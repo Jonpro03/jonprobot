@@ -24,7 +24,7 @@
 
 <body id="main">
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <span class="navbar-brand col-md-3 col-lg-2 me-0 px-3">COMPUTERSHARED.NET</span>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="https://www.computershared.net">COMPUTERSHARED.NET</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -218,6 +218,8 @@
                           <p id="identifiedShares">loading...</p>
                           <h5>Sampled Accounts</h5>
                           <p id="sampledAccounts">loading...</p>
+                          <h5 id="acctsPerApeLabel">Accounts per Ape</h5>
+                          <p id="acctsPerApe">loading...</p>
                           <h5>Sample Size</h5>
                           <p id="sampleSize">loading...</p>
                         </div>
@@ -292,6 +294,18 @@
     <div id="donutDataInst" style="display:none;"></div>
     <div id="donutDataInsider" style="display:none;">3</div>
     <div id="donutDataApe" style="display:none;"></div>
+  </div>
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+    <div id="alertToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">NEW DATA AVAILABLE</strong>
+        <small class="text-muted">DRSBot</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Accounts per Ape has been added.
+      </div>
+    </div>
   </div>
 
 
