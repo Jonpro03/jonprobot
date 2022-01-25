@@ -145,16 +145,12 @@ function updateDonutData(donutData, stats) {
   datasource = datasource === null ? "scraper" : datasource
   document.getElementById("botSelector").value = datasource;
 
-  // let time = urlParams.get("time");
-  // time = time === null ? "all" : time;
   let time = "all";
-  // document.getElementById("timeSelector").value = time;
   if (datasource === "drsbot") {
     document.getElementById("dataLearnMore").href = "https://www.reddit.com/r/Superstonk/comments/qap4je/drsbot_4x_now_online/";
-    // document.getElementById("timeSelector").setAttribute("disabled", "");
-    document.getElementById("trimAvgLabel").remove();
-    document.getElementById("trimAvg").remove();
-    document.getElementById("avgSelector").remove(0);
+    document.getElementById("botLabel").innerHTML = "DRSBOT"
+    document.getElementById("trimAvgLabel").innerHTML = "Multi-Account Average";
+    document.getElementById("trmAvgSlt").innerHTML = "Multi-Account Average";
   }
   document.getElementById("avgSelector").selectedIndex = 0;
 
@@ -186,6 +182,9 @@ function updateDonutData(donutData, stats) {
     return response.json();
   });
 
+  if (datasource === "drsbot") {
+    stats.trimmed_average = stats.average / stats.accts_per_ape;
+  }
 
   const donutData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard?time=" + time, {
     mode: 'cors'
@@ -199,16 +198,6 @@ function updateDonutData(donutData, stats) {
   updateDonutData(donutData, stats);
   var donut = buildDonut();
   updateDonut(donut, donutData);
-
-  // window.addEventListener("orientationchange", function() {
-  //   let size = Math.min(window.innerHeight, window.innerWidth) * 0.808;
-  //   let sl = this.document.getElementById("shareLocker");
-  //   sl.setAttribute("style", "display: block; max-width:"+size+"; max-height: "+size+"px;");
-  //   sl.setAttribute("height", size);
-  //   sl.setAttribute("width", size);
-  //   donut.update();
-  //   donut.render();
-  // });
 
   document.getElementById("outstandingValue").innerHTML = donutData.total_outstanding.toLocaleString();
   document.getElementById("insiderHolding").innerHTML = '- ' + donutData.insider.toLocaleString();
@@ -318,9 +307,13 @@ function updateDonutData(donutData, stats) {
         donutData.apeDrs = stats.median * donutData.computershare_accounts;
         break;
       case "trmAvg":
-        document.getElementById("metricLabel").innerHTML = 'Trimmed Average: ';
+        if(datasource === "drsbot") {
+          document.getElementById("metricLabel").innerHTML = 'Multi-account Average: ';
+        } else {
+          document.getElementById("metricLabel").innerHTML = 'Trimmed Average: ';
+        }
         document.getElementById("metricVal").innerHTML = 'x ' + stats.trimmed_average.toLocaleString();
-        donutData.apeDrs = stats.trimmed_average * donutData.computershare_accounts;
+        donutData.apeDrs = stats.trimmed_average * donutData.computershare_accounts;   
         break;
       case "mode":
         document.getElementById("metricLabel").innerHTML = 'Mode: ';
@@ -350,10 +343,10 @@ function updateDonutData(donutData, stats) {
 
   let t = new bootstrap.Toast(document.getElementById("alertToast"));
   if (datasource === "drsbot") {
-    var alerted = localStorage.getItem('drsbotAcctsFeature') || '';
+    var alerted = localStorage.getItem('drsbotAcctAvgFeature') || '';
     if (alerted != "alerted") {
       t.show();
-      localStorage.setItem("drsbotAcctsFeature", "alerted");
+      localStorage.setItem("drsbotAcctAvgFeature", "alerted");
     }
   }
 })()
