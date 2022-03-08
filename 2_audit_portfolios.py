@@ -47,7 +47,7 @@ def get_reddit_post(post_id, sdb):
                 "count_accounts": 1
             }
 
-        db = tinydb.TinyDB(f'historical_dbs/112921/{sub}.json')
+        db = tinydb.TinyDB(f'historical_dbs/021122/{sub}.json')
         posts = db.search(q.id == post_id)
         if len(posts) > 0:
             post = posts[0]
@@ -256,25 +256,10 @@ def identify_dupes():
 earliest_update = 999999999999   
 if __name__ == "__main__":
     
-    # sdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
-    # q = tinydb.Query()
-    # for post in sdb.all():
-    #     try:
-    #         ih = post["delta_value"]
-    #         if ih is null:
-    #             post["delta_value"] = 0
-    #     except:
-    #         post["delta_value"] = 0
-    #     sdb.update(post, doc_ids=[post.doc_id])
-    # sdb.close()
-
-    with open("earliest_update.txt", "r+") as f:
-        earliest_update = int(f.read())
-    
     identify_dupes()
-    manual_audit()
     audit_cv_failures()
     audit_all()
+    manual_audit()
 
     with open("earliest_update.txt", "w+") as f:
         f.write(str(earliest_update))

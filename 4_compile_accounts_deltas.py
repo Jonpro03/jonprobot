@@ -1,6 +1,7 @@
 import tinydb
 from tinydb.middlewares import CachingMiddleware
 from tinydb.storages import JSONStorage
+from joblib import Parallel, delayed
 from datetime import datetime
 
 
@@ -11,7 +12,7 @@ q = tinydb.Query()
 
 def calc_deltas(ape):
     if ape == '': return
-    
+
     count_accounts = 1
     first_post_purchase = False
     running_total_shares = 0
@@ -72,13 +73,6 @@ def calc_deltas(ape):
     if count_accounts > 1:
         print(ape, running_total_shares, count_accounts)
 
-# for r in pdb.all():
-#     if r["count_accounts"] >= 3:
-#         print(r["count_accounts"])
-#         r["count_accounts"] = 2
-#         pdb.update(r, doc_ids=[r.doc_id])
-# pdb.close()
-
 #Get a list of all ape names
 apes = [p['u'] for p in pdb.search(q.value > 0)]
 apes.extend([s['u'] for s in sdb.search(q.value > 0)])
@@ -90,12 +84,4 @@ for ape in apes:
     except:
         print(f"{ape} failed.")
 
-# with open("10-30-21.csv", 'w+') as f:
-#     f.write(f"u,id,time,delta_shares,num_accts\n")
-#     records = rdb.search(q.time < 1635638400)
-#     print(len(set([p['u'] for p in records])))
-#     records = sorted(records, key=lambda i: i["time"])
-#     for r in records:
-#         ts = datetime.fromtimestamp(r['time'])
-#         f.write(f"{r['u']},{r['id']},{ts.isoformat()},{r['delta_value']},{r['accounts']}\n")
 rdb.close()

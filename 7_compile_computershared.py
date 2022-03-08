@@ -214,10 +214,10 @@ def get_ownership(last_update, hs):
         "computershare_accounts": hs / 100,
         "total_outstanding": 75950781,
         "insider": 12612303,
-        "institutional": 24807015,
+        "institutional": 28364083,
         "etfs": 6690476,
         "mfs": 7957066,
-        "inst_fuckery": 10159473
+        "inst_fuckery": 13716541
     }
 
 
@@ -280,7 +280,6 @@ def get_stats_history(start, end):
 
 def get_account_balances(end):
     account_totals = []
-
     try:
         with open(f"aws_upload/account_balances/{end.strftime('%Y-%m-%d')}.csv", 'r') as f:
             lines = f.readlines()
@@ -288,6 +287,7 @@ def get_account_balances(end):
                 items = line.split(',')
                 account_totals.append((items[0], items[1]))
     except:
+        print(f"ERROR: Failed to get acct balance for {end}")
         return []
     return account_totals
 

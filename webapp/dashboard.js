@@ -36,7 +36,7 @@ function updateDonut(donut, donutData) {
   if (donutData.inst_fuckery != 0) {
     data.push(donutData.inst_fuckery);
     colors.push("#094D4F");
-    labels.push("Inst Unknown");
+    labels.push("Inst Unknown");  
   }
 
   donut.data.labels.pop();
@@ -151,6 +151,7 @@ function updateDonutData(donutData, stats) {
     document.getElementById("botLabel").innerHTML = "DRSBOT"
     document.getElementById("trimAvgLabel").innerHTML = "Multi-Account Average";
     document.getElementById("trmAvgSlt").innerHTML = "Multi-Account Average";
+    document.getElementById("metricLabel").innerHTML = 'Multi-account Average: ';
   }
   document.getElementById("avgSelector").selectedIndex = 0;
 
@@ -279,7 +280,6 @@ function updateDonutData(donutData, stats) {
   document.getElementById("instOtherBtn").addEventListener("click", handleHoldingToggle);
   document.getElementById("insiderSwitch").addEventListener("click", handleHoldingToggle);
   document.getElementById("apesSwitch").addEventListener("click", handleHoldingToggle);
-
 
   // Statistics
   document.getElementById("sampledAccounts").innerHTML = stats.sampled_accounts.toLocaleString() + " accounts";

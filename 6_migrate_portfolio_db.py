@@ -5,7 +5,7 @@ from decimal import Decimal
 from boto3.dynamodb.conditions import Key, Attr
 import pytz
 
-anon_apes = []
+anon_apes = [""]
 
 pdb = tinydb.TinyDB("portfolio_db.json")
 sdb = tinydb.TinyDB("new_shares_db.json")
@@ -21,7 +21,10 @@ ddb = session.resource("dynamodb", region_name=aws_region)
 posts_table = ddb.Table("computershared_posts")
 s3_client = session.client('s3')
 
-starting_at = 1642006339
+with open("earliest_update.txt", "r+") as f:
+        starting_at = int(f.read())
+
+#starting_at = 1642006339
 
 for pd in pdb.search(q.created >= starting_at):
     if (pd['u'] in anon_apes):
