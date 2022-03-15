@@ -23,6 +23,37 @@ today = (datetime.utcnow() - timedelta(days=1)).replace(hour=23, minute=59, seco
 epoch = datetime(1970, 1, 1)
 
 
+def get_account_growth(start, delta, delta_unit="days"):
+    daily_accounts_grew = {}
+    daily_pct_accounts_grew = {}
+    daily_individual_account_growth_pct = {}
+    daily_total_account_growth_pct = {}
+    aggregate_shares = 0
+
+    range_unit = delta.days if delta_unit == "days" else 24
+    range_unit += 1
+    s = cal.timegm(start.utctimetuple())
+    delta = timedelta(days=1) if delta_unit == "days" else timedelta(hours=1)
+
+    for i in range(1, range_unit):
+        end = start + delta
+        s = cal.timegm(start.utctimetuple())
+        e = cal.timegm(end.utctimetuple())
+        r = rdb.search((q.time > s) & (q.time <= e))
+
+        accts_grew = [x["delta_value"] for x in r if x["delta_value"] > 0 and x["delta_value"] != x["displayed_value"]]
+        all_accts = [x["delta_value"] for x in r if x["delta_value"] > 0]
+
+        aggregate_shares += sum(all_accts)
+        shares_from_growth = sum(accts_grew)
+        daily_accounts_grew[e] = len(accts_grew)
+        daily_pct_accounts_grew[e] = len(accts_grew) / (len(all_accts) or 1)
+        daily_total_account_growth_pct[e] = shares_from_growth / (aggregate_shares or 1)
+
+
+        start = end
+    return {}
+
 def get_accounts(start, delta, delta_unit="days"):
     existing_apes = {}
     daily_accounts = {}
@@ -126,7 +157,7 @@ def get_shares(start, delta, delta_unit="days"):
         daily_shares_new[e] = round(shares_wo_growth, 2)
         aggregate_results += sum_results
         aggregate_shares[e] = round(aggregate_results, 2)
-
+        
         start = end
         print(f"Shares {int((i/range_unit) * 100)}%\r")
     return {
@@ -331,6 +362,7 @@ q = tinydb.Query()
 delta = today - start
 
 # Get All Time
+get_account_growth(start, delta)
 daily_hs, hs = get_highscores(start, delta)
 hs_scatter = get_highscore_scatter()
 hs_payload = {
