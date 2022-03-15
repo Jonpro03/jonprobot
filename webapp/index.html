@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 
-<title>🍦💩🪑</title>
+<title>💎👐🖕🩳</title>
 
 <head>
   <meta charset="utf-8">
@@ -98,7 +98,7 @@
                         </div>
                         <div class="col-5 text-monospace text-right" id="institutionalETFs">loading...</div>
                       </div>
-                      
+
                       <div class="row my-3 border-bottom">
                         <div class="form-check form-switch col-7">
                           <input id="insiderSwitch" class="form-check-input" type="checkbox"
@@ -250,16 +250,12 @@
                 <label class="form-check-label" for="avgChartLogToggle">Log Scale</label>
                 <input id="avgChartLogToggle" class="form-check-input" type="checkbox" style="border-color:#E00">
               </div>
+              <h3 class="text-center">DRS Estimates</h3>
               <canvas class="my-4 w-100" id="estimatesChart" width="1900" height="1080"></canvas>
             </div>
-            <div class="col-md-12">
-              <canvas class="my-4 w-100" id="statsChart" width="1900" height="1080"></canvas>
-            </div>
+            <h3 class="text-center">Shares Counted</h3>
             <div class="col-md-12">
               <canvas class="my-4 w-100" id="sharesChart" width="1900" height="1080"></canvas>
-            </div>
-            <div class="col-md-12">
-              <canvas class="my-4 w-100" id="postsAcctsChart" width="1900" height="1080"></canvas>
             </div>
             <div class="col-md-12">
               <canvas class="my-4 w-100" id="highScoreChart" width="1900" height="1080"></canvas>
@@ -282,7 +278,7 @@
             This site is not affiliated with ComputerShare nor GameStop.
           </p>
           <p class="text-muted">
-            Want to buy me a coffee on Layer2? jonpro03.loopring.eth
+            Want to buy me a coffee on Layer2? <b>jonpro03.loopring.eth</b>
           </p>
         </div>
     </div>
@@ -293,25 +289,22 @@
     <div id="donutDataApe" style="display:none;"></div>
   </div>
   <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
-    <div id="alertToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
+    <div id="alertToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
       <div class="toast-header">
-        <strong class="me-auto">NEW DATA AVAILABLE</strong>
-        <small class="text-muted">DRSBot</small>
+        <strong class="me-auto">NEW FEATURE AVAILABLE</strong>
+        <small class="text-muted">REDDIT SCRAPER</small>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
       <div class="toast-body">
         <p>
-          The default metric has been changed from Average to <b>Multi-Account Average</b>.
+          <b>Charting plugin updated!</b>.
         </p>
-        <p>
-          Multi-Account Average applies the accounts per ape factor to the Average.
-          You can still view the old metric by changing Metric to Average.
-        </p>
+        <p>You can now zoom and pan on the Estimates and Shares charts.</p>
+        <p>Additionally, the statistics and posts/day charts have been removed to make the experience more concise.</p>
         Cheers!
       </div>
     </div>
   </div>
-
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -323,9 +316,14 @@
   <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
     integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
     crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
-    integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
-    crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"
+    integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.0/chartjs-plugin-zoom.min.js"></script>
+
   <script src="dashboard.js"></script>
   <script src="charts.js"></script>
 

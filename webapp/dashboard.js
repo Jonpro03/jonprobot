@@ -112,8 +112,8 @@ function updateDonutData(donutData, stats) {
 (async function () {
   'use strict'
   feather.replace({ 'aria-hidden': 'true' })
-  Chart.defaults.global.defaultFontColor = '#EEE';
-  Chart.defaults.global.defaultLineColor = '#AAA';
+  Chart.defaults.defaultFontColor = '#EEE';
+  Chart.defaults.defaultLineColor = '#AAA';
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
 
@@ -342,11 +342,11 @@ function updateDonutData(donutData, stats) {
 
 
   let t = new bootstrap.Toast(document.getElementById("alertToast"));
-  if (datasource === "drsbot") {
-    var alerted = localStorage.getItem('drsbotAcctAvgFeature') || '';
+  if (datasource === "scraper") {
+    var alerted = localStorage.getItem('scraperChartFeat') || '';
     if (alerted != "alerted") {
       t.show();
-      localStorage.setItem("drsbotAcctAvgFeature", "alerted");
+      localStorage.setItem("scraperChartFeat", "alerted");
     }
   }
 })()
