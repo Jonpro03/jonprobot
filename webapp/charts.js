@@ -26,43 +26,6 @@
       }),
       datasets: [
         {
-          data: chartData.estimates.averages,
-          label: "Average",
-          lineTension: 0.4,
-          backgroundColor: 'transparent',
-          borderColor: '#E024A5',
-          borderWidth: 2,
-          pointBackgroundColor: '#93186c'
-        },
-        {
-          data: chartData.estimates.medians,
-          label: "Median",
-          lineTension: 0.4,
-          backgroundColor: 'transparent',
-          borderColor: '#A3962F',
-          borderWidth: 2,
-          pointBackgroundColor: '#A3962F'
-        },
-        {
-          data: chartData.estimates.trimmed_means,
-          label: "Trimmed Average",
-          lineTension: 0.4,
-          backgroundColor: 'transparent',
-          borderColor: '#11979C',
-          borderWidth: 2,
-          pointBackgroundColor: '#11979C'
-        },
-        {
-          hidden: true,
-          data: chartData.estimates.modes,
-          label: "Mode",
-          lineTension: 0.4,
-          backgroundColor: 'transparent',
-          borderColor: '#094D4F',
-          borderWidth: 2,
-          pointBackgroundColor: '#094D4F'
-        },
-        {
           label: "Released DRS",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -117,9 +80,137 @@
             null,
             null,
             null,
-            5200000
+            5200000,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            8900000
           ]
-        }
+        },
+        {
+          data: chartData.estimates.averages,
+          label: "Average",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#E024A5',
+          borderWidth: 2,
+          pointBackgroundColor: '#93186c'
+        },
+        {
+          data: chartData.estimates.medians,
+          label: "Median",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#A3962F',
+          borderWidth: 2,
+          pointBackgroundColor: '#A3962F'
+        },
+        {
+          data: chartData.estimates.trimmed_means,
+          label: "Trimmed Average",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#11979C',
+          borderWidth: 2,
+          pointBackgroundColor: '#11979C'
+        },
+        {
+          hidden: true,
+          data: chartData.estimates.modes,
+          label: "Mode",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#094D4F',
+          borderWidth: 2,
+          pointBackgroundColor: '#094D4F'
+        },
       ]
     },
     options: {
@@ -173,7 +264,7 @@
             enabled: true
           },
           zoom: {
-            mode:"x",
+            mode: "x",
             wheel: {
               enabled: true,
             },
@@ -259,7 +350,7 @@
             enabled: true
           },
           zoom: {
-            mode:"x",
+            mode: "x",
             wheel: {
               enabled: true,
             },
@@ -337,7 +428,9 @@
   var hsScatterChart = new Chart(hsScatterCtx, {
     type: 'line',
     data: {
-      labels: hsData.high_labels,
+      labels: hsData.high_labels.map(function (l) {
+        return new Date(l).toLocaleDateString();
+      }),
       datasets:
         [
           {
@@ -374,13 +467,7 @@
         line: {
           position: 'bottom',
           suggestedMin: Math.min(...hsData.high_labels),
-          suggestedMax: Math.max(...hsData.high_labels),
-          ticks: {
-            callback: function (val) {
-              let d = new Date(val);
-              return d.toLocaleDateString();
-            }
-          }
+          suggestedMax: Math.max(...hsData.high_labels)
         },
         scatter: {
           id: "scatter",
@@ -388,15 +475,9 @@
           type: 'linear',
           position: 'bottom',
           min: Math.min(...hsData.high_labels),
-          max: Math.max(...hsData.high_labels),
-          ticks: {
-            callback: function (val) {
-              let d = new Date(val);
-              return d.toLocaleDateString();
-            }
-          }
+          max: Math.max(...hsData.high_labels)
         }
-      }
+      },
     },
     tooltips: {
       callbacks: {

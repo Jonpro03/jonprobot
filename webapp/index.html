@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="en">
 
-<title>💎👐🖕🩳</title>
+<title>💎👐</title>
 
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap core CSS -->
@@ -22,18 +23,22 @@
 
 <body id="main">
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="https://www.computershared.net">COMPUTERSHARED.NET</a>
-    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+    <a class="navbar-brand col-lg-3 me-0 px-3 text-center" href="https://www.computershared.net">COMPUTERSHARED.NET</a>
+    <!-- <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
-    </button>
+    </button> -->
     <input id="searchbar" class="form-control form-control-dark w-100" type="text"
       placeholder="Search Records by Reddit Username" aria-label="Search">
-    <div class="navbar-nav">
+      <a class="text-white col-lg-3 p-2 text-center" href="https://www.drsgme.org">
+        <i class="fas fa-graduation-cap"> HOW TO DIRECT-REGISTER</i>
+      </a>
+    
+    <!-- <div class="navbar-nav">
       <div class="nav-item text-nowrap">
         <!--<a class="nav-link px-3" href="#">Sign out</a> -->
       </div>
-    </div>
+    </div> -->
   </header>
 
 
@@ -204,7 +209,7 @@
                     <canvas class="w-100" id="shareLocker" width="1024" height="1024"></canvas>
                     <div id="stats" class="m-5">
                       <div class="row">
-                        <h2 id="botLabel" class="col-8">Reddit Scraper</h2>
+                        <h2 id="botLabel" class="col-8">Reddit Scraper Statistics</h2>
                         <div class="fs-6 col-12">
                           <a id="dataLearnMore"
                             href="https://www.reddit.com/user/jonpro03/comments/q7o6ra/drs_infographics_faqs/"
@@ -257,9 +262,11 @@
             <div class="col-md-12">
               <canvas class="my-4 w-100" id="sharesChart" width="1900" height="1080"></canvas>
             </div>
+            <h3 class="text-center">Account Numbers Over Time</h3>
             <div class="col-md-12">
               <canvas class="my-4 w-100" id="highScoreChart" width="1900" height="1080"></canvas>
             </div>
+            <h3 class="text-center">Distribution of Sampled Holders</h3>
             <div class="col-md-12">
               <canvas class="my-4 w-100" id="distributionChart" width="1900" height="1080"></canvas>
             </div>
@@ -269,11 +276,6 @@
           </div>
         </div>
         <div id="footerRow" class="row">
-          <p class="text-muted">
-            Interested in direct-registering shares in your own name?
-            <a href="https://www.reddit.com/r/Superstonk/comments/ptvaka/when_you_wish_upon_a_star_a_complete_guide_to/"
-              target="_blank">Click here.</a>
-          </p>
           <p class="text-muted">
             This site is not affiliated with ComputerShare nor GameStop.
           </p>
@@ -324,8 +326,8 @@
   <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.0/chartjs-plugin-zoom.min.js"></script>
 
-  <script src="dashboard.js"></script>
-  <script src="charts.js"></script>
+  <script src="dashboard.js?a=123"></script>
+  <script src="charts.js?a=123"></script>
 
 </body>
 
