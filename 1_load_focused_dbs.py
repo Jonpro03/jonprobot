@@ -3,6 +3,8 @@ import tinydb
 from tinydb.middlewares import CachingMiddleware
 from tinydb.storages import JSONStorage
 import yfinance as yf
+from datetime import datetime
+from time import mktime
 
 gme = yf.Ticker("GME")
 close_val = gme.info["regularMarketPreviousClose"]
@@ -12,8 +14,20 @@ def get_time():
             start_time_str = f.read()
             return int(start_time_str)
 
+def get_acct_num(post):
+    d = int(mktime(datetime.date(datetime.fromtimestamp(post["created"])).timetuple()))
+    for line in post["image_text"].splitlines():
+        for word in line.split():
+            if "C00" in word:
+                word = ''.join([c for c in word if c.isdigit()])
+                word = word.ljust(9, "0")
+                if int(word) > 1000:
+                    return (d, int(word))
+    return (d, 0)
+
 def get_share_db_object(post):
     value = None
+    acct_date, acct_num = get_acct_num(post)
     for line in post["image_text"].splitlines():
         if '$' in line:
             try:
@@ -33,13 +47,16 @@ def get_share_db_object(post):
         "created": int(post["created"]),
         "audited": False,
         "img_hash": "",
-        "duped_by": []
+        "duped_by": [],
+        "acct_date": acct_date,
+        "acct_num": acct_num
     }
 
 def get_portfolio_db_object(post):
     value = None
     portfolio_seen = False
     done = False
+    acct_date, acct_num = get_acct_num(post)
     for line in post["image_text"].splitlines():
         if done:
             continue
@@ -89,7 +106,9 @@ def get_portfolio_db_object(post):
         "audited": False,
         "img_hash": "",
         "count_accounts": 1,
-        "duped_by": []
+        "duped_by": [],
+        "acct_date": acct_date,
+        "acct_num": acct_num
     }
 
 def update_shares_db():
