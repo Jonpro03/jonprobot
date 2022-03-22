@@ -112,8 +112,8 @@ function updateDonutData(donutData, stats) {
 (async function () {
   'use strict'
   feather.replace({ 'aria-hidden': 'true' })
-  Chart.defaults.global.defaultFontColor = '#EEE';
-  Chart.defaults.global.defaultLineColor = '#AAA';
+  Chart.defaults.color = '#EEE';
+  Chart.defaults.defaultLineColor = '#AAA';
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
 
@@ -148,7 +148,7 @@ function updateDonutData(donutData, stats) {
   let time = "all";
   if (datasource === "drsbot") {
     document.getElementById("dataLearnMore").href = "https://www.reddit.com/r/Superstonk/comments/qap4je/drsbot_4x_now_online/";
-    document.getElementById("botLabel").innerHTML = "DRSBOT"
+    document.getElementById("botLabel").innerHTML = "DRSBOT Statistics"
     document.getElementById("trimAvgLabel").innerHTML = "Multi-Account Average";
     document.getElementById("trmAvgSlt").innerHTML = "Multi-Account Average";
     document.getElementById("metricLabel").innerHTML = 'Multi-account Average: ';
@@ -342,11 +342,11 @@ function updateDonutData(donutData, stats) {
 
 
   let t = new bootstrap.Toast(document.getElementById("alertToast"));
-  if (datasource === "drsbot") {
-    var alerted = localStorage.getItem('drsbotAcctAvgFeature') || '';
+  if (datasource === "scraper") {
+    var alerted = localStorage.getItem('scraperChartFeat') || '';
     if (alerted != "alerted") {
       t.show();
-      localStorage.setItem("drsbotAcctAvgFeature", "alerted");
+      localStorage.setItem("scraperChartFeat", "alerted");
     }
   }
 })()
