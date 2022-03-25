@@ -6,6 +6,10 @@ h2 {
   color: #E024A5
 }
 
+p {
+  text-indent: 20px;
+}
+
 #avgChartLogToggle:checked {
   background-color: #A00;
 }

@@ -36,7 +36,7 @@ function updateDonut(donut, donutData) {
   if (donutData.inst_fuckery != 0) {
     data.push(donutData.inst_fuckery);
     colors.push("#094D4F");
-    labels.push("Inst Unknown");  
+    labels.push("Inst Unknown");
   }
 
   donut.data.labels.pop();
@@ -149,9 +149,10 @@ function updateDonutData(donutData, stats) {
   if (datasource === "drsbot") {
     document.getElementById("dataLearnMore").href = "https://www.reddit.com/r/Superstonk/comments/qap4je/drsbot_4x_now_online/";
     document.getElementById("botLabel").innerHTML = "DRSBOT Statistics"
-    document.getElementById("trimAvgLabel").innerHTML = "Multi-Account Average";
-    document.getElementById("trmAvgSlt").innerHTML = "Multi-Account Average";
-    document.getElementById("metricLabel").innerHTML = 'Multi-account Average: ';
+    document.getElementById("avgStatLbl").innerHTML = "Average Per Ape";
+  }
+  else {
+    document.getElementById("avgStatLbl").innerHTML = "Average Per Account";
   }
   document.getElementById("avgSelector").selectedIndex = 0;
 
@@ -184,7 +185,7 @@ function updateDonutData(donutData, stats) {
   });
 
   if (datasource === "drsbot") {
-    stats.trimmed_average = stats.average / stats.accts_per_ape;
+    stats.trimmed_average = stats.trimmed_average / stats.accts_per_ape;
   }
 
   const donutData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard?time=" + time, {
@@ -286,15 +287,15 @@ function updateDonutData(donutData, stats) {
   document.getElementById("identifiedShares").innerHTML = stats.sampled_shares.toLocaleString() + " shares";
   let sampleSize = (stats.sampled_accounts / donutData.computershare_accounts) * 100;
   document.getElementById("sampleSize").innerHTML = sampleSize.toLocaleString() + '%';
-  document.getElementById("average").innerHTML = stats.average.toLocaleString() + " shares";
-  if ("trimmed_average" in stats) {
-    document.getElementById("trimAvg").innerHTML = stats.trimmed_average.toLocaleString() + " shares";
-    document.getElementById("metricVal").innerHTML = 'x ' + stats.trimmed_average.toLocaleString();
-  } else {
-    document.getElementById("metricVal").innerHTML = 'x ' + stats.average.toLocaleString();
-    document.getElementById("metricLabel").innerHTML = 'Average:';
+  document.getElementById("average").innerHTML = stats.average.toLocaleString() + " shares (" +
+    stats.std_dev.toLocaleString() + " stdev)";
+
+  document.getElementById("trimAvg").innerHTML = stats.trimmed_average.toLocaleString() + " shares";
+  if ("trm_std_dev" in stats) {
+    document.getElementById("trimAvg").innerHTML += " (" + stats.trm_std_dev.toLocaleString() + " stdev)";
   }
-  document.getElementById("stdDev").innerHTML = stats.std_dev.toLocaleString();
+  document.getElementById("metricVal").innerHTML = 'x ' + stats.trimmed_average.toLocaleString();
+
   document.getElementById("highScore").innerHTML = donutData.computershare_accounts.toLocaleString();
   document.getElementById("median").innerHTML = stats.median.toLocaleString();
   document.getElementById("mode").innerHTML = stats.mode.toLocaleString();
@@ -307,13 +308,9 @@ function updateDonutData(donutData, stats) {
         donutData.apeDrs = stats.median * donutData.computershare_accounts;
         break;
       case "trmAvg":
-        if(datasource === "drsbot") {
-          document.getElementById("metricLabel").innerHTML = 'Multi-account Average: ';
-        } else {
-          document.getElementById("metricLabel").innerHTML = 'Trimmed Average: ';
-        }
+        document.getElementById("metricLabel").innerHTML = 'Trimmed Average: ';
         document.getElementById("metricVal").innerHTML = 'x ' + stats.trimmed_average.toLocaleString();
-        donutData.apeDrs = stats.trimmed_average * donutData.computershare_accounts;   
+        donutData.apeDrs = stats.trimmed_average * donutData.computershare_accounts;
         break;
       case "mode":
         document.getElementById("metricLabel").innerHTML = 'Mode: ';
@@ -342,11 +339,11 @@ function updateDonutData(donutData, stats) {
 
 
   let t = new bootstrap.Toast(document.getElementById("alertToast"));
-  if (datasource === "scraper") {
-    var alerted = localStorage.getItem('scraperChartFeat') || '';
+  if (datasource === "drsbot") {
+    var alerted = localStorage.getItem('drsbotTrmAvg') || '';
     if (alerted != "alerted") {
       t.show();
-      localStorage.setItem("scraperChartFeat", "alerted");
+      localStorage.setItem("drsbotTrmAvg", "alerted");
     }
   }
 })()
