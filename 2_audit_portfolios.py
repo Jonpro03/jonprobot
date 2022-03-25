@@ -7,6 +7,8 @@ from os.path import exists
 import time
 import hashlib
 from shutil import copy
+from datetime import datetime
+from time import mktime
 
 
 def get_reddit_post(post_id, sdb):
@@ -33,6 +35,7 @@ def get_reddit_post(post_id, sdb):
         posts = db.search(q.id == post_id)
         if len(posts) > 0:
             post = posts[0]
+            d = int(mktime(datetime.date(datetime.fromtimestamp(post["created"])).timetuple()))
             return {
                 "id": post["id"],
                 "image_text": post["image_text"],
@@ -44,13 +47,16 @@ def get_reddit_post(post_id, sdb):
                 "url": "https://reddit.com"+post["permalink"],
                 "created": post["created"],
                 "audited": False,
-                "count_accounts": 1
+                "count_accounts": 1,
+                "acct_date": d,
+                "acct_num": 0
             }
 
         db = tinydb.TinyDB(f'historical_dbs/021122/{sub}.json')
         posts = db.search(q.id == post_id)
         if len(posts) > 0:
             post = posts[0]
+            d = int(mktime(datetime.date(datetime.fromtimestamp(post["created"])).timetuple()))
             return {
                 "id": post["id"],
                 "image_text": post["image_text"],
@@ -62,7 +68,9 @@ def get_reddit_post(post_id, sdb):
                 "url": "https://reddit.com"+post["permalink"],
                 "created": post["created"],
                 "audited": False,
-                "count_accounts": 1
+                "count_accounts": 1,
+                "acct_date": d,
+                "acct_num": 0
             }
     return None
 
@@ -72,6 +80,7 @@ def print_post(post):
     print(f'Link: {post["url"]}')
     print(f'Author: {post["u"]}')
     print(f'Value: {post["value"]}')
+    print(f'Acct#: {post["acct_num"]}')
 
 def post_time(post):
     global earliest_update

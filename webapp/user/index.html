@@ -42,27 +42,23 @@
   </template>
 
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <span class="navbar-brand col-md-3 col-lg-2 me-0 px-3">COMPUTERSHARED.NET</span>
-    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
-      data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <a class="navbar-brand col-lg-3 me-0 px-3 text-center" href="https://www.computershared.net">COMPUTERSHARED.NET</a>
     <input id="searchbar" class="form-control form-control-dark w-100" type="text"
       placeholder="Search Records by Reddit Username" aria-label="Search">
-    <div class="navbar-nav">
-      <div class="nav-item text-nowrap">
-        <!--<a class="nav-link px-3" href="#">Sign out</a> -->
-      </div>
-    </div>
+    <a class="text-white col-lg-3 p-2 text-center" href="https://www.drsgme.org" target="_blank">
+      <i class="fas fa-graduation-cap"> HOW TO DIRECT-REGISTER</i>
+    </a>
   </header>
-
 
   <div id="main" class="container-fluid p-4 bg-dark">
     <div class="row">
       <main class="col-md-12 col-lg-12 px-md-4 text-white">
+        <h5>Something amiss? 
+          <a href="https://www.reddit.com/message/compose/?to=jonpro03" target="_blank"> Shoot me a DM</a>
+        </h5>
         <h2 id="usernameTitle" class="border-bottom">Reddit Username: loading...</h2>
         <div id="postsContainer" class="container">
-          
+
         </div>
       </main>
     </div>
@@ -80,7 +76,7 @@
       </p>
     </div>
   </div>
-  
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 

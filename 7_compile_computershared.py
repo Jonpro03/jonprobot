@@ -226,6 +226,15 @@ def get_highscore_scatter():
     daily_high_dict = {}
     daily_high = []
     daily_high_labels = []
+
+    pdb = tinydb.TinyDB("portfolio_db.json")
+    q = tinydb.Query()
+    for result in pdb.search((q.acct_num > 1000) & (q.acct_num < 200000)):
+        d = int(result["acct_date"])
+        n = int(result["acct_num"])
+        data.append({'x': d * 1000, 'y': n})
+
+
     with open('highscores.csv', 'r') as f:
         lines = f.readlines()
         for line in lines:

@@ -175,6 +175,7 @@
           ]
         },
         {
+          hidden: true,
           data: chartData.estimates.averages,
           label: "Average",
           lineTension: 0.4,
@@ -184,6 +185,7 @@
           pointBackgroundColor: '#93186c'
         },
         {
+          hidden: true,
           data: chartData.estimates.medians,
           label: "Median",
           lineTension: 0.4,
