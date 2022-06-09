@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -24,6 +25,44 @@
     /// </summary>
     public static class Program
     {
+        // for numbers of format #,###.##
+        private static CultureInfo EnCulture = new("en");
+
+        // for numbers of format #.###,##
+        private static CultureInfo DeCulture = new("de");
+
+        // for numbers of format # ###,##
+        private static CultureInfo SeCulture = new("se");
+
+        /// <summary>
+        /// Tries to parse a float using various global number formats
+        /// </summary>
+        /// <param name="input">The string to parse.</param>
+        /// <param name="output">The float.</param>
+        /// <returns>A value indicating whether or not the parse was successful.</returns>
+        internal static bool TryParseFloat(string input, out float output)
+        {
+            // #,###.##
+            if (float.TryParse(input, NumberStyles.Any, EnCulture, out output))
+            {
+                return true;
+            }
+
+            // #.###,##
+            if (float.TryParse(input, NumberStyles.Any, DeCulture, out output))
+            {
+                return true;
+            }
+
+            // # ###,##
+            if (float.TryParse(input, NumberStyles.Any, SeCulture, out output))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// The meat of the processing.
         ///    1) loads an image
@@ -34,9 +73,10 @@
         /// </summary>
         /// <param name="fileInfo">File to process</param>
         /// <returns>A tuple with the file name that was processed and the result.</returns>
-        private static async Task<Tuple<string, float>> ProcessSingleImageAsync(FileInfo fileInfo)
+        private static async Task<(string fileName, float shareCount)> ProcessSingleImageAsync(FileInfo fileInfo)
         {
             Stream fileStream;
+
             try
             {
                 fileStream = File.OpenRead(fileInfo.FullName);
@@ -61,7 +101,7 @@
         
             foreach (var item in lines)
             {
-                if (float.TryParse(item.Text, out var candidate))
+                if (TryParseFloat(item.Text, out var candidate))
                 {
                     candidates.Add(candidate);
                 }
@@ -82,14 +122,14 @@
 
             if (candidates.Count == 1)
             {
-                return new Tuple<string, float>(fileInfo.Name, candidates[0]);
+                return (fileInfo.Name, candidates[0]);
             }
             else if (candidates.Count == 2)
             {
                 if (Math.Floor(candidates[0]) == Math.Floor(candidates[1]))
                 {
                     // share count was likely listed twice - once with fractional shares, once without
-                    return new Tuple<string, float>(fileInfo.Name, candidates[0]);
+                    return (fileInfo.Name, candidates[0]);
                 }
                 else
                 {
@@ -104,7 +144,6 @@
             WriteError(fileInfo.Name, $"No share count detected in OCR result: \"{ocrResult.Text}\"");
             throw new InvalidOperationException();
         }
-
 
         /// <summary>
         /// Displays command line usage.
@@ -154,7 +193,7 @@
                 WriteErrorAndExit(fileName, $"The input file does not exist", 1);
             }
 
-            Tuple<string, float> result = default;
+            (string fileName, float shareCount) result = default;
 
             try
             {
@@ -212,9 +251,9 @@
                 using var outfile = File.Open(outFile, FileMode.Create, FileAccess.Write, FileShare.None);
                 using var streamWriter = new StreamWriter(outfile, Encoding.ASCII);
 
-                foreach (var item in tasks.Where(t => t.IsCompletedSuccessfully).Select(t => t.Result))
+                foreach ((string fileName, float shareCount) in tasks.Where(t => t.IsCompletedSuccessfully).Select(t => t.Result))
                 {
-                    streamWriter.WriteLine($"{item.Item1},{item.Item2}");
+                    streamWriter.WriteLine($"{fileName},{shareCount}");
                 }
             }
             catch (Exception e)
