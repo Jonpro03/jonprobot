@@ -11,7 +11,7 @@
     return;
   }
 
-  const chartData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/charts", {
+  const chartData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/charts?env=pre", {
     mode: 'cors'
   }).then(function (response) {
     return response.json();
@@ -171,7 +171,98 @@
             null,
             null,
             null,
-            8900000
+            8900000,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            12700000
           ]
         },
         {
@@ -364,6 +455,66 @@
       }
     }
   });
+
+  var growthChartCtx = document.getElementById('growthChart')
+  var growthChart = new Chart(growthChartCtx, {
+    type: 'line',
+    data: {
+      // labels: chartData.growth.labels.map(function (l) {
+      //   return new Date(l).toLocaleDateString();
+      // }),
+      datasets: [
+        {
+          data: chartData.growth.weekly_total_account_growth_pct,
+          label: "Percentage Accounts Grew",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#E024A5',
+          borderWidth: 2,
+          pointBackgroundColor: '#93186C'
+        },
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Account Growth'
+      },
+      scales: {
+        x: {
+          ticks: {
+            callback: (index) => new Date(Object.keys(chartData.growth.weekly_total_account_growth_pct)[index]).toLocaleDateString()
+          }
+        },
+        y: {
+          type: "linear",
+          max: 0.10,
+          ticks: {
+            callback: (val) => Math.round(val * 100) + "%"
+          }
+        },
+      },
+      legend: {
+        display: true
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            title: function (tooltipItem) {
+              return "Week of " + new Date(tooltipItem[0].label).toLocaleDateString();
+            },
+            label: function (tooltipItem) {
+              var label = tooltipItem.dataset.label;
+              var val = Object.values(tooltipItem.dataset.data)[tooltipItem.dataIndex];
+              return label + ": " + (parseFloat(val) * 100).toFixed(2) + "%";
+            }
+          }
+        }
+      }
+    }
+  });
+
+
 
   var histogramCtx = document.getElementById('distributionChart');
   var histogramChart = new Chart(histogramCtx, {

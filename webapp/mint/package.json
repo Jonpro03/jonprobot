@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@loopring-web/loopring-sdk": "^2.0.12",
+    "@loopring-web/web3-provider": "^1.0.16",
+    "web3": "^1.7.3"
+  },
+  "devDependencies": {
+    "browser-resolve": "^2.0.0",
+    "esmify": "^2.1.1"
+  }
+}

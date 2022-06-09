@@ -1,4 +1,3 @@
-<!doctype html>
 <html lang="en">
 
 <title>💎👐</title>
@@ -22,13 +21,16 @@
 </head>
 
 <body id="main">
-  <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <header id="pageHeader" class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-lg-3 me-0 px-3 text-center" href="https://www.computershared.net">COMPUTERSHARED.NET</a>
     <input id="searchbar" class="form-control form-control-dark w-100" type="text"
       placeholder="Search Records by Reddit Username" aria-label="Search">
     <a class="text-white col-lg-3 p-2 text-center" href="https://www.drsgme.org" target="_blank">
       <i class="fas fa-graduation-cap"> HOW TO DIRECT-REGISTER</i>
     </a>
+    <button id='connectWalletBtn' type="button" class='btn btn-outline-secondary d-none'>
+      <i class="fas fa-rocket"> Connect</i>
+    </button>
   </header>
 
 
@@ -42,6 +44,9 @@
           </div> -->
           <h3 class="h3">Gamestop Direct-Registered Float Calculator</h3>
           <div id="asof" class="text">As of</div>
+          <span class="text-muted">
+            This site is not affiliated with ComputerShare nor GameStop.
+          </span>
         </div>
 
         <div id="pageContent" class="container-xl text-white bg-dark">
@@ -174,8 +179,6 @@
                         <div class="col-5 text-monospace text-right" id="floatLocked">loading...</div>
                       </div>
                     </div>
-
-
                   </div>
 
                   <div class="col-lg-7">
@@ -187,7 +190,7 @@
                         <h2 id="botLabel" class="col-8">Reddit Scraper Statistics</h2>
                         <div class="fs-6 col-12">
                           <a id="dataLearnMore"
-                            href="https://www.reddit.com/user/jonpro03/comments/q7o6ra/drs_infographics_faqs/"
+                            href="https://www.reddit.com/user/jonpro03/comments/v3iyt4/how_does_computersharednet_work/"
                             target="_blank">Learn More
                             about this data.</a>
                         </div>
@@ -240,45 +243,43 @@
             <div class="col-md-12">
               <canvas class="my-4 w-100" id="sharesChart" width="1900" height="1080"></canvas>
             </div>
-            <h3 class="text-center">Account Numbers Over Time</h3>
+            <h3 class="text-center">Account Numbers</h3>
             <div class="col-md-12">
               <canvas class="my-4 w-100" id="highScoreChart" width="1900" height="1080"></canvas>
             </div>
-            <h3 class="text-center">Distribution of Sampled Holders</h3>
-            <div class="col-md-12">
+            <div class="col-md-6">
+              <h3 class="text-center">Distribution of Sampled Holders</h3>
               <canvas class="my-4 w-100" id="distributionChart" width="1900" height="1080"></canvas>
+            </div>
+            <div class="col-md-6">
+              <h3 class="text-center">Account Holdings Growth (Weekly)</h3>
+              <canvas class="my-4 w-100" id="growthChart" width="1900" height="1080"></canvas>
             </div>
           </div>
         </div>
-        <div id="footerRow" class="row">
-          <p class="text-muted">
-            This site is not affiliated with ComputerShare nor GameStop.
-          </p>
-          <p class="text-muted">
-            Want to buy me a coffee on Layer2? <b>jonpro03.loopring.eth</b>
-          </p>
-        </div>
+        <div id="footerRow" class="row"></div>
+      </main>
     </div>
-    <div id="donutDataEtfs" style="display:none;">1</div>
-    <div id="donutDataMfs" style="display:none;">2</div>
-    <div id="donutDataInst" style="display:none;"></div>
-    <div id="donutDataInsider" style="display:none;">3</div>
-    <div id="donutDataApe" style="display:none;"></div>
+  </div>
+  <div id="donutDataEtfs" style="display:none;">1</div>
+  <div id="donutDataMfs" style="display:none;">2</div>
+  <div id="donutDataInst" style="display:none;"></div>
+  <div id="donutDataInsider" style="display:none;">3</div>
+  <div id="donutDataApe" style="display:none;"></div>
   </div>
   <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
     <div id="alertToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
       <div class="toast-header">
-        <strong class="me-auto">TRIMMED AVERAGE DEFAULT</strong>
-        <small class="text-muted">DRSBOT 7.0</small>
+        <strong class="me-auto">PROPOSAL TO CHANGE ESTIMATES</strong>
+        <small class="text-muted">REDDIT SCRAPER</small>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
       <div class="toast-body">
-        <p>The default metric for DRSBOT has changed in response to the Q4 released DRS values.</p>
-        <p>The top and bottom 5% of records are now trimmed to make estimates more accurate. You can view the previous
-          metric by changing Metric to Average.</p>
+        <p>Please review the following post and share your thoughts.</p>
         <a class="col-lg-3 p-2 text-center"
-          href="https://www.reddit.com/r/Superstonk/comments/tlcu93/drsbot_70_im_into_bot_stuff/" target="_blank">
-          <i class="fas fa-graduation-cap"> Learn More</i>
+          href="https://www.reddit.com/r/Superstonk/comments/v4rvb3/proposal_to_introduce_a_180_day_rolling_window_to/"
+          target="_blank">
+          Proposal to add a 180 day rolling window
         </a>
       </div>
     </div>
@@ -300,9 +301,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.0/chartjs-plugin-zoom.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
 
-    <script src="dashboard.js?a=124"></script>
-    <script src="charts.js?a=124"></script>
+    <script src="redditUser.js?a=1"></script>
+    <script src="searchbar.js?a=1"></script>
+    <script src="donate.js?a=1"></script>
+    <script src="dashboard.js?a=135"></script>
+    <script src="charts.js?a=135"></script>
 
 </body>
 

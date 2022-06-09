@@ -23,20 +23,17 @@ today = (datetime.utcnow() - timedelta(days=1)).replace(hour=23, minute=59, seco
 epoch = datetime(1970, 1, 1)
 
 
-def get_account_growth(start, delta, delta_unit="days"):
-    daily_accounts_grew = {}
-    daily_pct_accounts_grew = {}
-    daily_individual_account_growth_pct = {}
-    daily_total_account_growth_pct = {}
-    aggregate_shares = 0
+def get_account_growth(start, delta):
+    weekly_total_account_growth_pct = {}
+    aggregate_shares = shares_from_growth = 0
 
-    range_unit = delta.days if delta_unit == "days" else 24
+    range_unit = int(delta.days / 7.0)
     range_unit += 1
-    s = cal.timegm(start.utctimetuple())
-    delta = timedelta(days=1) if delta_unit == "days" else timedelta(hours=1)
+    delta = timedelta(days=7)
 
     for i in range(1, range_unit):
         end = start + delta
+        
         s = cal.timegm(start.utctimetuple())
         e = cal.timegm(end.utctimetuple())
         r = rdb.search((q.time > s) & (q.time <= e))
@@ -44,15 +41,15 @@ def get_account_growth(start, delta, delta_unit="days"):
         accts_grew = [x["delta_value"] for x in r if x["delta_value"] > 0 and x["delta_value"] != x["displayed_value"]]
         all_accts = [x["delta_value"] for x in r if x["delta_value"] > 0]
 
+        # Only for 2022
+        if start.year != 2022:
+            weekly_total_account_growth_pct[start.isoformat()] = sum(accts_grew) / aggregate_shares        
+
         aggregate_shares += sum(all_accts)
-        shares_from_growth = sum(accts_grew)
-        daily_accounts_grew[e] = len(accts_grew)
-        daily_pct_accounts_grew[e] = len(accts_grew) / (len(all_accts) or 1)
-        daily_total_account_growth_pct[e] = shares_from_growth / (aggregate_shares or 1)
-
-
         start = end
-    return {}
+    return {
+        "weekly_total_account_growth_pct": weekly_total_account_growth_pct
+    }
 
 def get_accounts(start, delta, delta_unit="days"):
     existing_apes = {}
@@ -371,7 +368,7 @@ q = tinydb.Query()
 delta = today - start
 
 # Get All Time
-get_account_growth(start, delta)
+growth = get_account_growth(start, delta)
 daily_hs, hs = get_highscores(start, delta)
 hs_scatter = get_highscore_scatter()
 hs_payload = {
@@ -401,6 +398,7 @@ chart_data = {
     "posts": get_posts(start, delta),
     "accounts": get_accounts(start, delta),
     "shares": get_shares(start, delta),
+    "growth": growth,
     "distribution": get_histogram(shrs_in_accounts),
     "estimates": estimates
 }

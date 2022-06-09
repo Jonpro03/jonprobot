@@ -1,0 +1,1 @@
+browserify mint.js -p esmify -o bundle.js
