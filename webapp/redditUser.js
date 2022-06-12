@@ -29,10 +29,10 @@ function showHideLoginBtn() {
 }
 
 (function () {
-  if (localStorage.getItem("mintTest") === null)
-  {
-    return;
-  }
+  // if (localStorage.getItem("mintTest") === null)
+  // {
+  //   return;
+  // }
   const h = document.getElementById("pageHeader");
   const btnElm = document.createElement("button");
   btnElm.classList.add('btn', 'btn-outline-secondary', 'd-none');

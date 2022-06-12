@@ -10,6 +10,21 @@ p {
   text-indent: 20px;
 }
 
+.col-1 {
+  width: 0px;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.fs-4 {
+  font-size: 12px !important;
+}
+
+body {
+  width: 320px;
+  height: 320px;
+}
+
 #avgChartLogToggle:checked {
   background-color: #A00;
 }
@@ -58,7 +73,6 @@ p {
 
 html, body {
   font-size: .875rem;
-  height: 100%;
 }
 
 .feather {

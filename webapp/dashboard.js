@@ -312,14 +312,12 @@ function updateDonutData(donutData, stats) {
     document.getElementById("acctsPerApeLabel").remove();
   }
 
-
-
   let t = new bootstrap.Toast(document.getElementById("alertToast"));
-  if (datasource === "scraper") {
-    var alerted = localStorage.getItem('changeProposal') || '';
+  if (datasource === "scraper" || datasource === "drsbot") {
+    var alerted = localStorage.getItem('mintAvailable') || '';
     if (alerted != "alerted") {
       t.show();
-      localStorage.setItem("changeProposal", "alerted");
+      localStorage.setItem("mintAvailable", "alerted");
     }
   }
 })()
