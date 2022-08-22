@@ -1,7 +1,13 @@
 {
+<<<<<<< HEAD
     "description": "computershared.net Gamestop Stock Estimates Drop #4",
     "image": "ipfs://QmcNYtyLfXC3d8ptTEH7jQEQhnNzNdZuJYwJwunXydHL72",
     "animation_url": "ipfs://QmY7NphoPjC2Fxy515iHY8T4bhQmyWqX3Ug7GgBwC373br",
+=======
+    "description": "computershared.net Gamestop Stock Estimates Drop #2",
+    "image": "ipfs://QmcNYtnNzNdZuJYwJwunXydHL72",
+    "animation_url": "ipfs://QmY7NphoPjC2Fxy7GgBwC373br",
+>>>>>>> e82ad25a8ab861705f5f3aedad688c75c8d1eea9
     "name": "Computershared.net GME Shares",
     "royalty_percentage": 10
 }
