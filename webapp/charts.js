@@ -80,7 +80,7 @@
             null,
             null,
             null,
-            5200000,
+            5200000 * 4,
             null,
             null,
             null,
@@ -171,7 +171,7 @@
             null,
             null,
             null,
-            8900000,
+            8900000 * 4,
             null,
             null,
             null,
@@ -262,7 +262,7 @@
             null,
             null,
             null,
-            12700000
+            12700000 * 4
           ]
         },
         {
@@ -281,9 +281,9 @@
           label: "Median",
           lineTension: 0.4,
           backgroundColor: 'transparent',
-          borderColor: '#A3962F',
+          borderColor: '#F0DC46',
           borderWidth: 2,
-          pointBackgroundColor: '#A3962F'
+          pointBackgroundColor: '#F0DC46'
         },
         {
           data: chartData.estimates.trimmed_means,
@@ -397,8 +397,8 @@
           yAxisID: "ybar",
           label: "Existing Accounts",
           data: chartData.shares.daily.from_growth,
-          backgroundColor: '#A3962F',
-          borderColor: '#A3962F'
+          backgroundColor: '#F0DC46',
+          borderColor: '#F0DC46'
         },
       ]
     },
@@ -415,6 +415,7 @@
         ybar: {
           position: "right",
           stacked: true,
+          min: 0
         },
         yline: {
           position: "left",
@@ -456,6 +457,140 @@
     }
   });
 
+  var statsChartCtx = document.getElementById('statsChart')
+  var statsChart = new Chart(statsChartCtx, {
+    type: 'line',
+    data: {
+      labels: chartData.labels.map(function (l) {
+        return new Date(l).toLocaleDateString();
+      }),
+      datasets: [
+        {
+          data: chartData.stats.trimmed_means,
+          label: "Trimmed Average",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#11979C',
+          borderWidth: 2,
+          pointBackgroundColor: '#11979C'
+        },
+        {
+          hidden: true,
+          label: "Average",
+          data: chartData.stats.averages,
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#E024A5',
+          borderWidth: 4,
+          pointBackgroundColor: '#93186c',
+        },
+        {
+          hidden: true,
+          data: chartData.stats.medians,
+          label: "Median",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#F0DC46',
+          borderWidth: 2,
+          pointBackgroundColor: '#F0DC46'
+        },
+        {
+          hidden: true,
+          data: chartData.stats.modes,
+          label: "Mode",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#094D4F',
+          borderWidth: 2,
+          pointBackgroundColor: '#094D4F'
+        },
+        {
+          hidden: true,
+          data: chartData.stats.std_devs,
+          label: "Avg Std Dev",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#094700',
+          borderWidth: 2,
+          pointBackgroundColor: '#094700'
+        },
+        {
+          hidden: true,
+          data: chartData.stats.trm_std_devs,
+          label: "Trimmed Avg Std Dev",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#289418',
+          borderWidth: 2,
+          pointBackgroundColor: '#289418'
+        },
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Sample Statistics'
+      },
+      scales: {
+        x: {
+          stacked: true,
+        },
+        y: {
+          type: "linear",
+          ticks: {
+            callback: (val) => (val.toLocaleString())
+          }
+        },
+      },
+      legend: {
+        display: true
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            title: function (tooltipItem) {
+              return new Date(tooltipItem[0].label).toLocaleDateString();
+            },
+            label: function (tooltipItem) {
+              var label = tooltipItem.dataset.label;
+              return label + ": " + tooltipItem.formattedValue;
+            }
+          }
+        }
+      },
+      tooltips: {
+        callbacks: {
+          title: function (tooltipItem, data) {
+            return new Date(tooltipItem[0].label).toLocaleDateString();
+          },
+          label: function (tooltipItem, data) {
+            var value = parseInt(tooltipItem.value);
+            var label = data.datasets[tooltipItem.datasetIndex].label;
+            return label + ": " + value.toLocaleString();
+          }
+        }
+      },
+      plugins: {
+        zoom: {
+          pan: {
+            mode: "x",
+            enabled: true
+          },
+          zoom: {
+            mode: "x",
+            wheel: {
+              enabled: true,
+            },
+            pinch: {
+              enabled: true,
+            },
+          }
+        }
+      }
+    }
+  });
+
+
   var growthChartCtx = document.getElementById('growthChart')
   var growthChart = new Chart(growthChartCtx, {
     type: 'line',
@@ -488,7 +623,8 @@
         },
         y: {
           type: "linear",
-          max: 0.10,
+          max: 0.05,
+          min: 0,
           ticks: {
             callback: (val) => Math.round(val * 100) + "%"
           }
@@ -600,7 +736,7 @@
             data: hsData.high,
             pointBackgroundColor: '#F0DC46',
             lineTension: 0.4,
-            borderColor: '#A3962F',
+            borderColor: '#F0DC46',
             borderWidth: 2,
             backgroundColor: 'transparent'
           }
@@ -630,7 +766,7 @@
           min: Math.min(...hsData.high_labels),
           max: Math.max(...hsData.high_labels)
         }
-      },
+      }
     },
     tooltips: {
       callbacks: {
@@ -650,6 +786,8 @@
   document.getElementById("avgChartLogToggle").onclick = function (event) {
     estimatesChart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
     estimatesChart.update();
+    statsChart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
+    statsChart.update();
     sharesChart.options.scales["yline"].type = event.target.checked ? "logarithmic" : "linear";
     sharesChart.update();
     histogramChart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
@@ -658,4 +796,15 @@
     hsScatterChart.update();
   };
 
+  let zoomDays = 180;
+  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    zoomDays = 30;
+  }
+    
+  estimatesChart.zoomScale('x', {min: chartData.labels.length-zoomDays, max: chartData.labels.length}, "easeOutSine");
+  estimatesChart.update();
+  sharesChart.zoomScale('x', {min: chartData.labels.length-zoomDays, max: chartData.labels.length}, "easeOutSine");
+  sharesChart.update();
+  statsChart.zoomScale('x', {min: chartData.labels.length-zoomDays, max: chartData.labels.length}, "easeOutSine");
+  statsChart.update();
 })()

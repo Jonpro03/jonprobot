@@ -17,51 +17,53 @@
   <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
 
   <!-- Custom styles for this template -->
-  <link href="dashboard.css?a=126" rel="stylesheet">
+  <link href="dashboard.css?a=127" rel="stylesheet">
 </head>
 
-<body id="main">
-  <header id="pageHeader" class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+<body id="main" class="bg-dark text-white">
+  <header id="pageHeader" class="navbar navbar-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-lg-3 me-0 px-3 text-center" href="https://www.computershared.net">COMPUTERSHARED.NET</a>
     <input id="searchbar" class="form-control form-control-dark w-100" type="text"
       placeholder="Search Records by Reddit Username" aria-label="Search">
-    <a class="text-white col-lg-3 p-2 text-center" href="https://www.drsgme.org" target="_blank">
-      <i class="fas fa-graduation-cap"> HOW TO DIRECT-REGISTER</i>
+    <a class="col-lg-3 p-2 text-center" href="https://www.drsgme.org" target="_blank">
+      <i class="fas fa-graduation-cap text-white"> HOW TO DIRECT-REGISTER</i>
     </a>
     <button id='connectWalletBtn' type="button" class='btn btn-outline-secondary d-none'>
       <i class="fas fa-rocket"> Connect</i>
     </button>
+    <!-- <div id="easterEgg" class="dead-pixel-clickable">
+            <div class="dead-pixel">🩳</div>
+          </div> -->
   </header>
 
 
-  <div class="container-fluid bg-dark">
+  <div class="container-fluid">
     <div class="row">
-      <main class="col-md-12 col-lg-12 px-md-4 text-white">
-        <div id="topbar"
-          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <!-- <div id="easterEgg" class="dead-pixel-clickable">
-            <div class="dead-pixel">🩳</div>
-          </div> -->
-          <h3 class="h3">Gamestop Direct-Registered Float Calculator</h3>
-          <div id="asof" class="text">As of</div>
-          <span class="text-muted">
-            This site is not affiliated with ComputerShare nor GameStop.
+      <main class="col-12">
+        <div class="row border-bottom text-center pt-3 pb-2 mb-3">
+          <h3 class="h3 col-lg-5">Gamestop Direct-Registered Calculator</h3>
+          <div id="asof" class="text col-lg-2">As of</div>
+          <span class="text-muted col-lg-5">
+            This site is not affiliated with ComputerShare or GameStop.
           </span>
         </div>
+        <!-- <div id="topbar"
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center  ">
+          
+         
+        </div> -->
 
-        <div id="pageContent" class="container-xl text-white bg-dark">
+        <div id="pageContent" class="container-xl">
           <div id="floatLockerRow" class="row my-5">
             <div class="row">
               <div class="col-lg-12 fs-4">
                 <div class="row">
                   <div class="col-lg-5">
                     <div id="maths">
-                      <h2>Float Calculator</h2>
+                      <h2>Available Float Calculator</h2>
                       <div class="fs-6">
-                        <a href="https://www.reddit.com/r/Superstonk/comments/qp3bzy/bloomberg_update_on_float_institutional_ownership"
-                          target="_blank">Source 1</a>
-                        and
-                        <a href="https://fintel.io/n/us/gme" target="_blank">Source 2</a>
+                        <a href="https://www.reddit.com/r/DRSyourGME/comments/wsn767/update_on_institutional_ownership_etfs_and_funds/"
+                          target="_blank">Source</a>
                       </div>
 
                       <div class="row my-3 ">
@@ -73,10 +75,9 @@
                         <div class="form-check form-switch col-7">
                           <input id="instOtherBtn" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
                             checked>
-                          <label class="form-check-label" for="instOtherBtn" style="color:#13A9AD">Institutional
-                            Unknown:</label>
+                          <label class="form-check-label" for="instOtherBtn" style="color:#13A9AD">Institutions:</label>
                         </div>
-                        <div class="col-5 text-monospace text-right" id="institutionalOther">loading...</div>
+                        <div class="col-5 text-monospace text-right" id="institutionalOther">loading...</div>                        
                       </div>
 
                       <div class="row my-3">
@@ -97,17 +98,26 @@
                         <div class="col-5 text-monospace text-right" id="institutionalETFs">loading...</div>
                       </div>
 
-                      <div class="row my-3 border-bottom">
+                      <div class="row my-3">
                         <div class="form-check form-switch col-7">
                           <input id="insiderSwitch" class="form-check-input" type="checkbox"
-                            style="border-color:#A3962F" checked>
-                          <label class="form-check-label" for="insiderSwitch" style="color:#A3962F">Insider:</label>
+                            style="border-color:#F0DC46" checked>
+                          <label class="form-check-label" for="insiderSwitch" style="color:#F0DC46">Insiders:</label>
                         </div>
                         <div class="col-5 text-monospace text-right" id="insiderHolding">loading...</div>
                       </div>
 
+                      <div class="row my-3 border-bottom">
+                        <div class="form-check form-switch col-7">
+                          <input id="stagnantSwitch" class="form-check-input" type="checkbox"
+                            style="border-color:#E0A63A" checked>
+                          <label class="form-check-label" for="stagnantSwitch" style="color: #E0A63A;">Insiders Stagnant:</label>
+                        </div>
+                        <div class="col-5 text-monospace text-right" id="stagnantHolding">loading...</div>
+                      </div>
+
                       <div class="row my-3 pb-5">
-                        <div class="col-7">Float Total: </div>
+                        <div class="col-7">Remaining Shares: </div>
                         <div class="col-5 text-monospace text-right" id="floatTotal">loading...</div>
                       </div>
 
@@ -136,12 +146,9 @@
                         </div>
                       </div>
 
-                      <div class="row mt-3">
+                      <div class="row my-3">
                         <div class="col-7">Computershare Accounts: </div>
                         <div class="col-5 text-monospace text-right" id="highScore">loading...</div>
-                        <div class="fs-6 ms-3">
-                          <a href="https://reddit.com/u/stopfuckingwithme/posts" target="_blank">Source</a>
-                        </div>
                       </div>
 
                       <div class="row mb-3 border-bottom">
@@ -150,13 +157,13 @@
                       </div>
 
                       <div class="row my-3 pb-5">
-                        <div class="col-7">DRS Total: </div>
+                        <div class="col-7">DRS Total:</div>
                         <div class="col-5 text-monospace text-right" id="apeDrsTotal">loading...</div>
                       </div>
 
-                      <h2>Float Locker</h2>
+                      <h2>Direct Registration Status</h2>
                       <div class="row my-3">
-                        <div class="col-7">Float: </div>
+                        <div class="col-7">Remaining Shares: </div>
                         <div class="col-5 text-monospace text-right" id="floatTotal2">loading...</div>
                       </div>
 
@@ -164,36 +171,36 @@
                         <div class="form-check form-switch col-7">
                           <input id="apesSwitch" class="form-check-input" type="checkbox" style="border-color:#E024A5"
                             checked>
-                          <label class="form-check-label" for="apesSwitch" style="color:#E024A5">Apes:</label>
+                          <label class="form-check-label" for="apesSwitch" style="color:#E024A5">Retail DRS:</label>
                         </div>
                         <div class="col-5 text-monospace text-right" id="apeDrs">loading...</div>
                       </div>
 
                       <div class="row my-3">
-                        <div class="col-7">Remaining: </div>
+                        <div class="col-7">Outstanding: </div>
                         <div class="col-5 text-monospace text-right" id="remainingValue">loading...</div>
                       </div>
 
                       <div class="row my-3">
-                        <div class="col-7">Float Locked by Apes: </div>
+                        <div class="col-7">Percent Direct Registered: </div>
                         <div class="col-5 text-monospace text-right" id="floatLocked">loading...</div>
                       </div>
                     </div>
                   </div>
 
                   <div class="col-lg-7">
-                    <div class="mx-md-5">
+                    <div class="mx-md-5 my-3">
                       <canvas id="shareLocker" width="1024" height="1024"></canvas>
                     </div>
                     <div id="stats" class="m-5">
                       <div class="row">
                         <h2 id="botLabel" class="col-8">Reddit Scraper Statistics</h2>
-                        <div class="fs-6 col-12">
-                          <a id="dataLearnMore"
-                            href="https://www.reddit.com/user/jonpro03/comments/v3iyt4/how_does_computersharednet_work/"
-                            target="_blank">Learn More
-                            about this data.</a>
-                        </div>
+                        <a id="dataLearnMore" class="btn btn-outline-secondary col-4"
+                          href="https://www.reddit.com/user/jonpro03/comments/v3iyt4/how_does_computersharednet_work/"
+                          target="_blank">Learn More</a>
+                      </div>
+                      <span class="row fs-6 text-muted" id="rollingWindow">over the last 180 days </span>
+                      <div class="row">
                         <div class="col-md-6 my-3">
                           <h5>Sampled Shares</h5>
                           <p id="identifiedShares">loading...</p>
@@ -204,7 +211,8 @@
                           <h5>Sample Size</h5>
                           <p id="sampleSize">loading...</p>
                         </div>
-                        <div class="col-md-6">
+
+                        <div class="col-md-6 my-3">
                           <h5 id="trimAvgLabel">5% Trimmed Average</h5>
                           <p id="trimAvg">loading...</p>
                           <h5 id="avgStatLbl">Average</h5>
@@ -220,6 +228,7 @@
                             </div>
                           </div>
                         </div>
+
                       </div>
                     </div>
                   </div>
@@ -228,55 +237,60 @@
             </div>
           </div>
         </div>
-        <div class="container-xxl">
-          <div id="chartsRow" class="row">
-            <h2 id="chartsLabel" class="border-bottom">Reddit Scraper</h2>
-            <div class="col-md-12">
-              <div class="form-check form-switch col-7">
-                <label class="form-check-label" for="avgChartLogToggle">Log Scale</label>
-                <input id="avgChartLogToggle" class="form-check-input" type="checkbox" style="border-color:#E00">
-              </div>
-              <h3 class="text-center">DRS Estimates</h3>
-              <canvas class="my-4 w-100" id="estimatesChart" width="1900" height="1080"></canvas>
-            </div>
-            <h3 class="text-center">Shares Counted</h3>
-            <div class="col-md-12">
-              <canvas class="my-4 w-100" id="sharesChart" width="1900" height="1080"></canvas>
-            </div>
-            <h3 class="text-center">Account Numbers</h3>
-            <div class="col-md-12">
-              <canvas class="my-4 w-100" id="highScoreChart" width="1900" height="1080"></canvas>
-            </div>
-            <div class="col-md-6">
-              <h3 class="text-center">Distribution of Sampled Holders</h3>
-              <canvas class="my-4 w-100" id="distributionChart" width="1900" height="1080"></canvas>
-            </div>
-            <div class="col-md-6">
-              <h3 class="text-center">Account Holdings Growth (Weekly)</h3>
-              <canvas class="my-4 w-100" id="growthChart" width="1900" height="1080"></canvas>
-            </div>
-          </div>
-        </div>
-        <div id="footerRow" class="row"></div>
-      </main>
     </div>
+    <div class="container-xxl">
+      <div id="chartsRow" class="row">
+        <h2 id="chartsLabel" class="border-bottom">Charts for Nerds</h2>
+        <div class="col-md-12">
+          <div class="form-check form-switch col-7">
+            <label class="form-check-label" for="avgChartLogToggle">Log Scale</label>
+            <input id="avgChartLogToggle" class="form-check-input" type="checkbox" style="border-color:#E00">
+          </div>
+          <h3 class="text-center">Total DRS Estimates</h3>
+          <canvas class="my-4 w-100" id="estimatesChart" width="1900" height="1080"></canvas>
+        </div>
+        <h3 class="text-center">Shares Sampled</h3>
+        <div class="col-md-12">
+          <canvas class="my-4 w-100" id="sharesChart" width="1900" height="1080"></canvas>
+        </div>
+        <div class="col-md-12">
+          <h3 class="text-center">Account Numbers Sampled</h3>
+          <canvas class="my-4 w-100" id="highScoreChart" width="1900" height="1080"></canvas>
+        </div>
+        <div class="col-md-12">
+          <h3 class="text-center">Sample Statistics over Time</h3>
+          <canvas class="my-4 w-100" id="statsChart" width="1900" height="1080"></canvas>
+        </div>
+        <div class="col-xl-6 col-lg-12">
+          <h3 class="text-center">Distribution of Sampled Holders</h3>
+          <canvas class="my-4 w-100" id="distributionChart" width="1900" height="1080"></canvas>
+        </div>
+        <div class="col-xl-6 col-lg-12">
+          <h3 class="text-center">Sampled Account Holdings Growth (Weekly)</h3>
+          <canvas class="my-4 w-100" id="growthChart" width="1900" height="1080"></canvas>
+        </div>
+      </div>
+    </div>
+    <div id="footerRow" class="row"></div>
+    </main>
+  </div>
   </div>
   <div id="donutDataEtfs" style="display:none;">1</div>
   <div id="donutDataMfs" style="display:none;">2</div>
   <div id="donutDataInst" style="display:none;"></div>
   <div id="donutDataInsider" style="display:none;">3</div>
+  <div id="donutDataStagnant" style="display:none;">4</div>
   <div id="donutDataApe" style="display:none;"></div>
   </div>
   <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
     <div id="alertToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
       <div class="toast-header">
-        <strong class="me-auto">MINT YOUR DRS POSTS</strong>
+        <strong class="me-auto">HELP WANTED!</strong>
         <small class="text-muted">COMPUTERSHARED.NET</small>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
       <div class="toast-body">
-        <p>I'm proud to announce computershared.net is integrated with the Gamestop Wallet and Loopring.</p>
-        <p>If you're interested, click the LOGIN button at the top right of the page and mint one of your posts!</p>
+        <a href="https://redd.it/wefrkj">Please Read</a>
       </div>
     </div>
 
@@ -299,11 +313,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.0/chartjs-plugin-zoom.min.js"></script>
     <script type="text/javascript" src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
 
-    <script src="redditUser.js?a=2"></script>
-    <script src="searchbar.js?a=1"></script>
-    <script src="donate.js?a=1"></script>
-    <script src="dashboard.js?a=137"></script>
-    <script src="charts.js?a=135"></script>
+    <script src="redditUser.js?a=140"></script>
+    <script src="searchbar.js?a=140"></script>
+    <script src="donate.js?a=140"></script>
+    <script src="dashboard.js?a=146"></script>
+    <script src="charts.js?a=146"></script>
 
 </body>
 

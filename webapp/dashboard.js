@@ -17,26 +17,33 @@ function updateDonut(donut, donutData) {
 
   if (donutData.insider != 0) {
     data.push(donutData.insider);
-    colors.push("#A3962F");
+    colors.push("#F0DC46");
     labels.push("Insiders");
   }
+
+  if (donutData.stagnant != 0) {
+    data.push(donutData.stagnant);
+    colors.push("#E0A63A");
+    labels.push("Stagnant");
+  }
+
 
   if (donutData.apeDrs != 0) {
     data.push(donutData.apeDrs);
     colors.push("#93186c");
-    labels.push("Apes");
+    labels.push("Retail DRS");
   }
 
   if (donutData.remaining != 0) {
     data.push(donutData.remaining);
     colors.push("#212529");
-    labels.push("Held in Brokerages");
+    labels.push("Outstanding");
   }
 
   if (donutData.inst_fuckery != 0) {
     data.push(donutData.inst_fuckery);
     colors.push("#094D4F");
-    labels.push("Inst Unknown");
+    labels.push("Institutions");
   }
 
   donut.data.labels.pop();
@@ -100,7 +107,7 @@ function updateDonutData(donutData, stats) {
   }
 
 
-  donutData.float = donutData.total_outstanding - donutData.insider - donutData.etfs - donutData.mfs - donutData.inst_fuckery;
+  donutData.float = donutData.total_outstanding - donutData.insider - donutData.stagnant - donutData.etfs - donutData.mfs - donutData.inst_fuckery;
   donutData.remaining = donutData.float - donutData.apeDrs;
   donutData.pctComplete = (donutData.apeDrs / donutData.float) * 100;
   document.getElementById("remainingValue").innerHTML = donutData.remaining.toLocaleString();
@@ -172,6 +179,9 @@ function updateDonutData(donutData, stats) {
 
   document.getElementById("asof").innerHTML = "As of " + new Date(donutData.last_update).toDateString().toLocaleString();
 
+  //subtract stagnant insiders
+  donutData.insider -= donutData.stagnant;
+
   // Build donut
   updateDonutData(donutData, stats);
   var donut = buildDonut();
@@ -179,6 +189,7 @@ function updateDonutData(donutData, stats) {
 
   document.getElementById("outstandingValue").innerHTML = donutData.total_outstanding.toLocaleString();
   document.getElementById("insiderHolding").innerHTML = '- ' + donutData.insider.toLocaleString();
+  document.getElementById("stagnantHolding").innerHTML = '- ' + donutData.stagnant.toLocaleString();
   document.getElementById("institutionalETFs").innerHTML = '- ' + donutData.etfs.toLocaleString();
   document.getElementById("institutionalMFs").innerHTML = '- ' + donutData.mfs.toLocaleString();
   document.getElementById("institutionalOther").innerHTML = '- ' + donutData.inst_fuckery.toLocaleString();
@@ -190,6 +201,7 @@ function updateDonutData(donutData, stats) {
   document.getElementById("donutDataMfs").innerHTML = donutData.mfs;
   document.getElementById("donutDataInst").innerHTML = donutData.inst_fuckery;
   document.getElementById("donutDataInsider").innerHTML = donutData.insider;
+  document.getElementById("donutDataStagnant").innerHTML = donutData.stagnant;
   document.getElementById("donutDataApe").innerHTML = donutData.apeDrs;
 
 
@@ -198,12 +210,14 @@ function updateDonutData(donutData, stats) {
     let mfEnabled = document.getElementById("mfSwitch").checked;
     let otherEnabled = document.getElementById("instOtherBtn").checked;
     let insiderEnabled = document.getElementById("insiderSwitch").checked;
+    let stagnantEnabled = document.getElementById("stagnantSwitch").checked;
     let apeEnabled = document.getElementById("apesSwitch").checked;
 
     let etfObj = document.getElementById("donutDataEtfs");
     let mfsObj = document.getElementById("donutDataMfs");
     let otherObj = document.getElementById("donutDataInst");
     let insiderObj = document.getElementById("donutDataInsider");
+    let stagnantObj = document.getElementById("donutDataStagnant");
     let apeObj = document.getElementById("donutDataApe");
 
     if (etfEnabled) {
@@ -236,6 +250,16 @@ function updateDonutData(donutData, stats) {
     } else {
       document.getElementById("insiderHolding").classList.add("text-muted");
       donutData.insider = 0;
+      document.getElementById("stagnantHolding").classList.add("text-muted");
+      donutData.stagnant = 0;
+    }
+
+    if (stagnantEnabled) {
+      document.getElementById("stagnantHolding").classList.remove("text-muted");
+      donutData.stagnant = parseFloat(stagnantObj.innerHTML);
+    } else {
+      document.getElementById("stagnantHolding").classList.add("text-muted");
+      donutData.stagnant = 0;
     }
 
     if (apeEnabled) {
@@ -256,6 +280,7 @@ function updateDonutData(donutData, stats) {
   document.getElementById("mfSwitch").addEventListener("click", handleHoldingToggle);
   document.getElementById("instOtherBtn").addEventListener("click", handleHoldingToggle);
   document.getElementById("insiderSwitch").addEventListener("click", handleHoldingToggle);
+  document.getElementById("stagnantSwitch").addEventListener("click", handleHoldingToggle);
   document.getElementById("apesSwitch").addEventListener("click", handleHoldingToggle);
 
   // Statistics
@@ -307,17 +332,18 @@ function updateDonutData(donutData, stats) {
 
   if (datasource === "drsbot") {
     document.getElementById("acctsPerApe").innerHTML = stats.accts_per_ape.toLocaleString();
+    document.getElementById('rollingWindow').classList.add("d-none");
   } else {
     document.getElementById("acctsPerApe").remove();
     document.getElementById("acctsPerApeLabel").remove();
+    document.getElementById('rollingWindow').classList.remove("d-none");
   }
 
   let t = new bootstrap.Toast(document.getElementById("alertToast"));
-  if (datasource === "scraper" || datasource === "drsbot") {
-    var alerted = localStorage.getItem('mintAvailable') || '';
-    if (alerted != "alerted") {
-      t.show();
-      localStorage.setItem("mintAvailable", "alerted");
-    }
+  var alerted = localStorage.getItem('hiring') || '';
+  if (alerted != "alerted") {
+    t.show();
+    localStorage.setItem("hiring", "alerted");
+  
   }
 })()
