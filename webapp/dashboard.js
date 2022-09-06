@@ -1,3 +1,8 @@
+var localeFormat = Intl.NumberFormat(navigator.language, {
+  notation: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'compact' : 'standard',
+  maximumFractionDigits: 2
+});
+
 function updateDonut(donut, donutData) {
   var data = [];
   var colors = [];
@@ -110,10 +115,8 @@ function updateDonutData(donutData, stats) {
   donutData.float = donutData.total_outstanding - donutData.insider - donutData.stagnant - donutData.etfs - donutData.mfs - donutData.inst_fuckery;
   donutData.remaining = donutData.float - donutData.apeDrs;
   donutData.pctComplete = (donutData.apeDrs / donutData.float) * 100;
-  document.getElementById("remainingValue").innerHTML = donutData.remaining.toLocaleString();
-  document.getElementById("floatTotal").innerHTML = donutData.float.toLocaleString();
-  document.getElementById("floatTotal2").innerHTML = donutData.float.toLocaleString();
-  document.getElementById("floatLocked").innerHTML = donutData.pctComplete.toLocaleString() + "%";
+  document.getElementById("remainingValue").innerHTML = localeFormat.format(donutData.remaining);
+  document.getElementById("floatLocked").innerHTML = Math.round(donutData.pctComplete * 100)/100 + "%";
 }
 
 (async function () {
@@ -187,15 +190,22 @@ function updateDonutData(donutData, stats) {
   var donut = buildDonut();
   updateDonut(donut, donutData);
 
-  document.getElementById("outstandingValue").innerHTML = donutData.total_outstanding.toLocaleString();
-  document.getElementById("insiderHolding").innerHTML = '- ' + donutData.insider.toLocaleString();
-  document.getElementById("stagnantHolding").innerHTML = '- ' + donutData.stagnant.toLocaleString();
-  document.getElementById("institutionalETFs").innerHTML = '- ' + donutData.etfs.toLocaleString();
-  document.getElementById("institutionalMFs").innerHTML = '- ' + donutData.mfs.toLocaleString();
-  document.getElementById("institutionalOther").innerHTML = '- ' + donutData.inst_fuckery.toLocaleString();
-  document.getElementById("apeDrs").innerHTML = '- ' + donutData.apeDrs.toLocaleString();
+  document.getElementById("outstandingValue").innerHTML = localeFormat.format(donutData.total_outstanding);
+  document.getElementById("insiderHolding").innerHTML = '- ' + localeFormat.format(donutData.insider);
+  document.getElementById("insiderHoldingPct").innerHTML = Math.round(donutData.insider / donutData.total_outstanding * 1000)/10 + '%';
+  document.getElementById("stagnantHolding").innerHTML = '- ' + localeFormat.format(donutData.stagnant);
+  document.getElementById("stagnantHoldingPct").innerHTML = Math.round(donutData.stagnant / donutData.total_outstanding * 1000)/10 + '%';
+  document.getElementById("institutionalETFs").innerHTML = '- ' + localeFormat.format(donutData.etfs);
+  document.getElementById("institutionalETFsPct").innerHTML = Math.round(donutData.etfs / donutData.total_outstanding * 1000)/10 + '%';
+  document.getElementById("institutionalMFs").innerHTML = '- ' + localeFormat.format(donutData.mfs);
+  document.getElementById("institutionalMFsPct").innerHTML = Math.round(donutData.mfs / donutData.total_outstanding * 1000)/10 + '%';
+  document.getElementById("institutionalOther").innerHTML = '- ' + localeFormat.format(donutData.inst_fuckery);
+  document.getElementById("institutionalOtherPct").innerHTML = Math.round(donutData.inst_fuckery / donutData.total_outstanding * 1000)/10 + '%';
+  document.getElementById("apeDrs").innerHTML = '- ' + localeFormat.format(donutData.apeDrs);
+  document.getElementById("apeDrsPct").innerHTML = Math.round(donutData.apeDrs / donutData.total_outstanding * 1000)/10 + '%';
   document.getElementById("apeDrsTotal").innerHTML = donutData.apeDrs.toLocaleString();
-  document.getElementById("remainingValue").innerHTML = donutData.remaining.toLocaleString();
+  document.getElementById("remainingValue").innerHTML = localeFormat.format(donutData.remaining);
+  document.getElementById("remainingValuePct").innerHTML = Math.round(donutData.remaining / donutData.total_outstanding * 1000)/10 + '%';
 
   document.getElementById("donutDataEtfs").innerHTML = donutData.etfs;
   document.getElementById("donutDataMfs").innerHTML = donutData.mfs;

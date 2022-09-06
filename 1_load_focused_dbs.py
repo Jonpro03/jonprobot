@@ -11,8 +11,8 @@ close_val = gme.info["regularMarketPreviousClose"]
 
 def get_time():
     with open("earliest_update.txt", "r") as f:
-            start_time_str = f.read()
-            return int(start_time_str)
+        start_time_str = f.read()
+        return int(start_time_str)
 
 def get_acct_num(post):
     d = int(mktime(datetime.date(datetime.fromtimestamp(post["created"])).timetuple()))
@@ -120,6 +120,8 @@ def update_shares_db():
         "GME_Computershare",
         "infinitypool",
         "Spielstopp",
+        "DRSyourGME",
+        "GMECanada",
         "GMEOrphans"
     ]
     share_db = tinydb.TinyDB(f"new_shares_db.json")
@@ -154,6 +156,8 @@ def update_portfolio_db():
         "GME_Computershare",
         "infinitypool",
         "Spielstopp",
+        "DRSyourGME",
+        "GMECanada",
         "GMEOrphans"
     ]
     added = 0
@@ -184,6 +188,30 @@ def update_portfolio_db():
     print(f'Added {added} new portfolios.')
 
 if __name__ == "__main__":
+    portfolio_db = tinydb.TinyDB(f"portfolio_db.json", storage=CachingMiddleware(JSONStorage))
+    sdb = tinydb.TinyDB(f"new_shares_db.json", storage=CachingMiddleware(JSONStorage))
+    for post in portfolio_db.all():
+        if "acct_date" not in post:
+            d = int(mktime(datetime.date(datetime.fromtimestamp(post["created"])).timetuple()))
+            acct_num = 0
+            for line in post["image_text"].splitlines():
+                for word in line.split():
+                    if "C00" in word:
+                        word = ''.join([c for c in word if c.isdigit()])
+                        word = word.ljust(9, "0")
+                        if int(word) > 1000:
+                            acct_num = int(word)
+                            break
+            post["acct_date"] = d
+            post["acct_num"] = acct_num
+            portfolio_db.update(post, doc_ids=[post.doc_id])
+    for post in sdb.all():
+        if "acct_date" not in post:
+            d = int(mktime(datetime.date(datetime.fromtimestamp(post["created"])).timetuple()))
+            post["acct_date"] = d
+            post["acct_num"] = 0
+            sdb.update(post, doc_ids=[post.doc_id])
+
     print("Updating new shares database.")
     update_shares_db()
     print("Updating portfolio database.")

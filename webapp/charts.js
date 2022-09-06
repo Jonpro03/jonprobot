@@ -1,27 +1,25 @@
-(async function () {
-  'use strict'
+var zoomDays = 180;
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+  zoomDays = 30;
+}
 
-  Chart.defaults.color = '#EEE';
-  Chart.defaults.borderColor = '#444';
+var localeNum = Intl.NumberFormat(navigator.language, {
+  notation: 'compact',
+  maximumFractionDigits: 2
+});
 
-  // Charts
-  let datasource = document.getElementById("botSelector").value;
-  if (datasource === "drsbot") {
-    document.getElementById("chartsRow").remove();
-    return;
-  }
-
-  const chartData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/charts?env=pre", {
+async function buildEstimatesChart(labels) {
+  let estimatesData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=estimates", {
     mode: 'cors'
   }).then(function (response) {
     return response.json();
   });
 
-  var estimatesChartCtx = document.getElementById('estimatesChart')
-  var estimatesChart = new Chart(estimatesChartCtx, {
+  var ctx = document.getElementById("estimatesChart");
+  var chart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: chartData.labels.map(function (l) {
+      labels: labels.map(function (l) {
         return new Date(l).toLocaleDateString();
       }),
       datasets: [
@@ -266,8 +264,7 @@
           ]
         },
         {
-          hidden: true,
-          data: chartData.estimates.averages,
+          data: estimatesData.averages,
           label: "Average",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -276,8 +273,7 @@
           pointBackgroundColor: '#93186c'
         },
         {
-          hidden: true,
-          data: chartData.estimates.medians,
+          data: estimatesData.medians,
           label: "Median",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -286,7 +282,7 @@
           pointBackgroundColor: '#F0DC46'
         },
         {
-          data: chartData.estimates.trimmed_means,
+          data: estimatesData.trimmed_means,
           label: "Trimmed Average",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -296,7 +292,7 @@
         },
         {
           hidden: true,
-          data: chartData.estimates.modes,
+          data: estimatesData.modes,
           label: "Mode",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -318,7 +314,7 @@
         y: {
           type: "linear",
           ticks: {
-            callback: (val) => (val.toLocaleString())
+            callback: (val) => (localeNum.format(val))
           }
         },
       },
@@ -369,19 +365,30 @@
       }
     }
   });
+  chart.zoomScale('x', { min: labels.length - zoomDays, max: labels.length }, "easeOutSine");
+  chart.update();
+  return chart;
+};
 
-  var sharesChartCtx = document.getElementById('sharesChart');
-  var sharesChart = new Chart(sharesChartCtx, {
+async function buildSharesChart(labels) {
+  let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=shares", {
+    mode: 'cors'
+  }).then(function (response) {
+    return response.json();
+  });
+
+  var ctx = document.getElementById("sharesChart");
+  var chart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: chartData.labels.map(function (l) {
+      labels: labels.map(function (l) {
         return new Date(l).toLocaleDateString();
       }),
       datasets: [
         {
           yAxisID: "yline",
           label: "Total",
-          data: chartData.shares.cumulative,
+          data: data.cumulative,
           backgroundColor: '#11979C',
           borderColor: '#11979C',
           backgroundColor: 'transparent',
@@ -390,13 +397,13 @@
         {
           yAxisID: "ybar",
           label: "New Accounts",
-          data: chartData.shares.daily.from_new,
+          data: data.daily.from_new,
           backgroundColor: '#93186c'
         },
         {
           yAxisID: "ybar",
           label: "Existing Accounts",
-          data: chartData.shares.daily.from_growth,
+          data: data.daily.from_growth,
           backgroundColor: '#F0DC46',
           borderColor: '#F0DC46'
         },
@@ -415,12 +422,16 @@
         ybar: {
           position: "right",
           stacked: true,
-          min: 0
+          min: 0,
+          ticks: {
+            callback: (val) => (localeNum.format(val))
+          }
         },
         yline: {
           position: "left",
           stacked: true,
           ticks: {
+            callback: (val) => (localeNum.format(val)),
             color: "#11979C"
           },
         },
@@ -456,17 +467,28 @@
       }
     }
   });
+  chart.zoomScale('x', { min: labels.length - zoomDays, max: labels.length }, "easeOutSine");
+  chart.update();
+  return chart;
+};
 
-  var statsChartCtx = document.getElementById('statsChart')
-  var statsChart = new Chart(statsChartCtx, {
+async function buildStatsChart(labels) {
+  let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=stats", {
+    mode: 'cors'
+  }).then(function (response) {
+    return response.json();
+  });
+
+  var ctx = document.getElementById("statsChart");
+  var chart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: chartData.labels.map(function (l) {
+      labels: labels.map(function (l) {
         return new Date(l).toLocaleDateString();
       }),
       datasets: [
         {
-          data: chartData.stats.trimmed_means,
+          data: data.trimmed_means,
           label: "Trimmed Average",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -475,9 +497,8 @@
           pointBackgroundColor: '#11979C'
         },
         {
-          hidden: true,
           label: "Average",
-          data: chartData.stats.averages,
+          data: data.averages,
           lineTension: 0.4,
           backgroundColor: 'transparent',
           borderColor: '#E024A5',
@@ -485,8 +506,7 @@
           pointBackgroundColor: '#93186c',
         },
         {
-          hidden: true,
-          data: chartData.stats.medians,
+          data: data.medians,
           label: "Median",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -496,7 +516,7 @@
         },
         {
           hidden: true,
-          data: chartData.stats.modes,
+          data: data.modes,
           label: "Mode",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -506,7 +526,7 @@
         },
         {
           hidden: true,
-          data: chartData.stats.std_devs,
+          data: data.std_devs,
           label: "Avg Std Dev",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -516,7 +536,7 @@
         },
         {
           hidden: true,
-          data: chartData.stats.trm_std_devs,
+          data: data.trm_std_devs,
           label: "Trimmed Avg Std Dev",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -589,10 +609,20 @@
       }
     }
   });
+  chart.zoomScale('x', { min: labels.length - zoomDays, max: labels.length }, "easeOutSine");
+  chart.update();
+  return chart;
+};
 
+async function buildGrowthChart() {
+  let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=growth", {
+    mode: 'cors'
+  }).then(function (response) {
+    return response.json();
+  });
 
-  var growthChartCtx = document.getElementById('growthChart')
-  var growthChart = new Chart(growthChartCtx, {
+  var ctx = document.getElementById("growthChart");
+  var chart = new Chart(ctx, {
     type: 'line',
     data: {
       // labels: chartData.growth.labels.map(function (l) {
@@ -600,7 +630,7 @@
       // }),
       datasets: [
         {
-          data: chartData.growth.weekly_total_account_growth_pct,
+          data: data.weekly_total_account_growth_pct,
           label: "Percentage Accounts Grew",
           lineTension: 0.4,
           backgroundColor: 'transparent',
@@ -618,7 +648,7 @@
       scales: {
         x: {
           ticks: {
-            callback: (index) => new Date(Object.keys(chartData.growth.weekly_total_account_growth_pct)[index]).toLocaleDateString()
+            callback: (index) => new Date(Object.keys(data.weekly_total_account_growth_pct)[index]).toLocaleDateString()
           }
         },
         y: {
@@ -626,7 +656,7 @@
           max: 0.05,
           min: 0,
           ticks: {
-            callback: (val) => Math.round(val * 100) + "%"
+            callback: (val) => Math.round(val * 1000) / 10 + "%"
           }
         },
       },
@@ -649,16 +679,87 @@
       }
     }
   });
+  return chart;
+};
 
+async function buildPurchasePowerChart() {
+  let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=power", {
+    mode: 'cors'
+  }).then(function (response) {
+    return response.json();
+  });
 
-
-  var histogramCtx = document.getElementById('distributionChart');
-  var histogramChart = new Chart(histogramCtx, {
+  var ctx = document.getElementById("powerChart");
+  var chart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: chartData.distribution.labels,
+      datasets: [
+        {
+          data: data,
+          label: "Purchasing Power (USD)",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#E024A5',
+          borderWidth: 2,
+          pointBackgroundColor: '#93186C'
+        },
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Account Growth'
+      },
+      scales: {
+        x: {
+          ticks: {
+            callback: (index) => new Date(Object.keys(data)[index]).toLocaleDateString()
+          }
+        },
+        y: {
+          type: "linear",
+          min: 0,
+          ticks: {
+            callback: (val) => "$" + Math.round(val)
+          }
+        },
+      },
+      legend: {
+        display: true
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            title: function (tooltipItem) {
+              return "Week ending " + new Date(tooltipItem[0].label).toLocaleDateString();
+            },
+            label: function (tooltipItem) {
+              var label = tooltipItem.dataset.label;
+              var val = Object.values(tooltipItem.dataset.data)[tooltipItem.dataIndex];
+              return label + ": $" + Math.round(val);
+            }
+          }
+        }
+      }
+    }
+  });
+  return chart;
+};
+
+async function buildDistributionChart() {
+  let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=distribution", {
+    mode: 'cors'
+  }).then(function (response) {
+    return response.json();
+  });
+
+  var ctx = document.getElementById("distributionChart");
+  var chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.labels,
       datasets: [{
-        data: chartData.distribution.values,
+        data: data.values,
         label: "Sampled Accounts",
         lineTension: 0.4,
         color: '#93186c',
@@ -706,7 +807,10 @@
       }
     }
   });
+  return chart;
+};
 
+async function buildHighscoreChart() {
   const hsData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/highscores", {
     mode: 'cors'
   }).then(function (response) {
@@ -750,7 +854,8 @@
       scales: {
         y: {
           ticks: {
-            beginAtZero: true
+            beginAtZero: true,
+            callback: (val) => (localeNum.format(val))
           }
         },
         line: {
@@ -781,6 +886,35 @@
       }
     }
   });
+  return hsScatterChart;
+};
+
+async function loadCharts() {
+  'use strict'
+
+  Chart.defaults.color = '#EEE';
+  Chart.defaults.borderColor = '#444';
+
+  let datasource = document.getElementById("botSelector").value;
+  if (datasource === "drsbot") {
+    document.getElementById("chartsRow").remove();
+    return;
+  }
+
+  let labels = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=labels", {
+    mode: 'cors'
+  }).then(function (response) {
+    return response.json();
+  });
+
+  var estimatesChart = await buildEstimatesChart(labels);
+  var sharesChart = await buildSharesChart(labels);
+  var statsChart = await buildStatsChart(labels);
+  await buildGrowthChart();
+  var histogramChart = await buildDistributionChart();
+  var hsScatterChart = await buildHighscoreChart();
+  var purPowChart = await buildPurchasePowerChart();
+
 
   document.getElementById("avgChartLogToggle").classList.remove("checked");
   document.getElementById("avgChartLogToggle").onclick = function (event) {
@@ -794,17 +928,9 @@
     histogramChart.update();
     hsScatterChart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
     hsScatterChart.update();
+    purPowChart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
+    purPowChart.update();
   };
+};
 
-  let zoomDays = 180;
-  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-    zoomDays = 30;
-  }
-    
-  estimatesChart.zoomScale('x', {min: chartData.labels.length-zoomDays, max: chartData.labels.length}, "easeOutSine");
-  estimatesChart.update();
-  sharesChart.zoomScale('x', {min: chartData.labels.length-zoomDays, max: chartData.labels.length}, "easeOutSine");
-  sharesChart.update();
-  statsChart.zoomScale('x', {min: chartData.labels.length-zoomDays, max: chartData.labels.length}, "easeOutSine");
-  statsChart.update();
-})()
+setTimeout(async () => { await loadCharts(); }, 2000);

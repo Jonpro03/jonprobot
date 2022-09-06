@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
 
   <!-- Custom styles for this template -->
-  <link href="dashboard.css?a=127" rel="stylesheet">
+  <link href="dashboard.css?a=200" rel="stylesheet">
 </head>
 
 <body id="main" class="bg-dark text-white">
@@ -60,68 +60,8 @@
                 <div class="row">
                   <div class="col-lg-5">
                     <div id="maths">
-                      <h2>Available Float Calculator</h2>
-                      <div class="fs-6">
-                        <a href="https://www.reddit.com/r/DRSyourGME/comments/wsn767/update_on_institutional_ownership_etfs_and_funds/"
-                          target="_blank">Source</a>
-                      </div>
 
-                      <div class="row my-3 ">
-                        <div class="col-7">Issued: </div>
-                        <div class="col-5 text-monospace text-right" id="outstandingValue">loading...</div>
-                      </div>
-
-                      <div class="row my-3">
-                        <div class="form-check form-switch col-7">
-                          <input id="instOtherBtn" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
-                            checked>
-                          <label class="form-check-label" for="instOtherBtn" style="color:#13A9AD">Institutions:</label>
-                        </div>
-                        <div class="col-5 text-monospace text-right" id="institutionalOther">loading...</div>                        
-                      </div>
-
-                      <div class="row my-3">
-                        <div class="form-check form-switch col-7">
-                          <input id="mfSwitch" class="form-check-input" type="checkbox" style="border-color:#6FA142"
-                            checked>
-                          <label class="form-check-label" for="mfSwitch" style="color:#6FA142">Mutual Funds:</label>
-                        </div>
-                        <div class="col-5 text-monospace text-right" id="institutionalMFs">loading...</div>
-                      </div>
-
-                      <div class="row my-3">
-                        <div class="form-check form-switch col-7">
-                          <input id="etfSwitch" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
-                            checked>
-                          <label class="form-check-label" for="etfSwitch" style="color:#13A9AD">ETFs:</label>
-                        </div>
-                        <div class="col-5 text-monospace text-right" id="institutionalETFs">loading...</div>
-                      </div>
-
-                      <div class="row my-3">
-                        <div class="form-check form-switch col-7">
-                          <input id="insiderSwitch" class="form-check-input" type="checkbox"
-                            style="border-color:#F0DC46" checked>
-                          <label class="form-check-label" for="insiderSwitch" style="color:#F0DC46">Insiders:</label>
-                        </div>
-                        <div class="col-5 text-monospace text-right" id="insiderHolding">loading...</div>
-                      </div>
-
-                      <div class="row my-3 border-bottom">
-                        <div class="form-check form-switch col-7">
-                          <input id="stagnantSwitch" class="form-check-input" type="checkbox"
-                            style="border-color:#E0A63A" checked>
-                          <label class="form-check-label" for="stagnantSwitch" style="color: #E0A63A;">Insiders Stagnant:</label>
-                        </div>
-                        <div class="col-5 text-monospace text-right" id="stagnantHolding">loading...</div>
-                      </div>
-
-                      <div class="row my-3 pb-5">
-                        <div class="col-7">Remaining Shares: </div>
-                        <div class="col-5 text-monospace text-right" id="floatTotal">loading...</div>
-                      </div>
-
-                      <h2>DRS Calculator</h2>
+                      <h2>DRS Estimation</h2>
                       <div class="row my-3">
                         <div class="col-6">Dataset:</div>
                         <div class="col-6" id="">
@@ -161,29 +101,87 @@
                         <div class="col-5 text-monospace text-right" id="apeDrsTotal">loading...</div>
                       </div>
 
-                      <h2>Direct Registration Status</h2>
+                      <h2>Share Ownership</h2>
+                      <div class="fs-6">
+                        <a href="https://www.reddit.com/r/DRSyourGME/comments/wsn767/update_on_institutional_ownership_etfs_and_funds/"
+                          target="_blank">Source</a>
+                      </div>
+
+                      <div class="row my-3 ">
+                        <div class="col-6">Issued: </div>
+                        <div class="col-4 text-monospace text-right" id="outstandingValue">loading...</div>
+                      </div>
+
                       <div class="row my-3">
-                        <div class="col-7">Remaining Shares: </div>
-                        <div class="col-5 text-monospace text-right" id="floatTotal2">loading...</div>
+                        <div class="form-check form-switch col-6">
+                          <input id="instOtherBtn" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
+                            checked>
+                          <label class="form-check-label" for="instOtherBtn" style="color:#13A9AD">Institutions:</label>
+                        </div>
+                        <div class="col-4 text-monospace text-right" id="institutionalOther">loading...</div>
+                        <div class="col-2 text-monospace text-right" id="institutionalOtherPct">%</div>
+                      </div>
+
+                      <div class="row my-3">
+                        <div class="form-check form-switch col-6">
+                          <input id="mfSwitch" class="form-check-input" type="checkbox" style="border-color:#6FA142"
+                            checked>
+                          <label class="form-check-label" for="mfSwitch" style="color:#6FA142">Mutual Funds:</label>
+                        </div>
+                        <div class="col-4 text-monospace text-right" id="institutionalMFs">loading...</div>
+                        <div class="col-2 text-monospace text-right" id="institutionalMFsPct">%</div>
+                      </div>
+
+                      <div class="row my-3">
+                        <div class="form-check form-switch col-6">
+                          <input id="etfSwitch" class="form-check-input" type="checkbox" style="border-color:#13A9AD"
+                            checked>
+                          <label class="form-check-label" for="etfSwitch" style="color:#13A9AD">ETFs:</label>
+                        </div>
+                        <div class="col-4 text-monospace text-right" id="institutionalETFs">loading...</div>
+                        <div class="col-2 text-monospace text-right" id="institutionalETFsPct">%</div>
+                      </div>
+
+                      <div class="row my-3">
+                        <div class="form-check form-switch col-6">
+                          <input id="insiderSwitch" class="form-check-input" type="checkbox"
+                            style="border-color:#F0DC46" checked>
+                          <label class="form-check-label" for="insiderSwitch" style="color:#F0DC46">Insiders:</label>
+                        </div>
+                        <div class="col-4 text-monospace text-right" id="insiderHolding">loading...</div>
+                        <div class="col-2 text-monospace text-right" id="insiderHoldingPct">%</div>
+                      </div>
+
+                      <div class="row my-3">
+                        <div class="form-check form-switch col-6">
+                          <input id="stagnantSwitch" class="form-check-input" type="checkbox"
+                            style="border-color:#E0A63A" checked>
+                          <label class="form-check-label" for="stagnantSwitch" style="color: #E0A63A;">Insiders
+                            Stagnant:</label>
+                        </div>
+                        <div class="col-4 text-monospace text-right" id="stagnantHolding">loading...</div>
+                        <div class="col-2 text-monospace text-right" id="stagnantHoldingPct">%</div>
                       </div>
 
                       <div class="row my-3 border-bottom">
-                        <div class="form-check form-switch col-7">
+                        <div class="form-check form-switch col-6">
                           <input id="apesSwitch" class="form-check-input" type="checkbox" style="border-color:#E024A5"
                             checked>
                           <label class="form-check-label" for="apesSwitch" style="color:#E024A5">Retail DRS:</label>
                         </div>
-                        <div class="col-5 text-monospace text-right" id="apeDrs">loading...</div>
+                        <div class="col-4 text-monospace text-right" id="apeDrs">loading...</div>
+                        <div class="col-2 text-monospace text-right" id="apeDrsPct">%</div>
                       </div>
 
                       <div class="row my-3">
-                        <div class="col-7">Outstanding: </div>
-                        <div class="col-5 text-monospace text-right" id="remainingValue">loading...</div>
+                        <div class="col-6">Remaining: </div>
+                        <div class="col-4 text-monospace text-right" id="remainingValue">loading...</div>
+                        <div class="col-2 text-monospace text-right" id="remainingValuePct">%</div>
                       </div>
 
                       <div class="row my-3">
-                        <div class="col-7">Percent Direct Registered: </div>
-                        <div class="col-5 text-monospace text-right" id="floatLocked">loading...</div>
+                        <div class="col-6">Retail Registered: </div>
+                        <div class="col-4 text-monospace text-right" id="floatLocked">loading...</div>
                       </div>
                     </div>
                   </div>
@@ -246,32 +244,74 @@
             <label class="form-check-label" for="avgChartLogToggle">Log Scale</label>
             <input id="avgChartLogToggle" class="form-check-input" type="checkbox" style="border-color:#E00">
           </div>
-          <h3 class="text-center">Total DRS Estimates</h3>
-          <canvas class="my-4 w-100" id="estimatesChart" width="1900" height="1080"></canvas>
-        </div>
-        <h3 class="text-center">Shares Sampled</h3>
-        <div class="col-md-12">
-          <canvas class="my-4 w-100" id="sharesChart" width="1900" height="1080"></canvas>
-        </div>
-        <div class="col-md-12">
-          <h3 class="text-center">Account Numbers Sampled</h3>
-          <canvas class="my-4 w-100" id="highScoreChart" width="1900" height="1080"></canvas>
+          <h3 class="text-center">Total DRS Estimates &nbsp;
+            <button id="learnEstimates" type="button" class="btn btn-outline-secondary text-right">How to Read this
+              Chart</button>
+          </h3>
+          <canvas class="mb-5 w-100" id="estimatesChart" width="1900" height="1080"></canvas>
         </div>
         <div class="col-md-12">
-          <h3 class="text-center">Sample Statistics over Time</h3>
-          <canvas class="my-4 w-100" id="statsChart" width="1900" height="1080"></canvas>
+          <h3 class="text-center">Shares Sampled &nbsp;
+            <button id="learnShares" type="button" class="btn btn-outline-secondary text-right">How to Read this
+              Chart</button>
+          </h3>
+          <canvas class="mb-5 w-100" id="sharesChart" width="1900" height="1080"></canvas>
+        </div>
+        <div class="col-md-12">
+          <h3 class="text-center">Account Numbers Sampled &nbsp;
+            <button id="learnHighscore" type="button" class="btn btn-outline-secondary text-right">How to Read this
+              Chart</button>
+          </h3>
+          <canvas class="mb-5 w-100" id="highScoreChart" width="1900" height="1080"></canvas>
+        </div>
+        <div class="col-md-12">
+          <h3 class="text-center">Sample Statistics &nbsp;
+            <button id="learnStats" type="button" class="btn btn-outline-secondary text-right">How to Read this
+              Chart</button>
+          </h3>
+          <canvas class="mb-5 w-100" id="statsChart" width="1900" height="1080"></canvas>
         </div>
         <div class="col-xl-6 col-lg-12">
-          <h3 class="text-center">Distribution of Sampled Holders</h3>
-          <canvas class="my-4 w-100" id="distributionChart" width="1900" height="1080"></canvas>
+          <h3 class="text-center">Distribution of Sampled Holders &nbsp;
+            <button id="learnDistribution" type="button" class="btn btn-outline-secondary text-right">How to Read this
+              Chart</button>
+          </h3>
+          <canvas class="mb-5 w-100" id="distributionChart" width="1900" height="1080"></canvas>
         </div>
         <div class="col-xl-6 col-lg-12">
-          <h3 class="text-center">Sampled Account Holdings Growth (Weekly)</h3>
-          <canvas class="my-4 w-100" id="growthChart" width="1900" height="1080"></canvas>
+          <h3 class="text-center">Sampled Account Holdings Growth &nbsp;
+            <button id="learnGrowth" type="button" class="btn btn-outline-secondary text-right">How to Read this
+              Chart</button>
+          </h3>
+          <canvas class="mb-5 w-100" id="growthChart" width="1900" height="1080"></canvas>
+        </div>
+        <div class="col-xl-6 col-lg-12">
+          <h3 class="text-center">Purchase Power (USD/Week) &nbsp;
+            <button id="learnPower" type="button" class="btn btn-outline-secondary text-right">How to Read this
+              Chart</button>
+          </h3>
+          <canvas class="mb-5 w-100" id="powerChart" width="1900" height="1080"></canvas>
         </div>
       </div>
     </div>
     <div id="footerRow" class="row"></div>
+
+    <div id="helpModal" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-lg modal-fullscreen-md-down text-dark fs-4" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 id="helpModalTitle" class="modal-title"></h2>
+          </div>
+          <div id="helpModalBody" class="modal-body">
+            </br>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     </main>
   </div>
   </div>
@@ -313,11 +353,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.0/chartjs-plugin-zoom.min.js"></script>
     <script type="text/javascript" src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
 
-    <script src="redditUser.js?a=140"></script>
-    <script src="searchbar.js?a=140"></script>
-    <script src="donate.js?a=140"></script>
-    <script src="dashboard.js?a=146"></script>
-    <script src="charts.js?a=146"></script>
+    <script src="learn.js?a=201"></script>
+    <script src="redditUser.js?a=200"></script>
+    <script src="searchbar.js?a=200"></script>
+    <script src="donate.js?a=200"></script>
+    <script src="dashboard.js?a=201"></script>
+    <script src="charts.js?a=201"></script>
 
 </body>
 

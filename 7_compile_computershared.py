@@ -10,16 +10,18 @@ import numpy as np
 import statistics
 import json
 
-aws_region = "us-west-2"
+aws_region = ""
 aws_access_key = ""
 aws_secret_access_key = ""
-BUCKET = "computershared-assets"
+BUCKET = ""
 
-session = boto3.Session(aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_access_key)
+session = boto3.Session(aws_access_key_id=aws_access_key,
+                        aws_secret_access_key=aws_secret_access_key)
 s3_client = session.client('s3')
 
 #today = datetime.today().replace(hour=19, minute=0, second=0)
-today = (datetime.utcnow() - timedelta(days=1)).replace(hour=23, minute=59, second=59, tzinfo=pytz.utc)
+today = (datetime.utcnow() - timedelta(days=1)).replace(hour=23,
+                                                        minute=59, second=59, tzinfo=pytz.utc)
 epoch = datetime(1970, 1, 1)
 
 
@@ -33,23 +35,26 @@ def get_account_growth(start, delta):
 
     for i in range(1, range_unit):
         end = start + delta
-        
+
         s = cal.timegm(start.utctimetuple())
         e = cal.timegm(end.utctimetuple())
         r = rdb.search((q.time > s) & (q.time <= e))
 
-        accts_grew = [x["delta_value"] for x in r if x["delta_value"] > 0 and x["delta_value"] != x["displayed_value"]]
+        accts_grew = [x["delta_value"] for x in r if x["delta_value"]
+                      > 0 and x["delta_value"] != x["displayed_value"]]
         all_accts = [x["delta_value"] for x in r if x["delta_value"] > 0]
 
         # Only for 2022
-        if start.year != 2022:
-            weekly_total_account_growth_pct[start.isoformat()] = sum(accts_grew) / aggregate_shares        
+        if start.year > 2021:
+            weekly_total_account_growth_pct[start.isoformat()] = sum(
+                accts_grew) / aggregate_shares
 
         aggregate_shares += sum(all_accts)
         start = end
     return {
         "weekly_total_account_growth_pct": weekly_total_account_growth_pct
     }
+
 
 def get_accounts(start, delta, delta_unit="days"):
     existing_apes = {}
@@ -84,9 +89,9 @@ def get_accounts(start, delta, delta_unit="days"):
         cumulative_accounts[e] = round(cumulative_results)
 
         start = end
-        print(f"Accounts {int((i/range_unit) * 100)}%\r")
-    
-    return  {
+        print(f"Accounts {int((i/range_unit) * 100)}%    ", end='\r')
+
+    return {
         "daily": list(daily_accounts.values()),
         "cumulative": list(cumulative_accounts.values()),
         "count_apes": len(set(existing_apes.keys())),
@@ -114,9 +119,8 @@ def get_posts(start, delta, delta_unit="days"):
         aggregate_results += len(r)
         aggregate_posts[e] = aggregate_results
         start = end
-        print(f"Posts {int((i/range_unit) * 100)}%\r")
+        print(f"Posts {int((i/range_unit) * 100)}%      ", end='\r')
 
-        
     return {
         "daily": list(daily_posts.values()),
         "cumulative": list(aggregate_posts.values())
@@ -144,26 +148,29 @@ def get_shares(start, delta, delta_unit="days"):
         accts = [x["delta_value"] for x in r if x["delta_value"] > 0]
         shares_from_growth = 0
         for post in r:
-            shares_from_growth += post['delta_value'] if post['displayed_value'] > post['delta_value'] else 0
+            v = post['delta_value'] if post['displayed_value'] > post['delta_value'] else 0
+            if v < 0:
+                print(f"huh... {v}")
+            shares_from_growth += max(v, 0)
 
         sum_results = sum(accts)
         shares_wo_growth = sum_results - shares_from_growth
 
-        daily_shares_total[e] = round(sum_results, 2)
-        daily_shares_growth[e] = round(shares_from_growth, 2)
-        daily_shares_new[e] = round(shares_wo_growth, 2)
+        daily_shares_total[e] = max(round(sum_results, 2), 0)
+        daily_shares_growth[e] = max(round(shares_from_growth, 2), 0)
+        daily_shares_new[e] = max(round(shares_wo_growth, 2), 0)
         aggregate_results += sum_results
         aggregate_shares[e] = round(aggregate_results, 2)
-        
+
         start = end
-        print(f"Shares {int((i/range_unit) * 100)}%\r")
+        print(f"Shares {int((i/range_unit) * 100)}%   ", end='\r')
     return {
-            "daily": {
-                "total": list(daily_shares_total.values()),
-                "from_new": list(daily_shares_new.values()),
-                "from_growth": list(daily_shares_growth.values())
-            },
-            "cumulative": list(aggregate_shares.values())
+        "daily": {
+            "total": list(daily_shares_total.values()),
+            "from_new": list(daily_shares_new.values()),
+            "from_growth": list(daily_shares_growth.values())
+        },
+        "cumulative": list(aggregate_shares.values())
     }
 
 
@@ -172,7 +179,8 @@ def get_labels(start, delta, delta_unit="days"):
     range_unit = delta.days if delta_unit == "days" else 24
     range_unit += 1
     for i in range(1, range_unit):
-        end = start + (timedelta(days=i) if delta_unit == "days" else timedelta(hours=i))
+        end = start + (timedelta(days=i) if delta_unit ==
+                       "days" else timedelta(hours=i))
         e = cal.timegm(end.utctimetuple())
         if delta_unit == "days":
             labels[e] = end.isoformat()
@@ -192,23 +200,26 @@ def get_highscores(start, delta, delta_unit="days"):
         lines = f.readlines()
         for line in lines:
             date_str, *val_str = line.rstrip().split(',')
-            date_num = int((datetime.strptime(date_str, date_pattern) - epoch).total_seconds())
+            date_num = int(
+                (datetime.strptime(date_str, date_pattern) - epoch).total_seconds())
             val = int(val_str[0])
             if date_num in aggregate_highscores:
                 if val > aggregate_highscores[date_num]:
                     aggregate_highscores[date_num] = val
             else:
                 aggregate_highscores[date_num] = val
-    
+
     avail_dates = aggregate_highscores.keys()
     highscore = 0
     for i in range(1, range_unit):
-        end = start + (timedelta(days=i) if delta_unit == "days" else timedelta(hours=i))
+        end = start + (timedelta(days=i) if delta_unit ==
+                       "days" else timedelta(hours=i))
         e = cal.timegm(end.utctimetuple())
         closest_date = 99999999999
         for av_date in avail_dates:
             delta = e - av_date
-            if delta < 0: continue
+            if delta < 0:
+                continue
             if delta < abs(e - closest_date):
                 closest_date = av_date
         if aggregate_highscores[closest_date] > highscore:
@@ -231,12 +242,12 @@ def get_highscore_scatter():
         n = int(result["acct_num"])
         data.append({'x': d * 1000, 'y': n})
 
-
     with open('highscores.csv', 'r') as f:
         lines = f.readlines()
         for line in lines:
             date_str, *val_str = line.rstrip().split(',')
-            date_num = int((datetime.strptime(date_str, date_pattern) - epoch + timedelta(days=1)).total_seconds())
+            date_num = int((datetime.strptime(
+                date_str, date_pattern) - epoch + timedelta(days=1)).total_seconds())
             if date_num not in daily_high_dict:
                 daily_high_dict[date_num] = 0
             val = int(val_str[0])
@@ -249,22 +260,25 @@ def get_ownership(last_update, hs):
     return {
         "last_update": last_update,
         "computershare_accounts": hs / 100,
-        "total_outstanding": 75950781,
-        "insider": 12612303,
-        "institutional": 28364083,
-        "etfs": 6690476,
-        "mfs": 7957066,
-        "inst_fuckery": 13716541
+        "total_outstanding": 304516136,
+        "insider": 53987600,
+        "stagnant": 15472272,
+        "institutional": 115381888,
+        "etfs": 26480620,
+        "mfs": 33262400,
+        "inst_fuckery": 36824662
     }
 
 
 def get_statistics(results):
-    results = results if len(results) > 1 else [0,0]
+    results = results if len(results) > 1 else [0, 0]
+    # Only use the last 60 days
     total_accts = len(results)
     data_set = sorted(results)
-    trim_size = max(int(total_accts * 0.05), 1)
-    trmd_results = sorted(results)[trim_size:-trim_size]
-    trmd_results = [0,0] if len(trmd_results) < 2 else trmd_results
+    upper_trim = max(int(total_accts * 0.05), 1)
+    lower_trim = max(int(total_accts * 0.05), 1)
+    trmd_results = sorted(results)[lower_trim:-upper_trim]
+    trmd_results = [0, 0] if len(trmd_results) < 2 else trmd_results
     return {
         "sampled_accounts": total_accts,
         "sampled_shares": float(round(sum(data_set), 2)),
@@ -289,7 +303,7 @@ def get_stats_history(start, end):
 
     for i in range(1, (end - start).days + 1):
         d = start + timedelta(days=i)
-        dataset = [float(a[1]) for a in get_account_balances(d)]
+        dataset = [float(a[1]) for a in load_account_balances(d)]
         stats = get_statistics(dataset)
 
         sampled_accounts.append(stats["sampled_accounts"])
@@ -301,9 +315,9 @@ def get_stats_history(start, end):
         std_devs.append(stats["std_dev"])
         trm_std_devs.append(stats["trm_std_dev"])
 
-        print(f"Statistics {i}\r")
-    
-    return  {
+        print(f"Statistics {i}   ", end='\r')
+
+    return {
         "sampled_accounts": sampled_accounts,
         "sampled_shares": sampled_shares,
         "std_devs": std_devs,
@@ -313,20 +327,6 @@ def get_stats_history(start, end):
         "trimmed_means": trimmed_means,
         "trm_std_devs": trm_std_devs
     }
-
-
-def get_account_balances(end):
-    account_totals = []
-    try:
-        with open(f"aws_upload/account_balances/{end.strftime('%Y-%m-%d')}.csv", 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                items = line.split(',')
-                account_totals.append((items[0], items[1]))
-    except:
-        print(f"ERROR: Failed to get acct balance for {end}")
-        return []
-    return account_totals
 
 
 def get_histogram(accounts):
@@ -340,6 +340,7 @@ def get_histogram(accounts):
         "values": hist
     }
 
+
 def get_estimates(stats, highs):
     averages = []
     medians = []
@@ -351,8 +352,8 @@ def get_estimates(stats, highs):
         medians.append(round(highs[i] * stats["medians"][i]))
         trimmed_means.append(round(highs[i] * stats["trimmed_means"][i]))
         modes.append(round(highs[i] * stats["modes"][i]))
-    
-    return  {
+
+    return {
         "averages": averages,
         "medians": medians,
         "modes": modes,
@@ -360,8 +361,50 @@ def get_estimates(stats, highs):
     }
 
 
+def get_week_purchase_power():
+    powers = {}
+    start = datetime(2022, 1, 2)
+    today = datetime.today()
+    delta = (today - start).days // 7
+
+    for i in range(1, delta):
+        end = start + timedelta(weeks=i)
+        results = load_puchase_power(end)
+        trim = max(int(len(results) * 0.05), 1)
+        trmd_results = sorted(results)[trim:-trim]
+        powers[end.isoformat()] = statistics.median(trmd_results)
+    return powers
+
+
+def load_account_balances(end):
+    account_totals = []
+    try:
+        with open(f"aws_upload/account_balances/{end.strftime('%Y-%m-%d')}.csv", 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                items = line.split(',')
+                account_totals.append((items[0], items[1]))
+    except:
+        print(f"ERROR: Failed to get acct balance for {end}")
+        return []
+    return account_totals
+
+
+def load_puchase_power(end):
+    total = []
+    try:
+        with open(f"aws_upload/account_balances/{end.strftime('%Y-%m-%d')}.csv", 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                items = line.rstrip().split(',')
+                total.append(float(items[3]))
+    except:
+        print(f"ERROR: Failed to get pur power for {end}")
+        return []
+    return total
+
 start = datetime(2021, 9, 12, 23, 59, tzinfo=pytz.utc)
-#start = datetime(2021, 12, 5, 23, 59, tzinfo=pytz.utc)
+#start = datetime(2022, 7, 23, 23, 59, tzinfo=pytz.utc)
 rdb = tinydb.TinyDB("results_db_new.json")
 q = tinydb.Query()
 
@@ -380,13 +423,15 @@ with open("aws_upload/highscores.json", "w+") as f:
     json.dump(hs_payload, f)
 s3_client.upload_file("aws_upload/highscores.json", BUCKET, "highscores.json")
 
-last_update = max([x["time"] for x in rdb.all()])
-last_update = datetime.fromtimestamp(last_update).isoformat()
+# last_update = max([x["time"] for x in rdb.all()])
+# last_update = datetime.fromtimestamp(last_update).isoformat()
+last_update = today.isoformat()
 with open("aws_upload/ownership.json", "w+") as f:
     json.dump(get_ownership(last_update, hs*100), f)
 s3_client.upload_file("aws_upload/ownership.json", BUCKET, "ownership.json")
 
-shrs_in_accounts = sorted([float(a[1].rstrip()) for a in get_account_balances(today)])
+shrs_in_accounts = sorted([float(a[1].rstrip())
+                          for a in load_account_balances(today)])
 
 stats_history = get_stats_history(start, today)
 num_cs_accts = hs_payload["high"]
@@ -403,10 +448,58 @@ chart_data = {
     "estimates": estimates
 }
 
+# with open("aws_upload/all_charts_pre.json", "w+") as f:
+#     json.dump(chart_data, f)
+# s3_client.upload_file("aws_upload/all_charts_pre.json", BUCKET, "all_charts_pre.json")
+
 with open("aws_upload/all_charts.json", "w+") as f:
     json.dump(chart_data, f)
 s3_client.upload_file("aws_upload/all_charts.json", BUCKET, "all_charts.json")
 
+with open("aws_upload/charts/labels.json", "w+") as f:
+    json.dump(chart_data['labels'], f)
+s3_client.upload_file("aws_upload/charts/labels.json",
+                      BUCKET, "charts/labels.json")
+
+with open("aws_upload/charts/stats.json", "w+") as f:
+    json.dump(chart_data['stats'], f)
+s3_client.upload_file("aws_upload/charts/stats.json",
+                      BUCKET, "charts/stats.json")
+
+with open("aws_upload/charts/posts.json", "w+") as f:
+    json.dump(chart_data['posts'], f)
+s3_client.upload_file("aws_upload/charts/posts.json",
+                      BUCKET, "charts/posts.json")
+
+with open("aws_upload/charts/accounts.json", "w+") as f:
+    json.dump(chart_data['accounts'], f)
+s3_client.upload_file("aws_upload/charts/accounts.json",
+                      BUCKET, "charts/accounts.json")
+
+with open("aws_upload/charts/shares.json", "w+") as f:
+    json.dump(chart_data['shares'], f)
+s3_client.upload_file("aws_upload/charts/shares.json",
+                      BUCKET, "charts/shares.json")
+
+with open("aws_upload/charts/growth.json", "w+") as f:
+    json.dump(chart_data['growth'], f)
+s3_client.upload_file("aws_upload/charts/growth.json",
+                      BUCKET, "charts/growth.json")
+
+with open("aws_upload/charts/power.json", "w+") as f:
+    json.dump(get_week_purchase_power(), f)
+s3_client.upload_file("aws_upload/charts/power.json",
+                      BUCKET, "charts/power.json")
+
+with open("aws_upload/charts/distribution.json", "w+") as f:
+    json.dump(chart_data['distribution'], f)
+s3_client.upload_file("aws_upload/charts/distribution.json",
+                      BUCKET, "charts/distribution.json")
+
+with open("aws_upload/charts/estimates.json", "w+") as f:
+    json.dump(chart_data['estimates'], f)
+s3_client.upload_file("aws_upload/charts/estimates.json",
+                      BUCKET, "charts/estimates.json")
 
 todays_stats = {
     "sampled_accounts": stats_history["sampled_accounts"][-1],
@@ -418,6 +511,10 @@ todays_stats = {
     "trimmed_average": stats_history["trimmed_means"][-1],
     "trm_std_dev": stats_history["trm_std_devs"][-1],
 }
+
+# with open("aws_upload/all_stats_pre.json", "w+") as f:
+#     json.dump(todays_stats, f)
+# s3_client.upload_file("aws_upload/all_stats_pre.json", BUCKET, "all_stats_pre.json")
 
 with open("aws_upload/all_stats.json", "w+") as f:
     json.dump(todays_stats, f)

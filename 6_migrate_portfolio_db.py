@@ -5,16 +5,16 @@ from decimal import Decimal
 from boto3.dynamodb.conditions import Key, Attr
 import pytz
 
-anon_apes = [""]
+anon_apes = []
 
 pdb = tinydb.TinyDB("portfolio_db.json")
 sdb = tinydb.TinyDB("new_shares_db.json")
 q = tinydb.Query()
 
-aws_region = "us-west-2"
+aws_region = ""
 aws_access_key = ""
 aws_secret_access_key = ""
-BUCKET = "computershared-reddit-images"
+BUCKET = ""
 
 session = boto3.Session(aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_access_key)
 ddb = session.resource("dynamodb", region_name=aws_region)

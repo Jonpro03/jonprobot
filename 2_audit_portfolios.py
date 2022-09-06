@@ -27,6 +27,8 @@ def get_reddit_post(post_id, sdb):
         "GME_Computershare",
         "infinitypool",
         "Spielstopp",
+        "DRSyourGME",
+        "GMECanada",
         "GMEOrphans"
     ]
     
@@ -110,6 +112,13 @@ def audit_cv_failures():
     print(f"{len(posts)} posts to audit.")
     processed = 0
     for post in posts:
+        ignore_keywords = ["cohen", "vote", "amendment", "halt", "luld", "outbound", "nyse"]
+        if any(kw in post["image_text"].lower() for kw in ignore_keywords):
+        #if "Cohen" in post["image_text"] or "vote" in post["image_text"] or "amendment" in post["image_text"] or "split" in post["image_text"].lower() or "luld" in post["image_text"].lower() or "outbound" in post["image_text"].lower():
+            post["value"] = 0
+            sdb.update(post, doc_ids=[post.doc_id])
+            print(f'Deleting another one {post["image_text"]}')
+            continue
         if '.' in post["image_path"]:
             if not exists(post["image_path"]):
                 post["value"] = 0
@@ -142,6 +151,8 @@ def manual_audit():
         if 'n' in ans.lower():
             break
         post_id = input("Post ID: ")
+        if not post_id:
+            continue
         post = get_reddit_post(post_id, sdb)
         if post is not None:
             post["audited"] = True  
@@ -249,10 +260,11 @@ def identify_dupes():
             if post not in dupes:
                 continue
             for dupe in dupes:
-                dupe["duped_by"] = post["id"]
-                dupe["value"] = 0
-                sdb.update(dupe, doc_ids=[dupe.doc_id])
-                print(f'{dupe["url"]} marked as duped by {post["url"]}')
+                if post["id"] != dupe["id"]:
+                    dupe["duped_by"].append(post["id"])
+                    dupe["value"] = 0
+                    sdb.update(dupe, doc_ids=[dupe.doc_id])
+                    print(f'{dupe["url"]} marked as duped by {post["url"]}')
 
             # if dupes[0] not in identified:
             #     identified.extend(dupes)
@@ -264,6 +276,32 @@ def identify_dupes():
 
 earliest_update = 999999999999   
 if __name__ == "__main__":
+    found = 0
+    q = tinydb.Query()
+    pdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
+    results = pdb.search(q.id == q.duped_by)
+    for r in pdb.all():
+        if "acct_num" not in r:
+            r["acct_num"] = 0
+            pdb.update(r, doc_ids=[r.doc_id])
+            found += 1
+        # if "duped_by" not in r:
+        #     r["duped_by"] = []
+        #     pdb.update(r, doc_ids=[r.doc_id])
+        #     continue
+        # if r["id"] in r["duped_by"]:
+        #     r["duped_by"] = []
+        #     r["audited"] = False
+        #     r["value"] = None
+        #     pdb.update(r, doc_ids=[r.doc_id])
+        #     found += 1
+        # if type(r["duped_by"]) is str:
+        #     value = r["duped_by"]
+        #     r["duped_by"] = [value]
+        #     pdb.update(r, doc_ids=[r.doc_id])
+        #     found +=1
+    print(f"Found: {found}")
+    pdb.close()
     
     identify_dupes()
     audit_cv_failures()
