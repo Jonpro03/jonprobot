@@ -1,3 +1,15 @@
+body::before {
+  height: 58px;
+  content: "";
+  display: block;
+}
+
+.col-12::before {
+  height: 58px;
+  content: "";
+  display: block;
+}
+
 h2 {
   color: #E024A5
 }
@@ -10,10 +22,25 @@ p {
   text-indent: 20px;
 }
 
-#avgChartLogToggle:checked {
-  background-color: #A00;
+::selection {
+  background: #93186c; /* WebKit/Blink Browsers */
 }
-#avgChartLogToggle {
+::-moz-selection {
+  background: #93186c; /* Gecko Browsers */
+}
+
+a {
+  color: #E024A5;
+}
+
+.navbar-nav .active {
+  color: #E0A63A !important;
+}
+
+#chartLogToggle:checked {
+  background-color: #800;
+}
+#chartLogToggle {
   background-color: #333;
 }
 
