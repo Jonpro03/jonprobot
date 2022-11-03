@@ -3,6 +3,8 @@ var localeFormat = Intl.NumberFormat(navigator.language, {
   maximumFractionDigits: 2
 });
 
+let showOutstanding = false;
+
 function updateDonut(donut, donutData) {
   var data = [];
   var colors = [];
@@ -39,10 +41,10 @@ function updateDonut(donut, donutData) {
     labels.push("Retail DRS");
   }
 
-  if (donutData.remaining != 0) {
+  if (showOutstanding) {
     data.push(donutData.remaining);
     colors.push("#212529");
-    labels.push("Outstanding");
+    labels.push("Remaining");
   }
 
   if (donutData.inst_fuckery != 0) {
@@ -54,16 +56,24 @@ function updateDonut(donut, donutData) {
   donut.data.labels.pop();
   donut.data.datasets.forEach((dataset) => { dataset.data.pop() });
 
-  donut.data.datasets[0].data = data;
-  donut.data.labels = labels;
-  donut.data.datasets[0].backgroundColor = colors;
+  donut.data.datasets[0].data = data;// data.reverse();
+  donut.data.labels = labels;// labels.reverse();
+  donut.data.datasets[0].backgroundColor = colors;// colors.reverse();
+  donut.options.animation.animateScale = false;
 
-  donut.reset();
+  //donut.reset();
   donut.update();
 }
 
 function buildDonut() {
+
   var lockerCtx = document.getElementById('shareLocker');
+
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    lockerCtx.parentElement.style.maxHeight = "380px";
+  } else {
+    lockerCtx.parentElement.style.maxHeight = "800px";
+  }
 
   var shareLockerChart = new Chart(lockerCtx, {
     type: 'doughnut',
@@ -77,6 +87,11 @@ function buildDonut() {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        animateRotate: false,
+        animateScale: false
+      },
       tooltips: {
         callbacks: {
           label: function (tooltipItem, data) {
@@ -116,17 +131,28 @@ function updateDonutData(donutData, stats) {
   donutData.remaining = donutData.float - donutData.apeDrs;
   donutData.pctComplete = (donutData.apeDrs / donutData.float) * 100;
   document.getElementById("remainingValue").innerHTML = localeFormat.format(donutData.remaining);
-  document.getElementById("floatLocked").innerHTML = Math.round(donutData.pctComplete * 100)/100 + "%";
+  document.getElementById("remainingValuePct").innerHTML = Math.round(donutData.remaining / donutData.total_outstanding * 100) + '%';
+  document.getElementById("floatLocked").innerHTML = Math.round(donutData.pctComplete * 100) / 100 + "%";
+  document.getElementById("apeDrs").innerHTML = '- ' + localeFormat.format(donutData.apeDrs);
+  document.getElementById("apeDrsPct").innerHTML = '- ' + Math.round(donutData.apeDrs / donutData.total_outstanding * 100) + '%';
 }
 
 (async function () {
   'use strict'
   feather.replace({ 'aria-hidden': 'true' })
+
+  document.getElementById("etfSwitch").checked = false;
+  document.getElementById("mfSwitch").checked = false;
+  document.getElementById("instOtherBtn").checked = false;
+  document.getElementById("insiderSwitch").checked = false;
+  document.getElementById("stagnantSwitch").checked = false;
+  document.getElementById("apesSwitch").checked = false;
+
   Chart.defaults.color = '#EEE';
   Chart.defaults.defaultLineColor = '#AAA';
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  
+
   let datasource = urlParams.get("bot");
   datasource = datasource === null ? "scraper" : datasource
   document.getElementById("botSelector").value = datasource;
@@ -145,7 +171,7 @@ function updateDonutData(donutData, stats) {
   // document.getElementById("easterEgg").onclick = function () { window.location.href = "https://twitter.com/ryancohen"; }
 
   document.getElementById("botSelector").onchange = function () {
-    var url = window.location.href;
+    var url = window.location.href.replace("#", "");
     if (url.indexOf("?") > 0) {
       url = url.substring(0, url.indexOf("?"));
     }
@@ -170,8 +196,28 @@ function updateDonutData(donutData, stats) {
     return response.json();
   });
 
+  // Handle mobile site diff
+  if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    document.getElementById('dataBtn').classList.add('d-none');
+    document.getElementById('instOtherBtnLbl').innerText = 'Inst:';
+    document.getElementById('mfSwitchLbl').innerText = 'MFs:';
+    document.getElementById('stagnantSwitchLbl').innerText = 'Stagnant:';
+    document.getElementById('apesSwitchLbl').innerText = 'DRS:';
+    document.getElementById('remainingLbl').innerText = 'Remaining:';
+    document.getElementById('registeredLbl').innerText = 'Registered:';
+  }
+  
+  // Handle diff b/w drsbot and scraper
   if (datasource === "drsbot") {
     stats.trimmed_average = stats.trimmed_average / stats.accts_per_ape;
+    document.getElementById("acctsPerApe").innerHTML = stats.accts_per_ape.toLocaleString();
+    document.getElementById('rollingWindow').classList.add("d-none");
+    document.getElementById('chartsBtn').classList.add('d-none');
+    document.getElementById('dataBtn').classList.add('d-none');
+  } else {
+    document.getElementById("acctsPerApe").remove();
+    document.getElementById("acctsPerApeLabel").remove();
+    document.getElementById('rollingWindow').classList.remove("d-none");
   }
 
   const donutData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard?time=" + time, {
@@ -179,41 +225,14 @@ function updateDonutData(donutData, stats) {
   }).then(function (response) {
     return response.json();
   });
-
-  document.getElementById("asof").innerHTML = "As of " + new Date(donutData.last_update).toDateString().toLocaleString();
-
   //subtract stagnant insiders
   donutData.insider -= donutData.stagnant;
+
+  document.getElementById("asof").innerHTML = "Last Updated " + new Date(donutData.last_update).toDateString().toLocaleString();
 
   // Build donut
   updateDonutData(donutData, stats);
   var donut = buildDonut();
-  updateDonut(donut, donutData);
-
-  document.getElementById("outstandingValue").innerHTML = localeFormat.format(donutData.total_outstanding);
-  document.getElementById("insiderHolding").innerHTML = '- ' + localeFormat.format(donutData.insider);
-  document.getElementById("insiderHoldingPct").innerHTML = Math.round(donutData.insider / donutData.total_outstanding * 1000)/10 + '%';
-  document.getElementById("stagnantHolding").innerHTML = '- ' + localeFormat.format(donutData.stagnant);
-  document.getElementById("stagnantHoldingPct").innerHTML = Math.round(donutData.stagnant / donutData.total_outstanding * 1000)/10 + '%';
-  document.getElementById("institutionalETFs").innerHTML = '- ' + localeFormat.format(donutData.etfs);
-  document.getElementById("institutionalETFsPct").innerHTML = Math.round(donutData.etfs / donutData.total_outstanding * 1000)/10 + '%';
-  document.getElementById("institutionalMFs").innerHTML = '- ' + localeFormat.format(donutData.mfs);
-  document.getElementById("institutionalMFsPct").innerHTML = Math.round(donutData.mfs / donutData.total_outstanding * 1000)/10 + '%';
-  document.getElementById("institutionalOther").innerHTML = '- ' + localeFormat.format(donutData.inst_fuckery);
-  document.getElementById("institutionalOtherPct").innerHTML = Math.round(donutData.inst_fuckery / donutData.total_outstanding * 1000)/10 + '%';
-  document.getElementById("apeDrs").innerHTML = '- ' + localeFormat.format(donutData.apeDrs);
-  document.getElementById("apeDrsPct").innerHTML = Math.round(donutData.apeDrs / donutData.total_outstanding * 1000)/10 + '%';
-  document.getElementById("apeDrsTotal").innerHTML = donutData.apeDrs.toLocaleString();
-  document.getElementById("remainingValue").innerHTML = localeFormat.format(donutData.remaining);
-  document.getElementById("remainingValuePct").innerHTML = Math.round(donutData.remaining / donutData.total_outstanding * 1000)/10 + '%';
-
-  document.getElementById("donutDataEtfs").innerHTML = donutData.etfs;
-  document.getElementById("donutDataMfs").innerHTML = donutData.mfs;
-  document.getElementById("donutDataInst").innerHTML = donutData.inst_fuckery;
-  document.getElementById("donutDataInsider").innerHTML = donutData.insider;
-  document.getElementById("donutDataStagnant").innerHTML = donutData.stagnant;
-  document.getElementById("donutDataApe").innerHTML = donutData.apeDrs;
-
 
   function handleHoldingToggle() {
     let etfEnabled = document.getElementById("etfSwitch").checked;
@@ -231,52 +250,53 @@ function updateDonutData(donutData, stats) {
     let apeObj = document.getElementById("donutDataApe");
 
     if (etfEnabled) {
-      document.getElementById("institutionalETFs").classList.remove("text-muted");
+      document.getElementById("ETF").classList.remove("text-muted");
       donutData.etfs = parseFloat(etfObj.innerHTML);
     } else {
-      document.getElementById("institutionalETFs").classList.add("text-muted");
+      document.getElementById("ETF").classList.add("text-muted");
       donutData.etfs = 0;
     }
 
     if (mfEnabled) {
-      document.getElementById("institutionalMFs").classList.remove("text-muted");
+      document.getElementById("MF").classList.remove("text-muted");
       donutData.mfs = parseFloat(mfsObj.innerHTML);
     } else {
-      document.getElementById("institutionalMFs").classList.add("text-muted");
+      document.getElementById("MF").classList.add("text-muted");
       donutData.mfs = 0;
     }
 
     if (otherEnabled) {
-      document.getElementById("institutionalOther").classList.remove("text-muted");
+      document.getElementById("IO").classList.remove("text-muted");
       donutData.inst_fuckery = parseFloat(otherObj.innerHTML);
     } else {
-      document.getElementById("institutionalOther").classList.add("text-muted");
+      document.getElementById("IO").classList.add("text-muted");
       donutData.inst_fuckery = 0;
     }
 
     if (insiderEnabled) {
-      document.getElementById("insiderHolding").classList.remove("text-muted");
+      document.getElementById("I").classList.remove("text-muted");
       donutData.insider = parseFloat(insiderObj.innerHTML);
     } else {
-      document.getElementById("insiderHolding").classList.add("text-muted");
+      document.getElementById("I").classList.add("text-muted");
       donutData.insider = 0;
-      document.getElementById("stagnantHolding").classList.add("text-muted");
+      document.getElementById("IS").classList.add("text-muted");
       donutData.stagnant = 0;
     }
 
     if (stagnantEnabled) {
-      document.getElementById("stagnantHolding").classList.remove("text-muted");
+      document.getElementById("IS").classList.remove("text-muted");
       donutData.stagnant = parseFloat(stagnantObj.innerHTML);
     } else {
-      document.getElementById("stagnantHolding").classList.add("text-muted");
+      document.getElementById("IS").classList.add("text-muted");
       donutData.stagnant = 0;
     }
 
     if (apeEnabled) {
-      document.getElementById("apeDrs").classList.remove("text-muted");
+      updateDonutData(donutData, stats);
+      document.getElementById("R").classList.remove("text-muted");
       donutData.apeDrs = parseFloat(apeObj.innerHTML);
     } else {
-      document.getElementById("apeDrs").classList.add("text-muted");
+      document.getElementById("R").classList.add("text-muted");
       donutData.apeDrs = 0;
     }
 
@@ -284,16 +304,14 @@ function updateDonutData(donutData, stats) {
     updateDonut(donut, donutData);
   }
 
-  handleHoldingToggle();
+  document.getElementById("etfSwitch").addEventListener("change", handleHoldingToggle);
+  document.getElementById("mfSwitch").addEventListener("change", handleHoldingToggle);
+  document.getElementById("instOtherBtn").addEventListener("change", handleHoldingToggle);
+  document.getElementById("insiderSwitch").addEventListener("change", handleHoldingToggle);
+  document.getElementById("stagnantSwitch").addEventListener("change", handleHoldingToggle);
+  document.getElementById("apesSwitch").addEventListener("change", handleHoldingToggle);
 
-  document.getElementById("etfSwitch").addEventListener("click", handleHoldingToggle);
-  document.getElementById("mfSwitch").addEventListener("click", handleHoldingToggle);
-  document.getElementById("instOtherBtn").addEventListener("click", handleHoldingToggle);
-  document.getElementById("insiderSwitch").addEventListener("click", handleHoldingToggle);
-  document.getElementById("stagnantSwitch").addEventListener("click", handleHoldingToggle);
-  document.getElementById("apesSwitch").addEventListener("click", handleHoldingToggle);
-
-  // Statistics
+  // Setup the page
   document.getElementById("sampledAccounts").innerHTML = stats.sampled_accounts.toLocaleString() + " accounts";
   document.getElementById("identifiedShares").innerHTML = stats.sampled_shares.toLocaleString() + " shares";
   let sampleSize = (stats.sampled_accounts / donutData.computershare_accounts) * 100;
@@ -339,21 +357,60 @@ function updateDonutData(donutData, stats) {
     updateDonutData(donutData, stats);
     updateDonut(donut, donutData);
   };
+  
+  document.getElementById("outstandingValue").innerHTML = localeFormat.format(donutData.total_outstanding);
+  document.getElementById("insiderHolding").innerHTML = '- ' + localeFormat.format(donutData.insider);
+  document.getElementById("insiderHoldingPct").innerHTML = '- ' + Math.round(donutData.insider / donutData.total_outstanding * 100) + '%';
+  document.getElementById("stagnantHolding").innerHTML = '- ' + localeFormat.format(donutData.stagnant);
+  document.getElementById("stagnantHoldingPct").innerHTML = '- ' + Math.round(donutData.stagnant / donutData.total_outstanding * 100) + '%';
+  document.getElementById("institutionalETFs").innerHTML = '- ' + localeFormat.format(donutData.etfs);
+  document.getElementById("institutionalETFsPct").innerHTML = '- ' + Math.round(donutData.etfs / donutData.total_outstanding * 100) + '%';
+  document.getElementById("institutionalMFs").innerHTML = '- ' + localeFormat.format(donutData.mfs);
+  document.getElementById("institutionalMFsPct").innerHTML = '- ' + Math.round(donutData.mfs / donutData.total_outstanding * 100) + '%';
+  document.getElementById("institutionalOther").innerHTML = '- ' + localeFormat.format(donutData.inst_fuckery);
+  document.getElementById("institutionalOtherPct").innerHTML = '- ' + Math.round(donutData.inst_fuckery / donutData.total_outstanding * 100) + '%';
+  document.getElementById("apeDrs").innerHTML = '- ' + localeFormat.format(donutData.apeDrs);
+  document.getElementById("apeDrsPct").innerHTML = '- ' + Math.round(donutData.apeDrs / donutData.total_outstanding * 100) + '%';
+  document.getElementById("apeDrsTotal").innerHTML = donutData.apeDrs.toLocaleString();
+  document.getElementById("remainingValue").innerHTML = localeFormat.format(donutData.remaining);
+  document.getElementById("remainingValuePct").innerHTML = Math.round(donutData.remaining / donutData.total_outstanding * 100) + '%';
 
-  if (datasource === "drsbot") {
-    document.getElementById("acctsPerApe").innerHTML = stats.accts_per_ape.toLocaleString();
-    document.getElementById('rollingWindow').classList.add("d-none");
-  } else {
-    document.getElementById("acctsPerApe").remove();
-    document.getElementById("acctsPerApeLabel").remove();
-    document.getElementById('rollingWindow').classList.remove("d-none");
-  }
+  document.getElementById("donutDataEtfs").innerHTML = donutData.etfs;
+  document.getElementById("donutDataMfs").innerHTML = donutData.mfs;
+  document.getElementById("donutDataInst").innerHTML = donutData.inst_fuckery;
+  document.getElementById("donutDataInsider").innerHTML = donutData.insider;
+  document.getElementById("donutDataStagnant").innerHTML = donutData.stagnant;
+  document.getElementById("donutDataApe").innerHTML = donutData.apeDrs;
+
+  // Animate the site
+  document.getElementById("avgSelector").dispatchEvent(new Event('change'));
+  await new Promise(r => setTimeout(r, 600));
+  document.getElementById("mfSwitch").checked = true;
+  document.getElementById("mfSwitch").dispatchEvent(new Event('change'));
+  await new Promise(r => setTimeout(r, 600));
+  document.getElementById("etfSwitch").checked = true;
+  document.getElementById("etfSwitch").dispatchEvent(new Event('change'));
+  await new Promise(r => setTimeout(r, 600));
+  document.getElementById("insiderSwitch").checked = true;
+  document.getElementById("insiderSwitch").dispatchEvent(new Event('change'));
+  await new Promise(r => setTimeout(r, 600));
+  document.getElementById("stagnantSwitch").checked = true;
+  document.getElementById("stagnantSwitch").dispatchEvent(new Event('change'));
+  await new Promise(r => setTimeout(r, 600));
+  document.getElementById("apesSwitch").checked = true;
+  document.getElementById("apesSwitch").dispatchEvent(new Event('change'));
+  await new Promise(r => setTimeout(r, 600));
+  showOutstanding = true;
+  document.getElementById("instOtherBtn").checked = true;
+  document.getElementById("instOtherBtn").dispatchEvent(new Event('change'));  
+  await new Promise(r => setTimeout(r, 600));
+
 
   let t = new bootstrap.Toast(document.getElementById("alertToast"));
   var alerted = localStorage.getItem('hiring') || '';
   if (alerted != "alerted") {
     t.show();
     localStorage.setItem("hiring", "alerted");
-  
+
   }
 })()

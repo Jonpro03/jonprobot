@@ -3,7 +3,7 @@
 
   const donateTitle = document.createElement('p');
   donateTitle.classList.add('text-muted');
-  donateTitle.textContent = "Want to buy me a coffee on Layer2?"
+  donateTitle.textContent = "Want to buy me a coffee on Ethereum Layer2?"
   f.appendChild(donateTitle);
   
   
@@ -46,3 +46,5 @@
     return new bootstrap.Popover(popoverTriggerEl)
   });
 })();
+
+// document.getElementById("easterEgg").onclick = function () { window.location.href = "https://www.reddit.com/user/jonpro03/comments/xdq22u/happy_birthday_computersharednet_it_was_1_year/"; }

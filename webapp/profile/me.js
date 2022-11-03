@@ -56,17 +56,8 @@ async function getUserFromReddit() {
   localStorage.removeItem('redditUser');
   const ape = await getUserFromReddit();
   if (localStorage.getItem('redditUser') === null) {
-    window.location.href = "../";
+    window.location.href = "/login/";
   }
-
-  document.getElementById("gsWallet").onclick = function () { 
-    navigator.clipboard.writeText("0x82E62Ad9EC7186299059C65194FF0B817CeD2e33");
-  };
-
-  document.getElementById("lrWallet").onclick = function () { 
-    navigator.clipboard.writeText("jonpro03.loopring.eth");
-  };
-  
 
   var redditData = await fetch("https://www.reddit.com/user/"+ ape + "/about.json", {
     mode: 'cors'

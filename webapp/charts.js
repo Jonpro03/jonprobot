@@ -1,6 +1,14 @@
 var zoomDays = 180;
-if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-  zoomDays = 30;
+
+function chartResize() {
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    zoomDays = 30;
+    document.getElementById("chartCanvas").setAttribute('height', window.innerHeight * 0.55);
+    document.getElementById("chartCanvas").setAttribute('width', window.innerWidth * 0.75);
+  } else {
+    document.getElementById("chartCanvas").setAttribute('height', window.innerHeight * 0.85);
+    document.getElementById("chartCanvas").setAttribute('width', window.innerWidth * 0.85);
+  }
 }
 
 var localeNum = Intl.NumberFormat(navigator.language, {
@@ -15,7 +23,7 @@ async function buildEstimatesChart(labels) {
     return response.json();
   });
 
-  var ctx = document.getElementById("estimatesChart");
+  var ctx = document.getElementById("chartCanvas");
   var chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -260,10 +268,102 @@ async function buildEstimatesChart(labels) {
             null,
             null,
             null,
-            12700000 * 4
+            12700000 * 4,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            71300000
           ]
         },
         {
+          hidden: true,
           data: estimatesData.averages,
           label: "Average",
           lineTension: 0.4,
@@ -273,6 +373,7 @@ async function buildEstimatesChart(labels) {
           pointBackgroundColor: '#93186c'
         },
         {
+          hidden: true,
           data: estimatesData.medians,
           label: "Median",
           lineTension: 0.4,
@@ -310,9 +411,18 @@ async function buildEstimatesChart(labels) {
       scales: {
         x: {
           stacked: true,
+          title: {
+            display: true,
+            text: "Date"
+          }
         },
         y: {
           type: "linear",
+          min: 0,
+          title: {
+            display: true,
+            text: "# of Shares Direct Registered"
+          },
           ticks: {
             callback: (val) => (localeNum.format(val))
           }
@@ -377,7 +487,7 @@ async function buildSharesChart(labels) {
     return response.json();
   });
 
-  var ctx = document.getElementById("sharesChart");
+  var ctx = document.getElementById("chartCanvas");
   var chart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -386,7 +496,7 @@ async function buildSharesChart(labels) {
       }),
       datasets: [
         {
-          yAxisID: "yline",
+          yAxisID: "y",
           label: "Total",
           data: data.cumulative,
           backgroundColor: '#11979C',
@@ -417,7 +527,11 @@ async function buildSharesChart(labels) {
       responsive: true,
       scales: {
         x: {
-          stacked: true
+          stacked: true,
+          title: {
+            display: true,
+            text: "Date"
+          },
         },
         ybar: {
           position: "right",
@@ -425,14 +539,22 @@ async function buildSharesChart(labels) {
           min: 0,
           ticks: {
             callback: (val) => (localeNum.format(val))
-          }
+          },
+          title: {
+            display: true,
+            text: "Daily Shares Counted"
+          },
         },
-        yline: {
+        y: {
           position: "left",
           stacked: true,
           ticks: {
             callback: (val) => (localeNum.format(val)),
             color: "#11979C"
+          },
+          title: {
+            display: true,
+            text: "Cumulative Shares Counted"
           },
         },
       },
@@ -479,7 +601,7 @@ async function buildStatsChart(labels) {
     return response.json();
   });
 
-  var ctx = document.getElementById("statsChart");
+  var ctx = document.getElementById("chartCanvas");
   var chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -554,12 +676,20 @@ async function buildStatsChart(labels) {
       scales: {
         x: {
           stacked: true,
+          title: {
+            display: true,
+            text: "Date"
+          },
         },
         y: {
           type: "linear",
           ticks: {
             callback: (val) => (val.toLocaleString())
-          }
+          },
+          title: {
+            display: true,
+            text: "Shares"
+          },
         },
       },
       legend: {
@@ -614,6 +744,115 @@ async function buildStatsChart(labels) {
   return chart;
 };
 
+async function buildPostsChart(labels) {
+  let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=posts", {
+    mode: 'cors'
+  }).then(function (response) {
+    return response.json();
+  });
+
+  var ctx = document.getElementById("chartCanvas");
+  var chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels.map(function (l) {
+        return new Date(l).toLocaleDateString();
+      }),
+      datasets: [
+        {
+          yAxisID: "y",
+          label: "Total",
+          data: data.cumulative,
+          backgroundColor: '#93186c',
+          borderColor: '#93186c',
+          backgroundColor: 'transparent',
+          type: "line"
+        },
+        {
+          yAxisID: "ybar",
+          label: "Daily",
+          data: data.daily,
+          backgroundColor: '#11979C'
+        }
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Reddit Activity'
+      },
+      responsive: true,
+      scales: {
+        x: {
+          stacked: true,
+          title: {
+            display: true,
+            text: "Date"
+          },
+        },
+        ybar: {
+          position: "right",
+          stacked: true,
+          min: 0,
+          ticks: {
+            callback: (val) => (localeNum.format(val)),
+            color: "#11979C"
+          },
+          title: {
+            display: true,
+            text: "Daily Posts"
+          },
+        },
+        y: {
+          position: "left",
+          stacked: true,
+          ticks: {
+            callback: (val) => (localeNum.format(val)),
+            color: "#E024A5"
+          },
+          title: {
+            display: true,
+            text: "Total Posts"
+          },
+        },
+      },
+      tooltips: {
+        callbacks: {
+          title: function (tooltipItem, data) {
+            return new Date(tooltipItem[0].label).toLocaleDateString();
+          },
+          label: function (tooltipItem, data) {
+            var value = parseInt(tooltipItem.value);
+            var label = data.datasets[tooltipItem.datasetIndex].label;
+            return label + ": " + value.toLocaleString();
+          }
+        }
+      },
+      plugins: {
+        zoom: {
+          pan: {
+            mode: "x",
+            enabled: true
+          },
+          zoom: {
+            mode: "x",
+            wheel: {
+              enabled: true,
+            },
+            pinch: {
+              enabled: true,
+            },
+          }
+        }
+      }
+    }
+  });
+  chart.zoomScale('x', { min: labels.length - zoomDays, max: labels.length }, "easeOutSine");
+  chart.update();
+  return chart;
+};
+
+
 async function buildGrowthChart() {
   let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=growth", {
     mode: 'cors'
@@ -621,7 +860,13 @@ async function buildGrowthChart() {
     return response.json();
   });
 
-  var ctx = document.getElementById("growthChart");
+  // let power = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=power", {
+  //   mode: 'cors'
+  // }).then(function (response) {
+  //   return response.json();
+  // });
+
+  var ctx = document.getElementById("chartCanvas");
   var chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -649,7 +894,11 @@ async function buildGrowthChart() {
         x: {
           ticks: {
             callback: (index) => new Date(Object.keys(data.weekly_total_account_growth_pct)[index]).toLocaleDateString()
-          }
+          },
+          title: {
+            display: true,
+            text: "Week Of"
+          },
         },
         y: {
           type: "linear",
@@ -657,7 +906,11 @@ async function buildGrowthChart() {
           min: 0,
           ticks: {
             callback: (val) => Math.round(val * 1000) / 10 + "%"
-          }
+          },
+          title: {
+            display: true,
+            text: "Percent Growth"
+          },
         },
       },
       legend: {
@@ -689,19 +942,19 @@ async function buildPurchasePowerChart() {
     return response.json();
   });
 
-  var ctx = document.getElementById("powerChart");
+  var ctx = document.getElementById("chartCanvas");
   var chart = new Chart(ctx, {
     type: 'line',
     data: {
       datasets: [
         {
           data: data,
-          label: "Purchasing Power (USD)",
+          label: "Purchasing Power (USD/wk)",
           lineTension: 0.4,
           backgroundColor: 'transparent',
-          borderColor: '#E024A5',
+          borderColor: '#289418',
           borderWidth: 2,
-          pointBackgroundColor: '#93186C'
+          pointBackgroundColor: '#289418'
         },
       ]
     },
@@ -714,14 +967,22 @@ async function buildPurchasePowerChart() {
         x: {
           ticks: {
             callback: (index) => new Date(Object.keys(data)[index]).toLocaleDateString()
-          }
+          },
+          title: {
+            display: true,
+            text: "Week Ending"
+          },
         },
         y: {
           type: "linear",
           min: 0,
           ticks: {
             callback: (val) => "$" + Math.round(val)
-          }
+          },
+          title: {
+            display: true,
+            text: "USD per week"
+          },
         },
       },
       legend: {
@@ -753,7 +1014,7 @@ async function buildDistributionChart() {
     return response.json();
   });
 
-  var ctx = document.getElementById("distributionChart");
+  var ctx = document.getElementById("chartCanvas");
   var chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -775,19 +1036,19 @@ async function buildDistributionChart() {
       },
       scales: {
         y: {
-          scaleLabel: {
-            display: true,
-            labelString: "Number of Accounts"
-          },
           ticks: {
             beginAtZero: false
-          }
+          },
+          title: {
+            display: true,
+            text: "Number of Accounts"
+          },
         },
         x: {
-          scaleLabel: {
+          title: {
             display: true,
-            labelString: "Shares >="
-          }
+            text: "Minimum Shares"
+          },
         }
       },
       legend: {
@@ -817,7 +1078,7 @@ async function buildHighscoreChart() {
     return response.json();
   });
 
-  var hsScatterCtx = document.getElementById('highScoreChart');
+  var hsScatterCtx = document.getElementById('chartCanvas');
   var hsScatterChart = new Chart(hsScatterCtx, {
     type: 'line',
     data: {
@@ -831,8 +1092,10 @@ async function buildHighscoreChart() {
             label: "Scatter",
             data: hsData.scatter,
             pointBackgroundColor: '#E024A5',
+            borderColor: '#93186c',
             color: '#93186c',
-            type: 'scatter'
+            type: 'scatter',
+            pointRadius: 2
           },
           {
             xAxisID: "line",
@@ -842,7 +1105,8 @@ async function buildHighscoreChart() {
             lineTension: 0.4,
             borderColor: '#F0DC46',
             borderWidth: 2,
-            backgroundColor: 'transparent'
+            backgroundColor: 'transparent',
+            pointRadius: 0
           }
         ]
     },
@@ -856,7 +1120,11 @@ async function buildHighscoreChart() {
           ticks: {
             beginAtZero: true,
             callback: (val) => (localeNum.format(val))
-          }
+          },
+          title: {
+            display: true,
+            text: "Number of Accounts"
+          },
         },
         line: {
           position: 'bottom',
@@ -889,17 +1157,18 @@ async function buildHighscoreChart() {
   return hsScatterChart;
 };
 
-async function loadCharts() {
-  'use strict'
+(async function() {
 
+})();
+
+async function setupCharts() {
   Chart.defaults.color = '#EEE';
   Chart.defaults.borderColor = '#444';
+  Chart.defaults.font.family = 'Courier New';
+  Chart.defaults.font.size = '16';
 
-  let datasource = document.getElementById("botSelector").value;
-  if (datasource === "drsbot") {
-    document.getElementById("chartsRow").remove();
-    return;
-  }
+  // Setup screen
+  chartResize();
 
   let labels = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=labels", {
     mode: 'cors'
@@ -907,30 +1176,86 @@ async function loadCharts() {
     return response.json();
   });
 
-  var estimatesChart = await buildEstimatesChart(labels);
-  var sharesChart = await buildSharesChart(labels);
-  var statsChart = await buildStatsChart(labels);
-  await buildGrowthChart();
-  var histogramChart = await buildDistributionChart();
-  var hsScatterChart = await buildHighscoreChart();
-  var purPowChart = await buildPurchasePowerChart();
+  let chart = null;
 
-
-  document.getElementById("avgChartLogToggle").classList.remove("checked");
-  document.getElementById("avgChartLogToggle").onclick = function (event) {
-    estimatesChart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
-    estimatesChart.update();
-    statsChart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
-    statsChart.update();
-    sharesChart.options.scales["yline"].type = event.target.checked ? "logarithmic" : "linear";
-    sharesChart.update();
-    histogramChart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
-    histogramChart.update();
-    hsScatterChart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
-    hsScatterChart.update();
-    purPowChart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
-    purPowChart.update();
+  document.getElementById("estimatesChartBtn").onclick = async () => {
+    chart?.destroy();
+    chartResize();
+    document.getElementById("chartModalTitle").innerHTML = "DRS Estimates";
+    document.getElementById("chartType").innerText = "estimates";
+    new bootstrap.Modal(document.getElementById("chartModal")).show();
+    chart = await buildEstimatesChart(labels);
   };
+
+  document.getElementById("sharesChartBtn").onclick = async () => {
+    chart?.destroy();
+    chartResize();
+    document.getElementById("chartModalTitle").innerHTML = "Sampled Shares";
+    document.getElementById("chartType").innerText = "shares";
+    new bootstrap.Modal(document.getElementById("chartModal")).show();
+    chart = await buildSharesChart(labels);
+  };
+
+  document.getElementById("hsScatterChartBtn").onclick = async () => {
+    chart?.destroy();
+    chartResize();
+    document.getElementById("chartModalTitle").innerHTML = "Account Numbers";
+    document.getElementById("chartType").innerText = "highscores";
+    new bootstrap.Modal(document.getElementById("chartModal")).show();
+    chart = await buildHighscoreChart();
+  };
+
+  document.getElementById("statsChartBtn").onclick = async () => {
+    chart?.destroy();
+    chartResize();
+    document.getElementById("chartModalTitle").innerHTML = "Sample Statistics";
+    document.getElementById("chartType").innerText = "statistics";
+    new bootstrap.Modal(document.getElementById("chartModal")).show();
+    chart = await buildStatsChart(labels);
+  };
+
+  document.getElementById("postsChartBtn").onclick = async () => {
+    chart?.destroy();
+    chartResize();
+    document.getElementById("chartModalTitle").innerHTML = "Reddit Activity";
+    document.getElementById("chartType").innerText = "posts";
+    new bootstrap.Modal(document.getElementById("chartModal")).show();
+    chart = await buildPostsChart(labels);
+  };
+
+  document.getElementById("histogramChartBtn").onclick = async () => {
+    chart?.destroy();
+    chartResize();
+    document.getElementById("chartModalTitle").innerHTML = "Sample Set";
+    document.getElementById("chartType").innerText = "distribution";
+    new bootstrap.Modal(document.getElementById("chartModal")).show();
+    chart = await buildDistributionChart();
+  };
+
+  document.getElementById("growthChartBtn").onclick = async () => {
+    chart?.destroy();
+    chartResize();
+    document.getElementById("chartModalTitle").innerHTML = "Account Growth";
+    document.getElementById("chartType").innerText = "growth";
+    new bootstrap.Modal(document.getElementById("chartModal")).show();
+    chart = await buildGrowthChart();
+  };
+
+  document.getElementById("purPowChartBtn").onclick = async () => {
+    chart?.destroy();
+    chartResize();
+    document.getElementById("chartModalTitle").innerHTML = "DRS Power";
+    document.getElementById("chartType").innerText = "power";
+    new bootstrap.Modal(document.getElementById("chartModal")).show();
+    chart = await buildPurchasePowerChart();
+  };
+
+  document.getElementById("chartLogToggle").classList.remove("checked");
+  document.getElementById("chartLogToggle").onclick = function (event) {
+    chart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
+    chart.update();
+  };
+
 };
 
-setTimeout(async () => { await loadCharts(); }, 2000);
+window.onload = async () => { await setupCharts() };
