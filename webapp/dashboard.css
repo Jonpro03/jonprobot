@@ -1,3 +1,15 @@
+body::before {
+  height: 58px;
+  content: "";
+  display: block;
+}
+
+.col-12::before {
+  height: 58px;
+  content: "";
+  display: block;
+}
+
 h2 {
   color: #E024A5
 }
@@ -12,6 +24,7 @@ p {
 
 ::selection {
   background: #93186c; /* WebKit/Blink Browsers */
+<<<<<<< HEAD
 }
 ::-moz-selection {
   background: #93186c; /* Gecko Browsers */
@@ -28,6 +41,24 @@ a {
 #chartLogToggle:checked {
   background-color: #800;
 }
+=======
+}
+::-moz-selection {
+  background: #93186c; /* Gecko Browsers */
+}
+
+a {
+  color: #E024A5;
+}
+
+.navbar-nav .active {
+  color: #E0A63A !important;
+}
+
+#chartLogToggle:checked {
+  background-color: #800;
+}
+>>>>>>> main
 #chartLogToggle {
   background-color: #333;
 }

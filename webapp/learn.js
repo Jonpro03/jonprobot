@@ -246,7 +246,7 @@ showHelpModal = function (articleName) {
       break;
 
     case "metrics":
-      helpModalTitle.innerText = "Metrics";
+      helpModalTitle.innerText = "Sample Metrics";
       helpModalBody.innerHTML = `
       <strong>Average:</strong> Sum of all account balances, divided by the number of accounts.
       </br>
@@ -259,6 +259,35 @@ showHelpModal = function (articleName) {
       `;
       break;
 
+    case "posts":
+      helpModalTitle.innerText = "Reddit Activity";
+      helpModalBody.innerHTML = `<p>
+      This chart illustrates DRS image activity on Reddit over time.
+      
+      <img src="site-images/posts.png?a=204" class="card-img-top" alt="statistics chart">
+      <strong>X-Axis:</strong> Date
+      </br>
+      <strong>Left Y-Axis:</strong> Number of Shareholders on Reddit
+      </br>
+      <strong>Right Y-Axis:</strong> Number of Posts on Reddit
+      </p>
+      <p>
+      In Blue, the daily count of posts identified as Computershare portfolio images are displayed as a bar graph.
+      </br>
+      In Pink, the total number of Active Shareholders is shown as a line graph. An Active Shareholder is one who has
+      posted a screenshot of their Computershare Portfolio to Reddit in the last 180 days.
+      </br>
+      In Red, the total number of Stale Shareholders is shown as a line graph. A Stale Shareholder is one who has
+      <strong>NOT</strong> posted a screenshot of their Computershare Portfolio to Reddit in the last 180 days.
+      </br>
+      <a href="./faqs/#2.5">Learn More</a>.
+      </p>
+      <p>
+      This chart is zoomed in to fit your device's screen. Zoom with mousewheel or pinching. Scroll by dragging left or right.
+      </p>
+      `;
+      break;
+
   }
 
   var modal = new bootstrap.Modal(document.getElementById('helpModal'));
@@ -267,66 +296,11 @@ showHelpModal = function (articleName) {
 
 document.getElementById('learnCalc').onclick = () => { showHelpModal("calculator") };
 document.getElementById('learnMetrics').onclick = () => { showHelpModal("metrics") };
-document.getElementById('learnDataset').onclick = () => {
+document.getElementById('learnDataset').onclick = () => { 
   new bootstrap.Modal(document.getElementById('stats')).show();
-};
+ };
 
-document.getElementById('learnChart').addEventListener('click', () => {
+ document.getElementById('learnChart').addEventListener('click', () => {
   var chart = document.getElementById('chartType').innerText;
   showHelpModal(chart);
-});
-
-// Sneaky easter egg
-var pattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-var chars = ['⬆️', '⬆️', '⬇️', '⬇️', '⬅️', '➡️', '⬅️', '➡️', '🅱️', '🅰️']
-var phrases = ['the', 'matrix', 'has', 'you', ' ', 'follow', 'the', 'white', 'rabbit', 'enter the matrix']
-
-var letters = '▒╠⬆⬇⬅畐畅畆畇畈畉畊畋界畍畎畏畐DRSDRSDRSDRSDRSDRSDRSDRSDRS';
-letters = letters.split('');
-var fontSize = 10;
-
-var canvas = document.getElementById('shareLocker');
-var ctx = canvas.getContext('2d');
-var columns = canvas.width / fontSize;
-var drops = [];
-for (var i = 0; i < columns; i++) {
-  drops[i] = 1;
-}
-var current = 0;
-
-function draw() {
-  ctx.fillStyle = 'rgba(0, 0, 0, .1)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  for (var i = 0; i < drops.length; i++) {
-    var text = letters[Math.floor(Math.random() * letters.length)];
-    ctx.fillStyle = '#0f0';
-    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-    drops[i]++;
-    if (drops[i] * fontSize > canvas.height && Math.random() > .95) {
-      drops[i] = 0;
-    }
-  }
-}
-
-var konamiHandler = async function (event) {
-  if (!pattern.includes(event.key)) {
-    return;
-  }
-  if (pattern.indexOf(event.key) < 0 || event.key !== pattern[current]) {
-    current = 0;
-    document.getElementById('apeDrs').innerText = "❌ 🍦AHmE";
-    return;
-  }
-  document.getElementById('apeDrsPct').innerText = chars[current];
-  document.getElementById('apeDrs').innerText = `Lives: ${current}`;
-  document.getElementById('apesSwitchLbl').innerText = phrases[current];
-  current++;
-  if (pattern.length === current) {
-    setInterval(draw, 45);
-    current = 0;
-    canvas.addEventListener('click', ()=>{window.location.href = "https://www.computershared.net/supermonkeyo/"});
-    
-  }
-
-};
-document.addEventListener('keydown', konamiHandler, false);
+ });
