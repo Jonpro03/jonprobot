@@ -700,8 +700,6 @@ async function buildStatsChart(labels) {
             display: true,
             text: "Shares"
           },
-<<<<<<< HEAD
-=======
         },
         yPct: {
           type: "linear",
@@ -716,7 +714,6 @@ async function buildStatsChart(labels) {
             display: true,
             text: "Trim Percent"
           },
->>>>>>> main
         },
       },
       legend: {
@@ -788,12 +785,6 @@ async function buildPostsChart(labels) {
       datasets: [
         {
           yAxisID: "y",
-<<<<<<< HEAD
-          label: "Total",
-          data: data.cumulative,
-          backgroundColor: '#93186c',
-          borderColor: '#93186c',
-=======
           label: "Active Shareholders",
           data: data.active_users,
           backgroundColor: '#93186c',
@@ -807,17 +798,12 @@ async function buildPostsChart(labels) {
           data: data.stale_users,
           backgroundColor: '#A11F12',
           borderColor: '#871B0F',
->>>>>>> main
           backgroundColor: 'transparent',
           type: "line"
         },
         {
           yAxisID: "ybar",
-<<<<<<< HEAD
-          label: "Daily",
-=======
           label: "Daily Posts",
->>>>>>> main
           data: data.daily,
           backgroundColor: '#11979C'
         }
@@ -852,16 +838,6 @@ async function buildPostsChart(labels) {
         },
         y: {
           position: "left",
-<<<<<<< HEAD
-          stacked: true,
-          ticks: {
-            callback: (val) => (localeNum.format(val)),
-            color: "#E024A5"
-          },
-          title: {
-            display: true,
-            text: "Total Posts"
-=======
           min: 0,
           max: 25000,
           ticks: {
@@ -871,7 +847,6 @@ async function buildPostsChart(labels) {
           title: {
             display: true,
             text: "Number of Shareholders"
->>>>>>> main
           },
         },
       },
@@ -1217,15 +1192,9 @@ async function buildHighscoreChart() {
 };
 
 (async function() {
-<<<<<<< HEAD
 
 })();
 
-=======
-
-})();
-
->>>>>>> main
 async function setupCharts() {
   Chart.defaults.color = '#EEE';
   Chart.defaults.borderColor = '#444';
@@ -1250,7 +1219,6 @@ async function setupCharts() {
     document.getElementById("chartType").innerText = "estimates";
     new bootstrap.Modal(document.getElementById("chartModal")).show();
     chart = await buildEstimatesChart(labels);
-<<<<<<< HEAD
   };
 
   document.getElementById("sharesChartBtn").onclick = async () => {
@@ -1322,79 +1290,6 @@ async function setupCharts() {
     chart.update();
   };
 
-=======
-  };
-
-  document.getElementById("sharesChartBtn").onclick = async () => {
-    chart?.destroy();
-    chartResize();
-    document.getElementById("chartModalTitle").innerHTML = "Sampled Shares";
-    document.getElementById("chartType").innerText = "shares";
-    new bootstrap.Modal(document.getElementById("chartModal")).show();
-    chart = await buildSharesChart(labels);
-  };
-
-  document.getElementById("hsScatterChartBtn").onclick = async () => {
-    chart?.destroy();
-    chartResize();
-    document.getElementById("chartModalTitle").innerHTML = "Account Numbers";
-    document.getElementById("chartType").innerText = "highscores";
-    new bootstrap.Modal(document.getElementById("chartModal")).show();
-    chart = await buildHighscoreChart();
-  };
-
-  document.getElementById("statsChartBtn").onclick = async () => {
-    chart?.destroy();
-    chartResize();
-    document.getElementById("chartModalTitle").innerHTML = "Sample Statistics";
-    document.getElementById("chartType").innerText = "statistics";
-    new bootstrap.Modal(document.getElementById("chartModal")).show();
-    chart = await buildStatsChart(labels);
-  };
-
-  document.getElementById("postsChartBtn").onclick = async () => {
-    chart?.destroy();
-    chartResize();
-    document.getElementById("chartModalTitle").innerHTML = "Reddit Activity";
-    document.getElementById("chartType").innerText = "posts";
-    new bootstrap.Modal(document.getElementById("chartModal")).show();
-    chart = await buildPostsChart(labels);
-  };
-
-  document.getElementById("histogramChartBtn").onclick = async () => {
-    chart?.destroy();
-    chartResize();
-    document.getElementById("chartModalTitle").innerHTML = "Sample Set";
-    document.getElementById("chartType").innerText = "distribution";
-    new bootstrap.Modal(document.getElementById("chartModal")).show();
-    chart = await buildDistributionChart();
-  };
-
-  document.getElementById("growthChartBtn").onclick = async () => {
-    chart?.destroy();
-    chartResize();
-    document.getElementById("chartModalTitle").innerHTML = "Account Growth";
-    document.getElementById("chartType").innerText = "growth";
-    new bootstrap.Modal(document.getElementById("chartModal")).show();
-    chart = await buildGrowthChart();
-  };
-
-  document.getElementById("purPowChartBtn").onclick = async () => {
-    chart?.destroy();
-    chartResize();
-    document.getElementById("chartModalTitle").innerHTML = "DRS Power";
-    document.getElementById("chartType").innerText = "power";
-    new bootstrap.Modal(document.getElementById("chartModal")).show();
-    chart = await buildPurchasePowerChart();
-  };
-
-  document.getElementById("chartLogToggle").classList.remove("checked");
-  document.getElementById("chartLogToggle").onclick = function (event) {
-    chart.options.scales["y"].type = event.target.checked ? "logarithmic" : "linear";
-    chart.update();
-  };
-
->>>>>>> main
 };
 
 window.onload = async () => { await setupCharts() };
