@@ -41,7 +41,7 @@
                 <i class="fas fa-question"></i> FAQs &nbsp;
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" hidden>
               <a class="nav-link" aria-current="page" href="/login/">
                 <i class="fab fa-reddit-alien"></i> My Data &nbsp;
               </a>
@@ -52,15 +52,23 @@
                 <i class="fas fa-chart-line"></i> Charts
               </a>
               <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                <li><a id="estimatesChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" data-bs-toggle="collapse" href="#">DRS Estimates</a></li>
-                <li><a id="sharesChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Shares Sampled</a></li>
-                <li><a id="hsScatterChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Account Numbers</a></li>
-                <li><a id="statsChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Sample Statistics</a></li>
-                <li><a id="postsChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Reddit Activity</a></li>
-                <li><a id="histogramChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Shareholder
+                <li><a id="estimatesChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" data-bs-toggle="collapse" href="#">DRS Estimates</a></li>
+                <li><a id="sharesChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Shares Sampled</a></li>
+                <li><a id="hsScatterChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Account Numbers</a></li>
+                <li><a id="statsChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Sample Statistics</a></li>
+                <li><a id="postsChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Reddit Activity</a></li>
+                <li><a id="histogramChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Shareholder
                     Distribution</a></li>
-                <li><a id="growthChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Account Growth</a></li>
-                <li><a id="purPowChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Purchase Power</a></li>
+                <li><a id="growthChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Account Growth</a></li>
+                <li><a id="purPowChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Purchase Power</a></li>
               </ul>
             </li>
             <li id="dataBtn" class="nav-item dropdown">
@@ -70,12 +78,15 @@
               </a>
               <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
                 <li><a id="postsTableBtn" class="dropdown-item form-control-dark" href="#">Recent Reddit Posts</a></li>
-                <li><a class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Whales</a></li>
-                <li><a class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Minnows</a></li>
+                <li><a class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Whales</a></li>
+                <li><a class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Minnows</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a id="learnCalc" class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">
+              <a id="learnCalc" class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+                href="#">
                 <i class="fas fa-graduation-cap"></i> What is this? &nbsp;</a>
             </li>
             <li class="nav-item">
@@ -99,161 +110,161 @@
   </header>
 
   <main class="container-fluid">
-    <div id="pageContent" class="container-xxl pt-4">
+    <div id="pageContent" class="container-xxl">
       <div id="floatLockerRow" class="row my-5">
-        <div class="row">
-          <div class="col-lg-12 fs-4">
-            <h1 class="text-center">GameStop Direct-Registered Share Calculator</h1>
-            <div class="row">
-              <div class="col-xxl-5 col-xl-6">
-                <div id="maths">
-                  <h2>DRS ESTIMATION</h2>
-                  <div class="row my-3">
-                    <div class="btn-toolbar justify-content-between" role="toolbar">
-                      <div class="btn-group btn-group-lg" role="group">
-                        <div class="input-group my-2 btn-group-lg">
-                          <button id="learnDataset" type="button" class="btn btn-outline-secondary">
-                            <i class="fas fa-question-circle"></i>
-                          </button>
-                          <div class="input-group-text form-control-dark col-4 fs-5">DATASET:&nbsp;&nbsp;</div>
-                          <select id="botSelector" class="form-select btn-secondary">
-                            <option value="scraper" id="scraperSlt" selected>Reddit Scraper &nbsp;&nbsp;</option>
-                            <option value="drsbot" id="drsbotSlt">DRSBot </option>
-                          </select>
+        <div class="col-lg-12 fs-4">
+          <h1 class="text-center">GameStop Direct-Registered Share Calculator</h1>
+          <div class="row">
 
-                        </div>
-                      </div>
-                      <div class="btn-group btn-group-lg" role="group">
-                        <div class="input-group my-2 btn-group-lg">
-                          <button id="learnMetrics" type="button" class="btn btn-outline-secondary">
-                            <i class="fas fa-question-circle"></i>
-                          </button>
-                          <div class="input-group-text form-control-dark col-4 fs-5">METRIC: </div>
-                          <select id="avgSelector" class="form-select btn-secondary">
-                            <option value="trmAvg" id="trmAvgSlt" selected>Trimmed Average &nbsp; &nbsp; &nbsp;
-                            </option>
-                            <option value="avg" id="avgSlt">Average</option>
-                            <option value="median" id="medianSlt">Median</option>
-                            <option value="mode" id="modeSlt">Mode</option>
-                          </select>
-                        </div>
+            <div class="col-xxl-5 col-xl-6">
+              <div id="maths">
+                <h2>DRS ESTIMATION</h2>
+                <div class="row my-3">
+                  <div class="btn-toolbar justify-content-between" role="toolbar">
+                    <div class="btn-group btn-group-lg" role="group">
+                      <div class="input-group my-2 btn-group-lg">
+                        <button id="learnDataset" type="button" class="btn btn-outline-secondary">
+                          <i class="fas fa-question-circle"></i>
+                        </button>
+                        <div class="input-group-text form-control-dark col-4 fs-5">DATASET:&nbsp;&nbsp;</div>
+                        <select id="botSelector" class="form-select btn-secondary">
+                          <option value="scraper" id="scraperSlt" selected>Reddit Scraper &nbsp;&nbsp;</option>
+                          <option value="drsbot" id="drsbotSlt">DRSBot </option>
+                        </select>
+
                       </div>
                     </div>
-                  </div>
-
-                  <div class="row my-3">
-                    <div class="col-7">Computershare Accounts: </div>
-                    <div class="col-5 text-monospace text-right" id="highScore"></div>
-                  </div>
-
-                  <div class="row mb-3 border-bottom">
-                    <div id="metricLabel" class="col-7">Trimmed Average: </div>
-                    <div id="metricVal" class="col-5 text-monospace text-right"></div>
-                  </div>
-
-                  <div class="row my-3 pb-5">
-                    <div class="col-7">DRS Total:</div>
-                    <div class="col-5 text-monospace text-right" id="apeDrsTotal"></div>
-                  </div>
-
-                  <h2>SHARE OWNERSHIP</h2>
-                  <div class="fs-6">
-                    <a href="https://www.reddit.com/r/DRSyourGME/comments/wsn767/update_on_institutional_ownership_etfs_and_funds/"
-                      target="_blank">
-                      <button type="button" class="btn btn-outline-secondary text-right">SOURCE</button>
-                    </a>
-                  </div>
-
-                  <div class="row my-3 ">
-                    <div class="col-5">Issued: </div>
-                    <div class="col-4 text-monospace text-right" id="outstandingValue"></div>
-                    <div class="col-3 text-monospace text-right">100%</div>
-                  </div>
-
-                  <div id="IO" class="row my-3">
-                    <div class="form-check form-switch col-5">
-                      <input id="instOtherBtn" class="form-check-input" type="checkbox" style="border-color:#13A9AD">
-                      <label id="instOtherBtnLbl" class="form-check-label" for="instOtherBtn" style="color:#13A9AD">Institutions:</label>
+                    <div class="btn-group btn-group-lg" role="group">
+                      <div class="input-group my-2 btn-group-lg">
+                        <button id="learnMetrics" type="button" class="btn btn-outline-secondary">
+                          <i class="fas fa-question-circle"></i>
+                        </button>
+                        <div class="input-group-text form-control-dark col-4 fs-5">METRIC: </div>
+                        <select id="avgSelector" class="form-select btn-secondary">
+                          <option value="trmAvg" id="trmAvgSlt" selected>Trimmed Average &nbsp; &nbsp; &nbsp;
+                          </option>
+                          <option value="avg" id="avgSlt">Average</option>
+                          <option value="median" id="medianSlt">Median</option>
+                          <option value="mode" id="modeSlt">Mode</option>
+                        </select>
+                      </div>
                     </div>
-                    <div class="col-4 text-monospace text-right" id="institutionalOther"></div>
-                    <div class="col-3 text-monospace text-right" id="institutionalOtherPct">%</div>
                   </div>
+                </div>
 
-                  <div id="MF" class="row my-3">
-                    <div class="form-check form-switch col-5">
-                      <input id="mfSwitch" class="form-check-input" type="checkbox" style="border-color:#6FA142">
-                      <label id="mfSwitchLbl" class="form-check-label" for="mfSwitch" style="color:#6FA142">Mutual Funds:</label>
-                    </div>
-                    <div class="col-4 text-monospace text-right" id="institutionalMFs"></div>
-                    <div class="col-3 text-monospace text-right" id="institutionalMFsPct">%</div>
+                <div class="row my-3">
+                  <div class="col-7">Computershare Accounts: </div>
+                  <div class="col-5 text-monospace text-right" id="highScore"></div>
+                </div>
+
+                <div class="row mb-3 border-bottom">
+                  <div id="metricLabel" class="col-7">Trimmed Average: </div>
+                  <div id="metricVal" class="col-5 text-monospace text-right"></div>
+                </div>
+
+                <div class="row my-3 pb-5">
+                  <div class="col-7">DRS Total:</div>
+                  <div class="col-5 text-monospace text-right" id="apeDrsTotal"></div>
+                </div>
+
+                <h2>SHARE OWNERSHIP</h2>
+                <div class="fs-6">
+                  <a href="https://www.reddit.com/r/DRSyourGME/comments/wsn767/update_on_institutional_ownership_etfs_and_funds/"
+                    target="_blank">
+                    <button type="button" class="btn btn-outline-secondary text-right">SOURCE</button>
+                  </a>
+                </div>
+
+                <div class="row my-3 ">
+                  <div class="col-5">Issued: </div>
+                  <div class="col-4 text-monospace text-right" id="outstandingValue"></div>
+                  <div class="col-3 text-monospace text-right">100%</div>
+                </div>
+
+                <div id="IO" class="row my-3">
+                  <div class="form-check form-switch col-5">
+                    <input id="instOtherBtn" class="form-check-input" type="checkbox" style="border-color:#13A9AD">
+                    <label id="instOtherBtnLbl" class="form-check-label" for="instOtherBtn"
+                      style="color:#13A9AD">Institutions:</label>
                   </div>
+                  <div class="col-4 text-monospace text-right" id="institutionalOther"></div>
+                  <div class="col-3 text-monospace text-right" id="institutionalOtherPct">%</div>
+                </div>
 
-                  <div id="ETF" class="row my-3">
-                    <div class="form-check form-switch col-5">
-                      <input id="etfSwitch" class="form-check-input" type="checkbox" style="border-color:#13A9AD">
-                      <label id="etfSwitchLbl" class="form-check-label" for="etfSwitch" style="color:#13A9AD">ETFs:</label>
-                    </div>
-                    <div class="col-4 text-monospace text-right" id="institutionalETFs"></div>
-                    <div class="col-3 text-monospace text-right" id="institutionalETFsPct">%</div>
+                <div id="MF" class="row my-3">
+                  <div class="form-check form-switch col-5">
+                    <input id="mfSwitch" class="form-check-input" type="checkbox" style="border-color:#6FA142">
+                    <label id="mfSwitchLbl" class="form-check-label" for="mfSwitch" style="color:#6FA142">Mutual
+                      Funds:</label>
                   </div>
+                  <div class="col-4 text-monospace text-right" id="institutionalMFs"></div>
+                  <div class="col-3 text-monospace text-right" id="institutionalMFsPct">%</div>
+                </div>
 
-                  <div id="I" class="row my-3">
-                    <div class="form-check form-switch col-5">
-                      <input id="insiderSwitch" class="form-check-input" type="checkbox" style="border-color:#F0DC46">
-                      <label id="insiderSwitchLbl" class="form-check-label" for="insiderSwitch" style="color:#F0DC46">Insiders:</label>
-                    </div>
-                    <div class="col-4 text-monospace text-right" id="insiderHolding"></div>
-                    <div class="col-3 text-monospace text-right" id="insiderHoldingPct">%</div>
+                <div id="ETF" class="row my-3">
+                  <div class="form-check form-switch col-5">
+                    <input id="etfSwitch" class="form-check-input" type="checkbox" style="border-color:#13A9AD">
+                    <label id="etfSwitchLbl" class="form-check-label" for="etfSwitch"
+                      style="color:#13A9AD">ETFs:</label>
                   </div>
+                  <div class="col-4 text-monospace text-right" id="institutionalETFs"></div>
+                  <div class="col-3 text-monospace text-right" id="institutionalETFsPct">%</div>
+                </div>
 
-                  <div id="IS" class="row my-3">
-                    <div class="form-check form-switch col-5">
-                      <input id="stagnantSwitch" class="form-check-input" type="checkbox" style="border-color:#E0A63A">
-                      <label id="stagnantSwitchLbl" class="form-check-label" for="stagnantSwitch" style="color: #E0A63A;">Insiders
-                        Stagnant:</label>
-                    </div>
-                    <div class="col-4 text-monospace text-right" id="stagnantHolding"></div>
-                    <div class="col-3 text-monospace text-right" id="stagnantHoldingPct">%</div>
+                <div id="I" class="row my-3">
+                  <div class="form-check form-switch col-5">
+                    <input id="insiderSwitch" class="form-check-input" type="checkbox" style="border-color:#F0DC46">
+                    <label id="insiderSwitchLbl" class="form-check-label" for="insiderSwitch"
+                      style="color:#F0DC46">Insiders:</label>
+                  </div>
+                  <div class="col-4 text-monospace text-right" id="insiderHolding"></div>
+                  <div class="col-3 text-monospace text-right" id="insiderHoldingPct">%</div>
+                </div>
+
+                <div id="IS" class="row my-3">
+                  <div class="form-check form-switch col-5">
+                    <input id="stagnantSwitch" class="form-check-input" type="checkbox" style="border-color:#E0A63A">
+                    <label id="stagnantSwitchLbl" class="form-check-label" for="stagnantSwitch"
+                      style="color: #E0A63A;">Insiders
+                      Stagnant:</label>
+                  </div>
+                  <div class="col-4 text-monospace text-right" id="stagnantHolding"></div>
+                  <div class="col-3 text-monospace text-right" id="stagnantHoldingPct">%</div>
+                </div>
+
+                <div id="R" class="row my-3 border-bottom">
+                  <div class="form-check form-switch col-5">
+                    <input id="apesSwitch" class="form-check-input" type="checkbox" style="border-color:#E024A5">
+                    <label id="apesSwitchLbl" class="form-check-label" for="apesSwitch" style="color:#E024A5">Retail
+                      DRS:</label>
                   </div>
                   <div class="col-4 text-monospace text-right" id="apeDrs"></div>
                   <div class="col-3 text-monospace text-right" id="apeDrsPct">%</div>
                 </div>
 
-                  <div id="R" class="row my-3 border-bottom">
-                    <div class="form-check form-switch col-5">
-                      <input id="apesSwitch" class="form-check-input" type="checkbox" style="border-color:#E024A5">
-                      <label id="apesSwitchLbl" class="form-check-label" for="apesSwitch" style="color:#E024A5">Retail DRS:</label>
-                    </div>
-                    <div class="col-4 text-monospace text-right" id="apeDrs"></div>
-                    <div class="col-3 text-monospace text-right" id="apeDrsPct">%</div>
-                  </div>
-
-                  <div class="row my-3">
-                    <div id="remainingLbl" class="col-5">Retail Remaining: </div>
-                    <div class="col-4 text-monospace text-right" id="remainingValue"></div>
-                    <div class="col-3 text-monospace text-right" id="remainingValuePct">%</div>
-                  </div>
-
-                  <div class="row my-3">
-                    <div id="registeredLbl" class="col-5">Retail Registered: </div>
-                    <div class="col-4 text-monospace text-right" id="floatLocked"></div>
-                  </div>
+                <div class="row my-3">
+                  <div id="remainingLbl" class="col-5">Retail Remaining: </div>
+                  <div class="col-4 text-monospace text-right" id="remainingValue"></div>
+                  <div class="col-3 text-monospace text-right" id="remainingValuePct">%</div>
                 </div>
-              </div>
-              <div class="col-xxl-7 col-xl-6">
-                <div class="mx-md-5 my-3" style="max-height: 800px;">
-                  <canvas id="shareLocker" width="1024" height="1024"></canvas>
+
+                <div class="row my-3">
+                  <div id="registeredLbl" class="col-5">Retail Registered: </div>
+                  <div class="col-4 text-monospace text-right" id="floatLocked"></div>
                 </div>
               </div>
             </div>
+
             <div class="col-xxl-7 col-xl-6">
               <div class="mx-md-5 my-3" style="max-height: 800px;">
                 <canvas id="shareLocker" width="1024" height="1024"></canvas>
               </div>
             </div>
+
           </div>
         </div>
       </div>
+    </div>
     </div>
 
     <div id="footerRow" class="row">

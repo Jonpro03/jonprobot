@@ -406,11 +406,11 @@ function updateDonutData(donutData, stats) {
   await new Promise(r => setTimeout(r, 600));
 
 
-  let t = new bootstrap.Toast(document.getElementById("alertToast"));
-  var alerted = localStorage.getItem('hiring') || '';
-  if (alerted != "alerted") {
-    t.show();
-    localStorage.setItem("hiring", "alerted");
+  // let t = new bootstrap.Toast(document.getElementById("alertToast"));
+  // var alerted = localStorage.getItem('hiring') || '';
+  // if (alerted != "alerted") {
+  //   t.show();
+  //   localStorage.setItem("hiring", "alerted");
 
-  }
+  // }
 })()
