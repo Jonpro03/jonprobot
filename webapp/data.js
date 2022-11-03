@@ -15,35 +15,27 @@ async function getPostsData(startTime) {
   var baseUrl = "https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/posts?startTime=" + startTime;
 
   var data = [];
-  var resume = null;
 
   for await (const sub of subs) {
-    var sub_url = baseUrl + "&sub=" + sub;
-    while (true) {
-      if (resume !== null) {
-        var url = sub_url + "&resumeUser=" + resume['user'] + "&resumeId=" + resume['id'];
-      } else {
-        url = sub_url;
-      }
+    let resume
+    do {
+      let url =
+        baseUrl
+        + "&sub="+sub
+        + (resume ? `&resumeUser=${resume.user}&resumeId=${resume.id}` : '' );
 
-      let response = await fetch(url, {
+      let rawResponse = await fetch(url, {
         mode: 'cors'
-      }).then(function (response) {
-        return response.json();
       });
+      let response = await rawResponse.json();
 
-      data = data.concat(response['Items']);
-      if ("LastEvaluatedKey" in response) {
-        resume = {
-          'user': response['LastEvaluatedKey']['u']['S'],
-          'id': response['LastEvaluatedKey']['id']['S']
-        };
-      } else {
-        resume = null;
-        break;
-      }
-    }
+      data = data.concat(response.Items);
 
+      resume = response.LastEvaluatedKey && {
+        user: response.LastEvaluatedKey.u.S,
+        id: response.LastEvaluatedKey.id.S
+      };
+    } while (resume)
   };
   return data;
 }
@@ -60,8 +52,12 @@ async function build24Table() {
     header.appendChild(c);
   });
 
-  const yesterday = new Date();
-  var startTime = new Date(Date.UTC(yesterday.getYear() + 1900, yesterday.getMonth(), yesterday.getDate()-1)).getTime() / 1000;
+  // const yesterday = new Date();
+  // var startTime = new Date(Date.UTC(yesterday.getYear() + 1900, yesterday.getMonth(), yesterday.getDate()-1)).getTime() / 1000;
+  // ^ the above looks like it might not work on the first of the month?
+  const startTime = parseInt(Date.now() / 1000) - 24*60*60;
+  // ^ Date.now returns the current epoch in milliseconds, so we can just take that, convert to seconds, and subtract 24 hours worth of seconds from it
+
   var postData = await getPostsData(startTime);
   console.log(startTime);
 
@@ -79,6 +75,9 @@ async function build24Table() {
       row.appendChild(cell);
     });
     body.appendChild(row);
+    //^ Note: appending one-by-one to an element that is currently in the document may be slower than building up a DOM fragment
+    // outside of the document then adding it into the document in a single step. If there are a lot of rows or this is slow, could be an
+    // opportunity to speed it up
   });
 }
 
@@ -88,5 +87,4 @@ document.getElementById('postsTableBtn').addEventListener('click', async () => {
 
   new bootstrap.Modal(document.getElementById('tableModal')).show();
   await build24Table();
-  
 });
