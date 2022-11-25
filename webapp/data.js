@@ -83,6 +83,9 @@ async function build24Table() {
 }
 
 document.getElementById('postsTableBtn').addEventListener('click', async () => {
+  document.getElementById("tableBody").innerHTML = "";
+  document.getElementById('tableHeaderRows').innerHTML = "";
+
   new bootstrap.Modal(document.getElementById('tableModal')).show();
   await build24Table();
   

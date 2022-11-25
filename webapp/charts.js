@@ -400,7 +400,7 @@ async function buildEstimatesChart(labels) {
           borderColor: '#094D4F',
           borderWidth: 2,
           pointBackgroundColor: '#094D4F'
-        },
+        }
       ]
     },
     options: {
@@ -666,6 +666,16 @@ async function buildStatsChart(labels) {
           borderWidth: 2,
           pointBackgroundColor: '#289418'
         },
+        {
+          yAxisID: "yPct",
+          data: data.trim_pcts,
+          label: "Trim %",
+          lineTension: 0.4,
+          backgroundColor: 'transparent',
+          borderColor: '#6FA142',
+          borderWidth: 2,
+          pointBackgroundColor: '#6FA142'
+        }
       ]
     },
     options: {
@@ -689,6 +699,20 @@ async function buildStatsChart(labels) {
           title: {
             display: true,
             text: "Shares"
+          },
+        },
+        yPct: {
+          type: "linear",
+          position: "right",
+          min: 0,
+          max: 10,
+          ticks: {
+            callback: (val) => (val.toLocaleString()+'%'),
+            color: "#6FA142"
+          },
+          title: {
+            display: true,
+            text: "Trim Percent"
           },
         },
       },
@@ -761,16 +785,25 @@ async function buildPostsChart(labels) {
       datasets: [
         {
           yAxisID: "y",
-          label: "Total",
-          data: data.cumulative,
+          label: "Active Shareholders",
+          data: data.active_users,
           backgroundColor: '#93186c',
-          borderColor: '#93186c',
+          borderColor: '#E024A5',
+          backgroundColor: 'transparent',
+          type: "line"
+        },
+        {
+          yAxisID: "y",
+          label: "Stale Shareholders",
+          data: data.stale_users,
+          backgroundColor: '#A11F12',
+          borderColor: '#871B0F',
           backgroundColor: 'transparent',
           type: "line"
         },
         {
           yAxisID: "ybar",
-          label: "Daily",
+          label: "Daily Posts",
           data: data.daily,
           backgroundColor: '#11979C'
         }
@@ -805,14 +838,15 @@ async function buildPostsChart(labels) {
         },
         y: {
           position: "left",
-          stacked: true,
+          min: 0,
+          max: 25000,
           ticks: {
             callback: (val) => (localeNum.format(val)),
-            color: "#E024A5"
+            //color: "#E024A5"
           },
           title: {
             display: true,
-            text: "Total Posts"
+            text: "Number of Shareholders"
           },
         },
       },

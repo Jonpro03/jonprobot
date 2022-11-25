@@ -1,6 +1,6 @@
 let handleError = function (msg, url, lineNo, columnNo, error) {
-    let messageText = `${msg} - ${url} ${lineNo}/${columnNo} ${error}`;
-    let errorModalHtml = `
+  let messageText = `${msg} - ${url} ${lineNo}/${columnNo} ${error}`;
+  let errorModalHtml = `
     <div id="errorModal" class="modal fade" tabindex="-1">
       <div class="modal-dialog modal-lg modal-fullscreen-md-down text-dark fs-4" role="document">
         <div class="modal-content">
@@ -9,8 +9,11 @@ let handleError = function (msg, url, lineNo, columnNo, error) {
           </div>
           <div id="errorModalBody" class="modal-body">
             <p>
-                Bad things have happened and Jonpro03 needs to fix them.
-                Please please please send the report to me so that I can fix it.
+                Bad things have happened.
+                </br>
+                <a href="https://www.reddit.com/user/jonpro03/submitted/" target="_blank">Check here to see if it's a known issue.</a>
+                </br>
+                Otherwise, please please please send the report to me so that I can fix it.
             </p>
             </br>
             <blockquote class="blockquote">
@@ -29,17 +32,17 @@ let handleError = function (msg, url, lineNo, columnNo, error) {
       </div>
     </div>
     `;
-    let d = document.createElement('div');
-    d.innerHTML = errorModalHtml;
-    document.getElementById('pageContent').appendChild(d);
-    let modal = new bootstrap.Modal(document.getElementById('errorModal'));
-    modal.show();
-    return false;
+  let d = document.createElement('div');
+  d.innerHTML = errorModalHtml;
+  document.getElementById('pageContent').appendChild(d);
+  let modal = new bootstrap.Modal(document.getElementById('errorModal'));
+  modal.show();
+  return false;
 }
 
 let handleRejection = function (event) {
-    let messageText = event.reason;
-    let errorModalHtml = `
+  let messageText = event.reason;
+  let errorModalHtml = `
     <div id="errorModal" class="modal fade" tabindex="-1">
       <div class="modal-dialog modal-lg modal-fullscreen-md-down text-dark fs-4" role="document">
         <div class="modal-content">
@@ -48,8 +51,11 @@ let handleRejection = function (event) {
           </div>
           <div id="errorModalBody" class="modal-body">
             <p>
-                Bad things have happened and Jonpro03 needs to fix them.
-                Please please please send the report to me so that I can fix it.
+              Bad things have happened.
+              </br>
+              <a href="https://www.reddit.com/user/jonpro03/submitted/" target="_blank">Check here to see if it's a known issue.</a>
+              </br>
+              Otherwise, please please please send the report to me so that I can fix it.
             </p>
             </br>
             <blockquote class="blockquote">
@@ -68,12 +74,12 @@ let handleRejection = function (event) {
       </div>
     </div>
     `;
-    let d = document.createElement('div');
-    d.innerHTML = errorModalHtml;
-    document.getElementById('pageContent').appendChild(d);
-    let modal = new bootstrap.Modal(document.getElementById('errorModal'));
-    modal.show();
-    return false;
+  let d = document.createElement('div');
+  d.innerHTML = errorModalHtml;
+  document.getElementById('pageContent').appendChild(d);
+  let modal = new bootstrap.Modal(document.getElementById('errorModal'));
+  modal.show();
+  return false;
 }
 
 window.onerror = handleError;

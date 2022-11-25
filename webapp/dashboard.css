@@ -1,3 +1,15 @@
+body::before {
+  height: 58px;
+  content: "";
+  display: block;
+}
+
+.col-12::before {
+  height: 58px;
+  content: "";
+  display: block;
+}
+
 h2 {
   color: #E024A5
 }
@@ -28,6 +40,7 @@ a {
 #chartLogToggle:checked {
   background-color: #800;
 }
+
 #chartLogToggle {
   background-color: #333;
 }
