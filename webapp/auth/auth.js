@@ -11,7 +11,8 @@
   const authData = {
     grant_type: 'authorization_code',
     code: code,
-    redirect_uri: 'https://www.computershared.net/auth/'
+    //redirect_uri: 'https://www.computershared.net/auth/'
+    redirect_uri: 'http://localhost:8000/auth/'
   };
 
   await fetch(authUrl, {
@@ -19,7 +20,8 @@
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": "Basic " + btoa("LrM_myAk3YroaMWFpCFWhA:")
+      //"Authorization": "Basic " + btoa("LrM_myAk3YroaMWFpCFWhA:")
+      "Authorization": "Basic " + btoa("mqzxaOP_1APeh86Mke_WWg:BKNr14VM9sLmG0VOLjHAnACKSRJ5Aw")
     }, 
     body: new URLSearchParams(authData)
   }).then( async res => {
@@ -28,7 +30,10 @@
     const token = await res.json();
     localStorage.setItem('redditBearer', token['access_token']);
     localStorage.setItem('authExpiry', expiry.getTime())
-    window.location.href = "../me/";
-  }).catch((error) => window.location.href = "../");
+    window.location.href = "../profile/";
+  }).catch((error) => 
+  {
+    window.location.href = "../";
+  });
 
 })()

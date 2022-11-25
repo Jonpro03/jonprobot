@@ -363,4 +363,4 @@ document.addEventListener('DOMContentLoaded', async function () {
 })
 
 document.getElementById('connectWalletBtn').onclick = connectWallet;
-document.getElementById('mintModalCloseBtn').onclick = (() => { window.location.href="../me/"; });
+document.getElementById('mintModalCloseBtn').onclick = (() => { window.location.href="../profile/"; });

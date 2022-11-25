@@ -24,8 +24,8 @@ function getPostHTML(posts) {
 }
 
 function handleApeNotFound() {
-  //window.alert("Not Found.");
-
+  window.alert("Not Found.");
+  window.history.back();
 }
 
 (async function () {
