@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" crossorigin="anonymous">
 
   <!-- Custom styles for this template -->
-  <link href="dashboard.css?a=213" rel="stylesheet">
+  <link href="dashboard.css?a=217" rel="stylesheet">
 </head>
 
 <body id="main" class="bg-dark text-white font-monospace">
@@ -41,7 +41,7 @@
                 <i class="fas fa-question"></i> FAQs &nbsp;
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item d-none">
               <a class="nav-link" aria-current="page" href="/login/">
                 <i class="fab fa-reddit-alien"></i> My Data &nbsp;
               </a>
@@ -52,30 +52,41 @@
                 <i class="fas fa-chart-line"></i> Charts
               </a>
               <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                <li><a id="estimatesChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" data-bs-toggle="collapse" href="#">DRS Estimates</a></li>
-                <li><a id="sharesChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Shares Sampled</a></li>
-                <li><a id="hsScatterChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Account Numbers</a></li>
-                <li><a id="statsChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Sample Statistics</a></li>
-                <li><a id="postsChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Reddit Activity</a></li>
-                <li><a id="histogramChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Shareholder
+                <li><a id="estimatesChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" data-bs-toggle="collapse" href="#">DRS Estimates</a></li>
+                <li><a id="sharesChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Shares Sampled</a></li>
+                <li><a id="hsScatterChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Account Numbers</a></li>
+                <li><a id="statsChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Sample Statistics</a></li>
+                <li><a id="postsChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Reddit Activity</a></li>
+                <li><a id="histogramChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Shareholder
                     Distribution</a></li>
-                <li><a id="growthChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Account Growth</a></li>
-                <li><a id="purPowChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Purchase Power</a></li>
+                <li><a id="growthChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Account Growth</a></li>
+                <li><a id="purPowChartBtn" class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Purchase Power</a></li>
               </ul>
             </li>
-            <li id="dataBtn" class="nav-item dropdown">
+            <li id="dataBtn" class="nav-item dropdown d-none">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 <i class="fas fa-table"></i> Data
               </a>
               <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
                 <li><a id="postsTableBtn" class="dropdown-item form-control-dark" href="#">Recent Reddit Posts</a></li>
-                <li><a class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Whales</a></li>
-                <li><a class="dropdown-item form-control-dark" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">Minnows</a></li>
+                <li><a class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Whales</a></li>
+                <li><a class="dropdown-item form-control-dark" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse.show" href="#">Minnows</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a id="learnCalc" class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" href="#">
+              <a id="learnCalc" class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"
+                href="#">
                 <i class="fas fa-graduation-cap"></i> What is this? &nbsp;</a>
             </li>
             <li class="nav-item">
@@ -103,7 +114,7 @@
       <div id="floatLockerRow" class="row my-5">
         <div class="row">
           <div class="col-lg-12 fs-4">
-            <h1 class="text-center">GameStop Direct-Registered Share Calculator</h1>
+            <h1 id="title" class="text-center">GameStop Direct-Registered Share Calculator</h1>
             <div class="row">
               <div class="col-xxl-5 col-xl-6">
                 <div id="maths">
@@ -142,7 +153,7 @@
                   </div>
 
                   <div class="row my-3">
-                    <div class="col-7">Computershare Accounts: </div>
+                    <div id="acctsLbl" class="col-7">Computershare Accounts: </div>
                     <div class="col-5 text-monospace text-right" id="highScore"></div>
                   </div>
 
@@ -151,17 +162,19 @@
                     <div id="metricVal" class="col-5 text-monospace text-right"></div>
                   </div>
 
-                  <div class="row my-3 pb-5">
+                  <div class="row my-3 pb-3">
                     <div class="col-7">DRS Total:</div>
                     <div class="col-5 text-monospace text-right" id="apeDrsTotal"></div>
                   </div>
 
-                  <h2>SHARE OWNERSHIP</h2>
-                  <div class="fs-6">
-                    <a href="https://www.reddit.com/r/DRSyourGME/comments/wsn767/update_on_institutional_ownership_etfs_and_funds/"
-                      target="_blank">
-                      <button type="button" class="btn btn-outline-secondary text-right">SOURCE</button>
-                    </a>
+                  <div class="row">
+                    <h2 class="col-10">SHARE OWNERSHIP</h2>
+                    <div class="fs-6 col-2 px-1">
+                      <a href="https://www.reddit.com/r/DRSyourGME/comments/ywaq9i/update_on_institutional_ownership_etfs_and_funds"
+                        target="_blank">
+                        <button type="button" class="btn btn-outline-secondary text-right">SOURCE</button>
+                      </a>
+                    </div>
                   </div>
 
                   <div class="row my-3 ">
@@ -173,7 +186,8 @@
                   <div id="IO" class="row my-3">
                     <div class="form-check form-switch col-5">
                       <input id="instOtherBtn" class="form-check-input" type="checkbox" style="border-color:#13A9AD">
-                      <label id="instOtherBtnLbl" class="form-check-label" for="instOtherBtn" style="color:#13A9AD">Institutions:</label>
+                      <label id="instOtherBtnLbl" class="form-check-label" for="instOtherBtn"
+                        style="color:#13A9AD">Institutions:</label>
                     </div>
                     <div class="col-4 text-monospace text-right" id="institutionalOther"></div>
                     <div class="col-3 text-monospace text-right" id="institutionalOtherPct">%</div>
@@ -182,7 +196,8 @@
                   <div id="MF" class="row my-3">
                     <div class="form-check form-switch col-5">
                       <input id="mfSwitch" class="form-check-input" type="checkbox" style="border-color:#6FA142">
-                      <label id="mfSwitchLbl" class="form-check-label" for="mfSwitch" style="color:#6FA142">Mutual Funds:</label>
+                      <label id="mfSwitchLbl" class="form-check-label" for="mfSwitch" style="color:#6FA142">Mutual
+                        Funds:</label>
                     </div>
                     <div class="col-4 text-monospace text-right" id="institutionalMFs"></div>
                     <div class="col-3 text-monospace text-right" id="institutionalMFsPct">%</div>
@@ -191,7 +206,8 @@
                   <div id="ETF" class="row my-3">
                     <div class="form-check form-switch col-5">
                       <input id="etfSwitch" class="form-check-input" type="checkbox" style="border-color:#13A9AD">
-                      <label id="etfSwitchLbl" class="form-check-label" for="etfSwitch" style="color:#13A9AD">ETFs:</label>
+                      <label id="etfSwitchLbl" class="form-check-label" for="etfSwitch"
+                        style="color:#13A9AD">ETFs:</label>
                     </div>
                     <div class="col-4 text-monospace text-right" id="institutionalETFs"></div>
                     <div class="col-3 text-monospace text-right" id="institutionalETFsPct">%</div>
@@ -200,7 +216,8 @@
                   <div id="I" class="row my-3">
                     <div class="form-check form-switch col-5">
                       <input id="insiderSwitch" class="form-check-input" type="checkbox" style="border-color:#F0DC46">
-                      <label id="insiderSwitchLbl" class="form-check-label" for="insiderSwitch" style="color:#F0DC46">Insiders:</label>
+                      <label id="insiderSwitchLbl" class="form-check-label" for="insiderSwitch"
+                        style="color:#F0DC46">Insiders:</label>
                     </div>
                     <div class="col-4 text-monospace text-right" id="insiderHolding"></div>
                     <div class="col-3 text-monospace text-right" id="insiderHoldingPct">%</div>
@@ -209,7 +226,8 @@
                   <div id="IS" class="row my-3">
                     <div class="form-check form-switch col-5">
                       <input id="stagnantSwitch" class="form-check-input" type="checkbox" style="border-color:#E0A63A">
-                      <label id="stagnantSwitchLbl" class="form-check-label" for="stagnantSwitch" style="color: #E0A63A;">Insiders
+                      <label id="stagnantSwitchLbl" class="form-check-label" for="stagnantSwitch"
+                        style="color: #E0A63A;">Insiders
                         Stagnant:</label>
                     </div>
                     <div class="col-4 text-monospace text-right" id="stagnantHolding"></div>
@@ -219,7 +237,8 @@
                   <div id="R" class="row my-3 border-bottom">
                     <div class="form-check form-switch col-5">
                       <input id="apesSwitch" class="form-check-input" type="checkbox" style="border-color:#E024A5">
-                      <label id="apesSwitchLbl" class="form-check-label" for="apesSwitch" style="color:#E024A5">Retail DRS:</label>
+                      <label id="apesSwitchLbl" class="form-check-label" for="apesSwitch" style="color:#E024A5">Retail
+                        DRS:</label>
                     </div>
                     <div class="col-4 text-monospace text-right" id="apeDrs"></div>
                     <div class="col-3 text-monospace text-right" id="apeDrsPct">%</div>
@@ -232,7 +251,7 @@
                   </div>
 
                   <div class="row my-3">
-                    <div id="registeredLbl" class="col-5">Retail Registered: </div>
+                    <div id="registeredLbl" class="col-5">Retail Progress: </div>
                     <div class="col-4 text-monospace text-right" id="floatLocked"></div>
                   </div>
                 </div>
@@ -264,14 +283,22 @@
             <button id="learnChart" type="button" class="btn btn-outline-secondary text-right">
               <i class="fas fa-question-circle"></i> &nbsp;HELP
             </button>
-            <button class="btn btn-danger" data-bs-dismiss="modal">CLOSE</button>
+            <button id="chartCloseBtn" class="btn btn-danger" data-bs-dismiss="modal">CLOSE</button>
           </div>
           <div class="modal-content bg-dark container-xxl">
             <div class="form-check form-switch col-5">
               <input id="chartLogToggle" class="form-check-input" type="checkbox" style="border-color:#800">
               <label class="form-check-label" for="mfSwitch" style="color:#800">Logarithmic</label>
             </div>
-            <canvas class="mb-5 w-100" id="chartCanvas" width="1920" height="1080"></canvas>
+            <canvas class="mb-3 w-100" id="chartCanvas" width="192" height="108"></canvas>
+            <div class="row text-white d-none" id="sliderContainer">
+              <label id="dateLbl" class="form-label"></label>
+              <button id="chartPlayBtn" type="button" class="col-1 btn btn-secondary"><i
+                  class="fas fa-play"></i></button>
+              <div class="row col-11">
+                <input id="chartSlider" type="range" class="form-range">
+              </div>
+            </div>
             <div id="chartType" style="display:none;"></div>
           </div>
         </div>
@@ -409,12 +436,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.0/chartjs-plugin-zoom.min.js"></script>
   <script type="text/javascript" src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
 
-  <script src="error.js?a=213"></script>
-  <script src="learn.js?a=213"></script>
-  <script src="donate.js?a=213"></script>
-  <script src="dashboard.js?a=213"></script>
-  <script src="charts.js?a=213"></script>
-  <script src="data.js?a=213"></script> 
+  <script src="error.js?a=217"></script>
+  <script src="learn.js?a=217"></script>
+  <script src="donate.js?a=217"></script>
+  <script src="dashboard.js?a=217"></script>
+  <script src="charts.js?a=217"></script>
+  <script src="data.js?a=217"></script>
 
 </body>
 

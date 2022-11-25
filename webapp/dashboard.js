@@ -133,8 +133,8 @@ function updateDonutData(donutData, stats) {
   document.getElementById("remainingValue").innerHTML = localeFormat.format(donutData.remaining);
   document.getElementById("remainingValuePct").innerHTML = Math.round(donutData.remaining / donutData.total_outstanding * 100) + '%';
   document.getElementById("floatLocked").innerHTML = Math.round(donutData.pctComplete * 100) / 100 + "%";
-  document.getElementById("apeDrs").innerHTML = '- ' + localeFormat.format(donutData.apeDrs);
-  document.getElementById("apeDrsPct").innerHTML = '- ' + Math.round(donutData.apeDrs / donutData.total_outstanding * 100) + '%';
+  document.getElementById("apeDrs").innerHTML = '-' + localeFormat.format(donutData.apeDrs);
+  document.getElementById("apeDrsPct").innerHTML = '-' + Math.round(donutData.apeDrs / donutData.total_outstanding * 100) + '%';
 }
 
 (async function () {
@@ -203,8 +203,10 @@ function updateDonutData(donutData, stats) {
     document.getElementById('mfSwitchLbl').innerText = 'MFs:';
     document.getElementById('stagnantSwitchLbl').innerText = 'Stagnant:';
     document.getElementById('apesSwitchLbl').innerText = 'DRS:';
-    document.getElementById('remainingLbl').innerText = 'Remaining:';
-    document.getElementById('registeredLbl').innerText = 'Registered:';
+    document.getElementById('remainingLbl').innerText = 'DRS Left:';
+    document.getElementById('registeredLbl').innerText = 'Progress:';
+    document.getElementById('title').innerText = 'GameStop DRS Calculator';
+    document.getElementById('acctsLbl').innerText = 'Accounts:';
   }
   
   // Handle diff b/w drsbot and scraper
@@ -353,24 +355,24 @@ function updateDonutData(donutData, stats) {
         break;
     }
     document.getElementById("apeDrsTotal").innerHTML = donutData.apeDrs.toLocaleString();
-    document.getElementById("apeDrs").innerHTML = '- ' + donutData.apeDrs.toLocaleString();
+    document.getElementById("apeDrs").innerHTML = '-' + donutData.apeDrs.toLocaleString();
     updateDonutData(donutData, stats);
     updateDonut(donut, donutData);
   };
   
   document.getElementById("outstandingValue").innerHTML = localeFormat.format(donutData.total_outstanding);
-  document.getElementById("insiderHolding").innerHTML = '- ' + localeFormat.format(donutData.insider);
-  document.getElementById("insiderHoldingPct").innerHTML = '- ' + Math.round(donutData.insider / donutData.total_outstanding * 100) + '%';
-  document.getElementById("stagnantHolding").innerHTML = '- ' + localeFormat.format(donutData.stagnant);
-  document.getElementById("stagnantHoldingPct").innerHTML = '- ' + Math.round(donutData.stagnant / donutData.total_outstanding * 100) + '%';
-  document.getElementById("institutionalETFs").innerHTML = '- ' + localeFormat.format(donutData.etfs);
-  document.getElementById("institutionalETFsPct").innerHTML = '- ' + Math.round(donutData.etfs / donutData.total_outstanding * 100) + '%';
-  document.getElementById("institutionalMFs").innerHTML = '- ' + localeFormat.format(donutData.mfs);
-  document.getElementById("institutionalMFsPct").innerHTML = '- ' + Math.round(donutData.mfs / donutData.total_outstanding * 100) + '%';
-  document.getElementById("institutionalOther").innerHTML = '- ' + localeFormat.format(donutData.inst_fuckery);
-  document.getElementById("institutionalOtherPct").innerHTML = '- ' + Math.round(donutData.inst_fuckery / donutData.total_outstanding * 100) + '%';
-  document.getElementById("apeDrs").innerHTML = '- ' + localeFormat.format(donutData.apeDrs);
-  document.getElementById("apeDrsPct").innerHTML = '- ' + Math.round(donutData.apeDrs / donutData.total_outstanding * 100) + '%';
+  document.getElementById("insiderHolding").innerHTML = '-' + localeFormat.format(donutData.insider);
+  document.getElementById("insiderHoldingPct").innerHTML = '-' + Math.round(donutData.insider / donutData.total_outstanding * 100) + '%';
+  document.getElementById("stagnantHolding").innerHTML = '-' + localeFormat.format(donutData.stagnant);
+  document.getElementById("stagnantHoldingPct").innerHTML = '-' + Math.round(donutData.stagnant / donutData.total_outstanding * 100) + '%';
+  document.getElementById("institutionalETFs").innerHTML = '-' + localeFormat.format(donutData.etfs);
+  document.getElementById("institutionalETFsPct").innerHTML = '-' + Math.round(donutData.etfs / donutData.total_outstanding * 100) + '%';
+  document.getElementById("institutionalMFs").innerHTML = '-' + localeFormat.format(donutData.mfs);
+  document.getElementById("institutionalMFsPct").innerHTML = '-' + Math.round(donutData.mfs / donutData.total_outstanding * 100) + '%';
+  document.getElementById("institutionalOther").innerHTML = '-' + localeFormat.format(donutData.inst_fuckery);
+  document.getElementById("institutionalOtherPct").innerHTML = '-' + Math.round(donutData.inst_fuckery / donutData.total_outstanding * 100) + '%';
+  document.getElementById("apeDrs").innerHTML = '-' + localeFormat.format(donutData.apeDrs);
+  document.getElementById("apeDrsPct").innerHTML = '-' + Math.round(donutData.apeDrs / donutData.total_outstanding * 100) + '%';
   document.getElementById("apeDrsTotal").innerHTML = donutData.apeDrs.toLocaleString();
   document.getElementById("remainingValue").innerHTML = localeFormat.format(donutData.remaining);
   document.getElementById("remainingValuePct").innerHTML = Math.round(donutData.remaining / donutData.total_outstanding * 100) + '%';
@@ -406,11 +408,11 @@ function updateDonutData(donutData, stats) {
   await new Promise(r => setTimeout(r, 600));
 
 
-  let t = new bootstrap.Toast(document.getElementById("alertToast"));
-  var alerted = localStorage.getItem('hiring') || '';
-  if (alerted != "alerted") {
-    t.show();
-    localStorage.setItem("hiring", "alerted");
+  // let t = new bootstrap.Toast(document.getElementById("alertToast"));
+  // var alerted = localStorage.getItem('hiring') || '';
+  // if (alerted != "alerted") {
+  //   t.show();
+  //   localStorage.setItem("hiring", "alerted");
 
-  }
+  // }
 })()

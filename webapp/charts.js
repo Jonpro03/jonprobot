@@ -418,7 +418,7 @@ async function buildEstimatesChart(labels) {
         },
         y: {
           type: "linear",
-          min: 0,
+          //min: 0,
           title: {
             display: true,
             text: "# of Shares Direct Registered"
@@ -1007,7 +1007,7 @@ async function buildPurchasePowerChart() {
   return chart;
 };
 
-async function buildDistributionChart() {
+async function buildDistributionChart(labels) {
   let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=distribution", {
     mode: 'cors'
   }).then(function (response) {
@@ -1043,6 +1043,7 @@ async function buildDistributionChart() {
             display: true,
             text: "Number of Accounts"
           },
+          max: 2500,
         },
         x: {
           title: {
@@ -1068,6 +1069,46 @@ async function buildDistributionChart() {
       }
     }
   });
+
+  // Add date slider
+  let dists = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=stats", {
+    mode: 'cors'
+  }).then(function (response) {
+    return response.json();
+  });
+  dists = dists.dists;
+  let numDays = dists.length;
+  let slider = document.getElementById("chartSlider");
+  slider.setAttribute("min", 0);
+  slider.setAttribute("max", numDays);
+  slider.value = numDays;
+  document.getElementById("sliderContainer")?.classList.remove("d-none");
+
+  let sliderLabel = document.getElementById("dateLbl");
+  sliderLabel.textContent = new Date(labels[numDays - 1]).toLocaleDateString();
+
+  slider.onchange = (event) => {
+    let index = event.target.value - 1;
+    chart.data.datasets[0].data = dists[index];
+    sliderLabel.textContent = new Date(labels[index]).toLocaleDateString();
+    chart.update();
+  };
+
+  document.getElementById("chartCloseBtn").onclick = () => {
+    document.getElementById("sliderContainer")?.classList.add("d-none");
+  };
+
+  document.getElementById("chartPlayBtn").onclick = async () => {
+    var event = new Event("change");
+    document.getElementById("chartPlayBtn").setAttribute("disabled", '');
+    for (let i = 0; i < numDays; i++) {
+      slider.value = i;
+      slider.dispatchEvent(event);
+      await new Promise(r => setTimeout(r, 50));
+    }
+    document.getElementById("chartPlayBtn").removeAttribute("disabled");
+  };
+
   return chart;
 };
 
@@ -1226,10 +1267,10 @@ async function setupCharts() {
   document.getElementById("histogramChartBtn").onclick = async () => {
     chart?.destroy();
     chartResize();
-    document.getElementById("chartModalTitle").innerHTML = "Sample Set";
+    document.getElementById("chartModalTitle").innerHTML = "Shareholders";
     document.getElementById("chartType").innerText = "distribution";
     new bootstrap.Modal(document.getElementById("chartModal")).show();
-    chart = await buildDistributionChart();
+    chart = await buildDistributionChart(labels);
   };
 
   document.getElementById("growthChartBtn").onclick = async () => {
