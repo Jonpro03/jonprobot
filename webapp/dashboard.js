@@ -384,6 +384,12 @@ function updateDonutData(donutData, stats) {
   document.getElementById("donutDataStagnant").innerHTML = donutData.stagnant;
   document.getElementById("donutDataApe").innerHTML = donutData.apeDrs;
 
+  if (sampleSize < 5.0) {
+    document.getElementById("alertSampleSize").innerText = "Sample Size: " + sampleSize.toLocaleString() + "%";
+    let t = new bootstrap.Toast(document.getElementById("lowSampleToast"));
+    t.show();
+  }
+
   // Animate the site
   document.getElementById("avgSelector").dispatchEvent(new Event('change'));
   await new Promise(r => setTimeout(r, 600));
@@ -407,6 +413,7 @@ function updateDonutData(donutData, stats) {
   document.getElementById("instOtherBtn").dispatchEvent(new Event('change'));  
   await new Promise(r => setTimeout(r, 600));
 
+  
 
   // let t = new bootstrap.Toast(document.getElementById("alertToast"));
   // var alerted = localStorage.getItem('hiring') || '';

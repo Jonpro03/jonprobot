@@ -420,6 +420,26 @@
     </div>
   </div>
 
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+    <div id="lowSampleToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="15000">
+      <div class="toast-header">
+        <strong class="me-auto">ALERT!</strong>
+        <small class="text-muted">Sample Size less than 5%</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body text-dark">
+        <strong id="alertSampleSize">Sample Size: 5%</strong>
+        <p>When the sample size gets too low, estimates can be very innacurate.
+          Low sample sizes are more susceptible to fluctuations that can be misleading.
+        </p>
+        <a href="https://www.reddit.com/user/jonpro03/comments/z68uu0/low_sample_size_poll/" target="_blank">Learn More</a>
+      </br>
+      </br>
+        Please take the estimates presented here with a grain of salt.
+      </div>
+    </div>
+  </div>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
@@ -442,7 +462,7 @@
   <script src="error.js?a=217"></script>
   <script src="learn.js?a=217"></script>
   <script src="donate.js?a=217"></script>
-  <script src="dashboard.js?a=217"></script>
+  <script src="dashboard.js?a=218"></script>
   <script src="charts.js?a=217"></script>
   <script src="data.js?a=217"></script>
 
