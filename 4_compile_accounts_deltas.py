@@ -1,55 +1,68 @@
-import tinydb
-from tinydb.middlewares import CachingMiddleware
-from tinydb.storages import JSONStorage
+import multiprocessing
 from joblib import Parallel, delayed
 from datetime import datetime
+from pymongo import MongoClient
+from dotenv import dotenv_values
 
 
-sdb = tinydb.TinyDB("new_shares_db.json", storage=CachingMiddleware(JSONStorage))
-pdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
-rdb = tinydb.TinyDB("results_db_new.json", storage=CachingMiddleware(JSONStorage))
-q = tinydb.Query()
+config = dotenv_values(".env")
+mongo = MongoClient(config["DB_CONNECT_STR"])
+computershare_posts = mongo["computershare_posts"]
+sdb = computershare_posts['purchases']
+pdb = computershare_posts['portfolios']
+rdb = mongo['computershared']['portfolios']
+
 
 def get_time():
     with open("earliest_update.txt", "r") as f:
         start_time_str = f.read()
         return int(start_time_str)
 
+def process_apes(apes):
+    for ape in apes:
+        calc_deltas(ape)
+
 def calc_deltas(ape):
-    rdb.remove(q.u == ape)
-    if len(rdb.search(q.u == ape)) > 0:
-        print("It didn't work")
+    rdb.delete_many({"u": ape})
 
     count_accounts = 1
     first_post_purchase = False
     running_total_shares = 0
-    
-    ape_posts = sdb.search((q.u == ape) & (q.value > 0))
-    ape_posts.extend(pdb.search((q.u == ape) & (q.value > 0)))
-    #already_processed = [a["id"] for a in rdb.all()]
 
+    ape_posts = list(sdb.find({"$and": [
+        {"u": ape},
+        {"deleted": False}
+    ]}))
+
+    ape_posts.extend(list(pdb.find({"$and": [
+        {"u": ape},
+        {"deleted": False}
+    ]})))
+
+    ape_posts = sorted(ape_posts, key=lambda i: i["created"])
+    ape_posts[0]["count_accounts"] = 1
     if len(ape_posts) > 1:
-        ape_posts = sorted(ape_posts, key=lambda i: i["created"])
-        if "gme_price" in ape_posts[0]:
+        if ape_posts[0]['post_type'] == "purchase":
             first_post_purchase = True
     # if max([a['delta_value'] or 0 for a in ape_posts if 'delta_value' in a] or [0]) > 0:
     #     return
     values = []
+    count_accounts = 1
     for post in ape_posts:
-        count_accounts = 1
-        try:
-            count_accounts = max([post["count_accounts"] for post in ape_posts if "count_accounts" in post])
-        except:
-            pass
+        # try:
+        #     count_accounts = max([post["count_accounts"], count_accounts])
+        # except:
+        #     pass
         if (post["duped_by"] != [] if "duped_by" in post else False):
             continue
-        if "gme_price" not in post: # if portfolio
+        if post['post_type'] == "portfolio":
             if post['value'] in values:
                 # Duplicate post
                 post['delta_value'] = 0
             else:
                 values.append(post["value"])
-                if post["value"] < running_total_shares: # this ape posted a lower value portfolio after a higher value one. Multiple accounts
+                # this ape posted a lower value portfolio after a higher value one. Multiple accounts
+                if post["value"] < running_total_shares:
                     # Process this as an update to one of the existing accounts
                     # Look at all existing values up to this point and find the nearest w/o going over
                     nearest_delta = post["value"]
@@ -71,9 +84,9 @@ def calc_deltas(ape):
                         count_accounts = 2
                     post["delta_value"] = post["value"] - running_total_shares
                     running_total_shares += post["delta_value"]
-        else: # if direct stock purchase
+        else:  # if cs purchase
             value = post["value"] / (post["gme_price"] or 175.0)
-            #splivy
+            # splivy
             if post['created'] < 1658361600:
                 value *= 4.0
             post["delta_value"] = value
@@ -82,13 +95,14 @@ def calc_deltas(ape):
 
         if "gme_price" not in post:
             post["count_accounts"] = count_accounts
-            pdb.update(post, doc_ids=[post.doc_id])
+            pdb.update_one({"_id": post['id']}, {"$set": post})
         else:
-            sdb.update(post, doc_ids=[post.doc_id])
+            sdb.update_one({"_id": post['id']}, {"$set": post})
 
         result_record = {
             "u": post["u"],
             "id": post["id"],
+            "_id": post["id"],
             "time": int(post["created"]),
             "delta_value": post["delta_value"],
             "accounts": count_accounts,
@@ -96,20 +110,36 @@ def calc_deltas(ape):
             "url": post["url"],
             "image": post["image_path"].replace("portfolio_images", "drs_images")
         }
-        rdb.insert(result_record)
+        rdb.insert_one(result_record)
     if count_accounts > 1:
         print(ape, running_total_shares, count_accounts)
 
-#Get a list of all ape names
+
+# Get a list of all ape names
 since = get_time()
-apes = [p['u'] for p in pdb.search((q.value > 0) & (q.created > since))]
-apes.extend([s['u'] for s in sdb.search((q.value > 0) & (q.created > since))])
-apes = sorted(list(set(apes))) # distinct
+#since = 1631678712
 
-for ape in apes:
-    try:
-        calc_deltas(ape)
-    except:
-        print(f"{ape} failed.")
+apes = list(sdb.find({"$and": [
+    {"created": {"$gte": since}},
+    {"deleted": False}
+]}, {'u': 1}))
 
-rdb.close()
+apes.extend(list(pdb.find({"$and": [
+    {"created": {"$gte": since}},
+    {"deleted": False}
+]}, {'u': 1})))
+apes = sorted(list(set([a['u'] for a in apes])))
+
+if __name__ == "__main__":
+    # Parallelize the work across all CPUs
+    n = 14
+    job_sets = [apes[i * n:(i + 1) * n] for i in range((len(apes) + n - 1) // n )]
+
+    pool = multiprocessing.Pool(processes=n)
+    results = [pool.apply_async(process_apes, args=(a,)) for a in job_sets]
+    returns = []
+    for p in results:
+        try:
+            returns.append(p.get())
+        except Exception as e:
+            print(e)

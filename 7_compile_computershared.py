@@ -1,25 +1,25 @@
 import boto3
-import tinydb
-from tinydb.middlewares import CachingMiddleware
-from tinydb.storages import JSONStorage
 from datetime import datetime, date, timedelta, timezone
 import pytz
 from time import mktime
 import calendar as cal
 import numpy as np
+from pandas import read_csv
 import statistics
 import json
+from pymongo import MongoClient
+from dotenv import dotenv_values
 
-aws_region = ""
-aws_access_key = ""
-aws_secret_access_key = ""
-BUCKET = ""
+config = dotenv_values(".env")
+mongo = MongoClient(config["DB_CONNECT_STR"])
+db = mongo['computershared']['portfolios']
 
-session = boto3.Session(aws_access_key_id=aws_access_key,
-                        aws_secret_access_key=aws_secret_access_key)
+BUCKET = config["S3_BUCKET_NAME"]
+
+session = boto3.Session(aws_access_key_id=config["AWS_KEY"],
+                        aws_secret_access_key=config["AWS_SECRET"])
 s3_client = session.client('s3')
 
-#today = datetime.today().replace(hour=19, minute=0, second=0)
 today = (datetime.utcnow() - timedelta(days=1)).replace(hour=23,
                                                         minute=59, second=59, tzinfo=pytz.utc)
 epoch = datetime(1970, 1, 1)
@@ -35,10 +35,12 @@ def get_account_growth(start, delta):
 
     for i in range(1, range_unit):
         end = start + delta
-
-        s = cal.timegm(start.utctimetuple())
+        rw = cal.timegm((end - timedelta(days=180)).utctimetuple())
         e = cal.timegm(end.utctimetuple())
-        r = rdb.search((q.time > s) & (q.time <= e))
+        r = list(db.find({"$and": [
+            {"time": {"$gt": rw}},
+            {"time": {"$lte": e}}
+        ]}))
 
         accts_grew = [x["delta_value"] for x in r if x["delta_value"]
                       > 0 and x["delta_value"] != x["displayed_value"]]
@@ -71,7 +73,10 @@ def get_accounts(start, delta, delta_unit="days"):
         end = start + delta
         s = cal.timegm(start.utctimetuple())
         e = cal.timegm(end.utctimetuple())
-        r = rdb.search((q.time > s) & (q.time <= e))
+        r = list(db.find({"$and": [
+            {"time": {"$gt": s}},
+            {"time": {"$lte": e}}
+        ]}))
 
         today_apes = {p['u']: p['accounts'] for p in r}
         count_results = 0
@@ -102,6 +107,8 @@ def get_accounts(start, delta, delta_unit="days"):
 def get_posts(start, delta, delta_unit="days"):
     aggregate_posts = {}
     daily_posts = {}
+    stale_users = []
+    active_users = []
     aggregate_results = 0
 
     range_unit = delta.days if delta_unit == "days" else 24
@@ -113,17 +120,36 @@ def get_posts(start, delta, delta_unit="days"):
         end = start + delta
         s = cal.timegm(start.utctimetuple())
         e = cal.timegm(end.utctimetuple())
-        r = rdb.search((q.time > s) & (q.time <= e))
+        r = list(db.find({"$and": [
+            {"time": {"$gt": s}},
+            {"time": {"$lte": e}}
+        ]}))
 
         daily_posts[e] = len(r)
         aggregate_results += len(r)
         aggregate_posts[e] = aggregate_results
+
+        # count of stale portfolios
+        rw = cal.timegm((end - timedelta(days=180)).utctimetuple())
+        outside_window = list(db.find({"time": {"$lt": rw}}))
+        outside_apes = list(set([p['u'] for p in outside_window]))
+        inside_window = list(db.find({"$and": [
+            {"time": {"$gte": rw}},
+            {"time": {"$lte": e}}
+        ]}))
+        inside_apes = list(set([p['u'] for p in inside_window]))
+        drop_apes = [a for a in outside_apes if a not in inside_apes]
+        stale_users.append(len(drop_apes))
+        active_users.append(len(inside_apes))
+
         start = end
         print(f"Posts {int((i/range_unit) * 100)}%      ", end='\r')
 
     return {
         "daily": list(daily_posts.values()),
-        "cumulative": list(aggregate_posts.values())
+        "cumulative": list(aggregate_posts.values()),
+        "stale_users": stale_users,
+        "active_users": active_users
     }
 
 
@@ -143,7 +169,10 @@ def get_shares(start, delta, delta_unit="days"):
         end = start + delta
         s = cal.timegm(start.utctimetuple())
         e = cal.timegm(end.utctimetuple())
-        r = rdb.search((q.time > s) & (q.time <= e))
+        r = list(db.find({"$and": [
+            {"time": {"$gt": s}},
+            {"time": {"$lte": e}}
+        ]}))
 
         accts = [x["delta_value"] for x in r if x["delta_value"] > 0]
         shares_from_growth = 0
@@ -189,7 +218,30 @@ def get_labels(start, delta, delta_unit="days"):
     return list(labels.values())
 
 
-def get_highscores(start, delta, delta_unit="days"):
+def dt_parser(val):
+    return datetime.strptime(val, "%Y-%m-%d")
+
+
+def get_highscores():
+    df = read_csv('highscores.csv', header=0, parse_dates=[0], date_parser=dt_parser)
+    tday = datetime(today.year, today.month, today.day)
+    if tday not in df["DATE"].tolist():
+        elapsed = tday - df.loc[len(df.index)-1]['DATE']
+        actual_hs = df.loc[len(df.index)-1]['HS']
+        df.loc[len(df.index)] = [tday, actual_hs + (elapsed.days / 2)]
+    else:
+        actual_hs = df.loc[len(df.index)-1]['HS']
+
+    df = df.set_index('DATE')
+    df = df.resample('D').mean()
+    df["HS"] = df["HS"].interpolate(method="pchip", order=3)
+    hs_keys = [int(x/1000000000) for x in df.index.values.tolist()]
+    hs_vals = [int(x * 100) for x in df['HS'].tolist()]
+    daily_highscores = {hs_keys[i]: hs_vals[i] for i in range(len(hs_keys))}
+    return daily_highscores, actual_hs * 100
+
+
+def old_get_highscores(start, delta, delta_unit="days"):
     range_unit = delta.days if delta_unit == "days" else 24
     range_unit += 1
     aggregate_highscores = {}
@@ -235,9 +287,13 @@ def get_highscore_scatter():
     daily_high = []
     daily_high_labels = []
 
-    pdb = tinydb.TinyDB("portfolio_db.json")
-    q = tinydb.Query()
-    for result in pdb.search((q.acct_num > 1000) & (q.acct_num < 200000)):
+    pdb = mongo["computershare_posts"]['portfolios']
+    results = pdb.find({"$and": [
+        {"acct_num": {"$gt": 1000}},
+        {"acct_num": {"$lt": 200000}}
+    ]})
+
+    for result in results:
         d = int(result["acct_date"])
         n = int(result["acct_num"])
         data.append({'x': d * 1000, 'y': n})
@@ -245,6 +301,7 @@ def get_highscore_scatter():
     with open('highscores.csv', 'r') as f:
         lines = f.readlines()
         for line in lines:
+            if "DATE" in line: continue
             date_str, *val_str = line.rstrip().split(',')
             date_num = int((datetime.strptime(
                 date_str, date_pattern) - epoch + timedelta(days=1)).total_seconds())
@@ -260,26 +317,40 @@ def get_ownership(last_update, hs):
     return {
         "last_update": last_update,
         "computershare_accounts": hs / 100,
-        "total_outstanding": 304516136,
-        "insider": 53987600,
+        "total_outstanding": 304529721,
+        "insider": 53986253,
         "stagnant": 15472272,
-        "institutional": 115381888,
-        "etfs": 26480620,
-        "mfs": 33262400,
-        "inst_fuckery": 36824662
+        "institutional": 96664906,
+        "etfs": 27129051,
+        "mfs": 31745552,
+        "inst_fuckery": 37790303
     }
 
 
-def get_statistics(results):
+def get_statistics(results, day: datetime):
+    # As of 7/10, trim less
+    trm_chng_day = datetime(2022, 3, 15, tzinfo=pytz.utc)
+    trm_chng_day2 = datetime(2022, 7, 15, tzinfo=pytz.utc)
+    if day < trm_chng_day:
+        chng_amt = 0.04
+    elif day < trm_chng_day2:
+        chng_amt = max(0.04 - (day - trm_chng_day).days * 0.000166, 0.04) #drop 1% over 30 days (1/30/100=0.00033)
+    else:
+        chng_amt = max(0.04 - (day - trm_chng_day2).days * 0.00033, 0.04)
+    TRM_L = 0.048 # chng_amt # 0.04 if day < trm_chng_day else chng_amt
+    TRM_H = 0.048 # chng_amt # 0.04 if day < trm_chng_day else chng_amt
+
     results = results if len(results) > 1 else [0, 0]
-    # Only use the last 60 days
     total_accts = len(results)
     data_set = sorted(results)
-    upper_trim = max(int(total_accts * 0.05), 1)
-    lower_trim = max(int(total_accts * 0.05), 1)
+    upper_trim = max(int(total_accts * TRM_H), 1)
+    lower_trim = max(int(total_accts * TRM_L), 1)
     trmd_results = sorted(results)[lower_trim:-upper_trim]
     trmd_results = [0, 0] if len(trmd_results) < 2 else trmd_results
+
     return {
+        "trim_high": round(100 - TRM_H, 4) * 100,
+        "trim_low": round(TRM_L, 4) * 100,
         "sampled_accounts": total_accts,
         "sampled_shares": float(round(sum(data_set), 2)),
         "std_dev": float(round(statistics.stdev(data_set), 2)),
@@ -300,12 +371,17 @@ def get_stats_history(start, end):
     trimmed_means = []
     std_devs = []
     trm_std_devs = []
+    trim_pcts = []
+    bins = []
+    dists = []
 
     for i in range(1, (end - start).days + 1):
         d = start + timedelta(days=i)
         dataset = [float(a[1]) for a in load_account_balances(d)]
-        stats = get_statistics(dataset)
-
+        stats = get_statistics(dataset, d)
+        dist = get_histogram(dataset)
+        bins = dist['labels']
+        dists.append(dist['values'])
         sampled_accounts.append(stats["sampled_accounts"])
         sampled_shares.append(stats["sampled_shares"])
         averages.append(stats["average"])
@@ -314,7 +390,7 @@ def get_stats_history(start, end):
         trimmed_means.append(stats["trimmed_average"])
         std_devs.append(stats["std_dev"])
         trm_std_devs.append(stats["trm_std_dev"])
-
+        trim_pcts.append(stats['trim_low'])
         print(f"Statistics {i}   ", end='\r')
 
     return {
@@ -325,7 +401,10 @@ def get_stats_history(start, end):
         "modes": modes,
         "averages": averages,
         "trimmed_means": trimmed_means,
-        "trm_std_devs": trm_std_devs
+        "trm_std_devs": trm_std_devs,
+        "trim_pcts": trim_pcts,
+        "bins": bins,
+        "dists": dists
     }
 
 
@@ -379,7 +458,7 @@ def get_week_purchase_power():
 def load_account_balances(end):
     account_totals = []
     try:
-        with open(f"aws_upload/account_balances/{end.strftime('%Y-%m-%d')}.csv", 'r') as f:
+        with open(f"aws_upload/account_balances2/{end.strftime('%Y-%m-%d')}.csv", 'r') as f:
             lines = f.readlines()
             for line in lines:
                 items = line.split(',')
@@ -393,26 +472,25 @@ def load_account_balances(end):
 def load_puchase_power(end):
     total = []
     try:
-        with open(f"aws_upload/account_balances/{end.strftime('%Y-%m-%d')}.csv", 'r') as f:
+        with open(f"aws_upload/account_balances2/{end.strftime('%Y-%m-%d')}.csv", 'r') as f:
             lines = f.readlines()
             for line in lines:
                 items = line.rstrip().split(',')
                 total.append(float(items[3]))
-    except:
+    except Exception as e:
         print(f"ERROR: Failed to get pur power for {end}")
+        print(e)
         return []
     return total
 
 start = datetime(2021, 9, 12, 23, 59, tzinfo=pytz.utc)
 #start = datetime(2022, 7, 23, 23, 59, tzinfo=pytz.utc)
-rdb = tinydb.TinyDB("results_db_new.json")
-q = tinydb.Query()
 
 delta = today - start
 
 # Get All Time
-growth = get_account_growth(start, delta)
-daily_hs, hs = get_highscores(start, delta)
+
+daily_hs, hs = get_highscores()
 hs_scatter = get_highscore_scatter()
 hs_payload = {
     "scatter": hs_scatter,
@@ -436,6 +514,7 @@ shrs_in_accounts = sorted([float(a[1].rstrip())
 stats_history = get_stats_history(start, today)
 num_cs_accts = hs_payload["high"]
 estimates = get_estimates(stats_history, num_cs_accts)
+growth = get_account_growth(start, delta)
 
 chart_data = {
     "labels": get_labels(start, delta),
@@ -456,50 +535,41 @@ with open("aws_upload/all_charts.json", "w+") as f:
     json.dump(chart_data, f)
 s3_client.upload_file("aws_upload/all_charts.json", BUCKET, "all_charts.json")
 
-with open("aws_upload/charts/labels.json", "w+") as f:
+with open("aws_upload/charts2/labels.json", "w+") as f:
     json.dump(chart_data['labels'], f)
-s3_client.upload_file("aws_upload/charts/labels.json",
-                      BUCKET, "charts/labels.json")
+s3_client.upload_file("aws_upload/charts2/labels.json",BUCKET, "charts/labels.json")
 
-with open("aws_upload/charts/stats.json", "w+") as f:
+with open("aws_upload/charts2/stats.json", "w+") as f:
     json.dump(chart_data['stats'], f)
-s3_client.upload_file("aws_upload/charts/stats.json",
-                      BUCKET, "charts/stats.json")
+s3_client.upload_file("aws_upload/charts2/stats.json",BUCKET, "charts/stats.json")
 
-with open("aws_upload/charts/posts.json", "w+") as f:
+with open("aws_upload/charts2/posts.json", "w+") as f:
     json.dump(chart_data['posts'], f)
-s3_client.upload_file("aws_upload/charts/posts.json",
-                      BUCKET, "charts/posts.json")
+s3_client.upload_file("aws_upload/charts2/posts.json",BUCKET, "charts/posts.json")
 
-with open("aws_upload/charts/accounts.json", "w+") as f:
+with open("aws_upload/charts2/accounts.json", "w+") as f:
     json.dump(chart_data['accounts'], f)
-s3_client.upload_file("aws_upload/charts/accounts.json",
-                      BUCKET, "charts/accounts.json")
+s3_client.upload_file("aws_upload/charts2/accounts.json",BUCKET, "charts/accounts.json")
 
-with open("aws_upload/charts/shares.json", "w+") as f:
+with open("aws_upload/charts2/shares.json", "w+") as f:
     json.dump(chart_data['shares'], f)
-s3_client.upload_file("aws_upload/charts/shares.json",
-                      BUCKET, "charts/shares.json")
+s3_client.upload_file("aws_upload/charts2/shares.json",BUCKET, "charts/shares.json")
 
-with open("aws_upload/charts/growth.json", "w+") as f:
+with open("aws_upload/charts2/growth.json", "w+") as f:
     json.dump(chart_data['growth'], f)
-s3_client.upload_file("aws_upload/charts/growth.json",
-                      BUCKET, "charts/growth.json")
+s3_client.upload_file("aws_upload/charts2/growth.json",BUCKET, "charts/growth.json")
 
-with open("aws_upload/charts/power.json", "w+") as f:
+with open("aws_upload/charts2/power.json", "w+") as f:
     json.dump(get_week_purchase_power(), f)
-s3_client.upload_file("aws_upload/charts/power.json",
-                      BUCKET, "charts/power.json")
+s3_client.upload_file("aws_upload/charts2/power.json",BUCKET, "charts/power.json")
 
-with open("aws_upload/charts/distribution.json", "w+") as f:
+with open("aws_upload/charts2/distribution.json", "w+") as f:
     json.dump(chart_data['distribution'], f)
-s3_client.upload_file("aws_upload/charts/distribution.json",
-                      BUCKET, "charts/distribution.json")
+s3_client.upload_file("aws_upload/charts2/distribution.json",BUCKET, "charts/distribution.json")
 
-with open("aws_upload/charts/estimates.json", "w+") as f:
+with open("aws_upload/charts2/estimates.json", "w+") as f:
     json.dump(chart_data['estimates'], f)
-s3_client.upload_file("aws_upload/charts/estimates.json",
-                      BUCKET, "charts/estimates.json")
+s3_client.upload_file("aws_upload/charts2/estimates.json", BUCKET, "charts/estimates.json")
 
 todays_stats = {
     "sampled_accounts": stats_history["sampled_accounts"][-1],
@@ -520,18 +590,3 @@ with open("aws_upload/all_stats.json", "w+") as f:
     json.dump(todays_stats, f)
 s3_client.upload_file("aws_upload/all_stats.json", BUCKET, "all_stats.json")
 
-audit_start = int(float(hs_payload["high_labels"][-2])/1000.0)
-ars = rdb.search(q.time > audit_start)
-highest = ""
-hs = 0
-for ar in ars:
-    if ar["delta_value"] > hs:
-        hs = ar["delta_value"]
-        highest = ar["id"]
-print(highest, hs)
-
-
-with open("shares.csv", "w+", encoding="utf-8") as f:
-    f.write("time,u/,accounts,displayed_shares,delta_shares,url,image\n")
-    for record in rdb.all():
-        f.write(f'{np.datetime64(datetime.utcfromtimestamp(record["time"]))},{record["u"]},{record["accounts"]},{str(record["displayed_value"])},{str(record["delta_value"])},"{str(record["url"])}","https://s3-us-west-2.amazonaws.com/computershared-reddit-images/{str(record["image"]).replace("drs_images/", "")}"\n')

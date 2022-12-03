@@ -385,9 +385,13 @@ function updateDonutData(donutData, stats) {
   document.getElementById("donutDataApe").innerHTML = donutData.apeDrs;
 
   if (sampleSize < 5.0) {
-    document.getElementById("alertSampleSize").innerText = "Sample Size: " + sampleSize.toLocaleString() + "%";
-    let t = new bootstrap.Toast(document.getElementById("lowSampleToast"));
-    t.show();
+    var alerted = localStorage.getItem('lowss') || '';
+    if (alerted != "alerted") {
+      document.getElementById("alertSampleSize").innerText = "Sample Size: " + sampleSize.toLocaleString() + "%";
+      let t = new bootstrap.Toast(document.getElementById("lowSampleToast"));
+      t.show();
+      localStorage.setItem("lowss", "alerted");
+    }
   }
 
   // Animate the site

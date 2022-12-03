@@ -1,7 +1,3 @@
-import tinydb
-from tinydb.queries import where
-from tinydb.middlewares import CachingMiddleware
-from tinydb.storages import JSONStorage
 from os import system, remove
 from os.path import exists
 import time
@@ -9,16 +5,20 @@ import hashlib
 from shutil import copy
 from datetime import datetime
 from time import mktime
+from pymongo import MongoClient
+from dotenv import dotenv_values
+
+config = dotenv_values(".env")
+mongo = MongoClient(config["DB_CONNECT_STR"])
+reddit_posts = mongo['reddit_posts']
+portfolio_table = mongo["computershare_posts"]['portfolios']
 
 
-def get_reddit_post(post_id, sdb):
-    # Try portfolio/share db first
+def get_reddit_post(post_id):
+    record = portfolio_table.find_one({"_id": post_id})
+    if record:
+        return record
 
-    q = tinydb.Query()
-    posts = sdb.search(q.id == post_id)
-    if len(posts) > 0:
-        return posts[0]
-    
     subs = [
         "GME",
         "Superstonk",
@@ -31,50 +31,36 @@ def get_reddit_post(post_id, sdb):
         "GMECanada",
         "GMEOrphans"
     ]
-    
-    for sub in subs:
-        db = tinydb.TinyDB(f'{sub}.json')
-        posts = db.search(q.id == post_id)
-        if len(posts) > 0:
-            post = posts[0]
-            d = int(mktime(datetime.date(datetime.fromtimestamp(post["created"])).timetuple()))
-            return {
-                "id": post["id"],
-                "image_text": post["image_text"],
-                "image_path": post["img_path"],
-                "img_hash": "",
-                "value": None,
-                "sub": post["subreddit"],
-                "u": post["author"],
-                "url": "https://reddit.com"+post["permalink"],
-                "created": post["created"],
-                "audited": False,
-                "count_accounts": 1,
-                "acct_date": d,
-                "acct_num": 0
-            }
 
-        db = tinydb.TinyDB(f'historical_dbs/021122/{sub}.json')
-        posts = db.search(q.id == post_id)
-        if len(posts) > 0:
-            post = posts[0]
-            d = int(mktime(datetime.date(datetime.fromtimestamp(post["created"])).timetuple()))
+    for sub in subs:
+        sub_table = reddit_posts[sub]
+        post = sub_table.find_one({"_id": post_id})
+
+        if post:
+            d = int(mktime(datetime.date(
+                datetime.fromtimestamp(post["created"])).timetuple()))
             return {
                 "id": post["id"],
+                "_id": post["id"],
                 "image_text": post["image_text"],
                 "image_path": post["img_path"],
                 "img_hash": "",
                 "value": None,
+                "delta_value": 0,
                 "sub": post["subreddit"],
                 "u": post["author"],
                 "url": "https://reddit.com"+post["permalink"],
                 "created": post["created"],
                 "audited": False,
                 "count_accounts": 1,
+                "duped_by": [],
                 "acct_date": d,
-                "acct_num": 0
+                "acct_num": 0,
+                "deleted": False,
+                "post_type": post['post_type']
             }
     return None
+
 
 def print_post(post):
     print(f'ID: {post["id"]}')
@@ -84,13 +70,24 @@ def print_post(post):
     print(f'Value: {post["value"]}')
     print(f'Acct#: {post["acct_num"]}')
 
+
 def post_time(post):
     global earliest_update
     post_time = post["created"]
     if post_time < earliest_update:
-        earliest_update = post_time
+        earliest_update = int(post_time)
 
-def get_new_value(post, sdb):
+
+def delete_post(post):
+    post["deleted"] = True
+    try:
+        remove(post['image_path'])
+    except:
+        pass
+    portfolio_table.update_one({"_id": post['id']}, {"$set": post})
+
+
+def get_new_value(post):
     while True:
         ans = input("How many shares? ")
         value = None
@@ -99,53 +96,50 @@ def get_new_value(post, sdb):
         except:
             continue
         post["value"] = value
-        post["audited"] = True
-        q = tinydb.Query()
-        sdb.upsert(post, q.id == post["id"])
+        if value == 0:
+            delete_post(post)
+            return
+        portfolio_table.update_one({"_id": post['id']}, {"$set": post})
         return
 
+
 def audit_cv_failures():
-    sdb = tinydb.TinyDB("portfolio_db.json")
-    q = tinydb.Query()
-    posts = sdb.search((q.value == None) & (q.duped_by == []))
-    posts.extend(sdb.search((q.value == "") & (q.duped_by == [])))
+    # select * from portfolio_table where value = nul and duped_by = [] and audited = false
+    posts = list(portfolio_table.find({"$and": [
+        {"audited": False},
+        {"deleted": False},
+        {"value": None},
+        {"duped_by": []}
+    ]}))
+
     print(f"{len(posts)} posts to audit.")
     processed = 0
     for post in posts:
-        ignore_keywords = ["cohen", "vote", "amendment", "halt", "luld", "outbound", "nyse"]
+        post["audited"] = True
+        post_time(post)
+        ignore_keywords = ["cohen", "vote", "amendment",
+                           "halt", "luld", "outbound", "nyse", "transfer agent"]
         if any(kw in post["image_text"].lower() for kw in ignore_keywords):
-        #if "Cohen" in post["image_text"] or "vote" in post["image_text"] or "amendment" in post["image_text"] or "split" in post["image_text"].lower() or "luld" in post["image_text"].lower() or "outbound" in post["image_text"].lower():
-            post["value"] = 0
-            sdb.update(post, doc_ids=[post.doc_id])
-            print(f'Deleting another one {post["image_text"]}')
+            delete_post(post)
             continue
         if '.' in post["image_path"]:
             if not exists(post["image_path"]):
-                post["value"] = 0
-                post["audited"] = True
-                post_time(post)
-                sdb.update(post, doc_ids=[post.doc_id])
+                delete_post(post)
                 continue
             system(f"codium {post['image_path']}")
         print_post(post)
-        ans = input("Is this a Computershare portfolio with visible value? Y/n ")
+        ans = input(
+            "Is this a Computershare portfolio with visible value? Y/n ")
         if 'n' in ans.lower():
-            post["value"] = 0
-            post["audited"] = True
-            sdb.update(post, doc_ids=[post.doc_id])
-            try:
-                remove(post['image_path'])
-            except:
-                pass
+            delete_post(post)
             continue
-        get_new_value(post, sdb)
-        post_time(post)
-        processed+=1
+        get_new_value(post)
+        processed += 1
         print(f"{processed}/{len(posts)}")
 
+
 def manual_audit():
-    q = tinydb.Query()
-    sdb = tinydb.TinyDB("portfolio_db.json")
+
     while True:
         ans = input("Audit a record manually? Y/n ")
         if 'n' in ans.lower():
@@ -153,26 +147,21 @@ def manual_audit():
         post_id = input("Post ID: ")
         if not post_id:
             continue
-        post = get_reddit_post(post_id, sdb)
+        post = get_reddit_post(post_id)
         if post is not None:
-            post["audited"] = True  
-            post_time(post)          
-            sdb.upsert(post, q.id == post_id)
+            post["audited"] = True
+            post_time(post)
             if '.' in post["image_path"]:
                 system(f"codium {post['image_path']}")
             print_post(post)
-            ans = input("What should change? Value | Delete | Skip | Accounts: ")
+            ans = input(
+                "What should change? Value | Delete | Skip | Accounts: ")
             if 's' in ans.lower():
                 continue
             if 'v' in ans.lower():
-                get_new_value(post, sdb)
+                get_new_value(post)
             if 'd' in ans.lower():
-                post["value"] = 0
-                sdb.update(post, doc_ids=[post.doc_id])
-                try:
-                    remove(post['image_path'])
-                except:
-                    pass
+                delete_post(post)
             if 'a' in ans.lower():
                 ans = input("How many accounts?")
                 num_accts = 1
@@ -180,46 +169,58 @@ def manual_audit():
                     num_accts = int(ans)
                 except:
                     pass
-                if num_accts == 1:
-                    continue
-                
+                post['count_accounts'] = num_accts
+                portfolio_table.update_one({"_id": post['id']}, {"$set": post})
+
         else:
             ans = input("Post not found. Add? ")
             if 'n' in ans.lower():
                 continue
             post = {
                 "id": post_id,
+                "_id": post_id,
                 "image_text": "None",
                 "image_path": "None",
+                "value": 0,
+                "delta_value": 0,
                 "sub": input("What subreddit? "),
                 "u": input("Username? "),
                 "url": input("URL? "),
                 "created": time.time(),
                 "audited": True,
                 "img_hash": "None",
-                "count_accounts": 1
+                "count_accounts": 1,
+                "duped_by": [],
+                "acct_date": int(mktime(datetime.date(datetime.now()).timetuple())),
+                "acct_num": 0,
+                "deleted": False
             }
-            sdb.insert(post)
-            get_new_value(post, sdb)
+            portfolio_table.insert_one(post)
+            get_new_value(post)
 
 
 def audit_all():
-    sdb = tinydb.TinyDB("portfolio_db.json")
-    q = tinydb.Query()
-    posts = sdb.search(~(q.value == 0) & (q.audited == False) & (q.duped_by == []))
+    posts = list(portfolio_table.find({"$and": [
+        {"audited": False},
+        {"deleted": False},
+        {"value": {"$ne": 0}},
+        {"duped_by": []}
+    ]}))
+
     print(f"{len(posts)} posts to audit.")
     processed = 0
     for post in posts:
         post["audited"] = True
         post_time(post)
-        sdb.update(post, doc_ids=[post.doc_id])
+        portfolio_table.update_one({"_id": post['id']}, {"$set": post})
         system(f"codium {post['image_path']}")
         print(post["url"])
         ans = input(f"{post['value']} Audit this? Y/n ")
         if 'y' in ans.lower():
-            get_new_value(post, sdb)
-        processed+=1
+            get_new_value(post)
+        processed += 1
         print(f"{processed}/{len(posts)}")
+
 
 def hashfile(path, blocksize=65536):
     afile = open(path, 'rb')
@@ -231,11 +232,19 @@ def hashfile(path, blocksize=65536):
     afile.close()
     return hasher.hexdigest()
 
+
 def identify_dupes():
     identified = []
-    sdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
-    q = tinydb.Query()
-    posts = sdb.search((q.img_hash == "") & ~(q.value == 0) & (q.duped_by == []))
+    # Search portfolios for posts that have an empty "img_hash", have a "value" not equal to zero,
+    # and "duped_by" is an empty list.
+
+    posts = list(portfolio_table.find({"$and": [
+        {"img_hash": ""},
+        {"deleted": False},
+        {"value": {"$ne": 0}},
+        {"duped_by": []}
+    ]}))
+
     print(f'Hashing {len(posts)} post images.')
     for post in posts:
         if post["image_path"] and post["image_path"] != "None":
@@ -247,15 +256,16 @@ def identify_dupes():
                     continue
             img_hash = hashfile(post["image_path"])
             post["img_hash"] = img_hash
-            sdb.update(post, doc_ids=[post.doc_id])
+            portfolio_table.update_one({"_id": post['id']}, {"$set": post})
         else:
-            pass #print(f'No image for {post["url"]}.')
-    #posts = sdb.search((q.duped_by == []) & ~(q.value == 0) & ~(q.img_hash == "") & ~(q.img_hash == "None"))
+            pass 
+        
     print(f'Comparing {len(posts)} post images.')
     for post in posts:
         if post["image_path"] == "":
             continue
-        dupes = sdb.search((q.img_hash == post["img_hash"]))
+
+        dupes = list(portfolio_table.find({"img_hash": post['img_hash']}))
         if len(dupes) > 1:
             if post not in dupes:
                 continue
@@ -263,46 +273,12 @@ def identify_dupes():
                 if post["id"] != dupe["id"]:
                     dupe["duped_by"].append(post["id"])
                     dupe["value"] = 0
-                    sdb.update(dupe, doc_ids=[dupe.doc_id])
+                    portfolio_table.update_one({"_id": dupe['id']}, {"$set": dupe})
                     print(f'{dupe["url"]} marked as duped by {post["url"]}')
 
-            # if dupes[0] not in identified:
-            #     identified.extend(dupes)
-            #     print("Dupe:")
-            #     for dupe in dupes:
-            #         if dupe["value"] != 0:
-            #             print(dupe["sub"],dupe["id"])
-    sdb.close()
 
-earliest_update = 999999999999   
+earliest_update = 999999999999
 if __name__ == "__main__":
-    found = 0
-    q = tinydb.Query()
-    pdb = tinydb.TinyDB("portfolio_db.json", storage=CachingMiddleware(JSONStorage))
-    results = pdb.search(q.id == q.duped_by)
-    for r in pdb.all():
-        if "acct_num" not in r:
-            r["acct_num"] = 0
-            pdb.update(r, doc_ids=[r.doc_id])
-            found += 1
-        # if "duped_by" not in r:
-        #     r["duped_by"] = []
-        #     pdb.update(r, doc_ids=[r.doc_id])
-        #     continue
-        # if r["id"] in r["duped_by"]:
-        #     r["duped_by"] = []
-        #     r["audited"] = False
-        #     r["value"] = None
-        #     pdb.update(r, doc_ids=[r.doc_id])
-        #     found += 1
-        # if type(r["duped_by"]) is str:
-        #     value = r["duped_by"]
-        #     r["duped_by"] = [value]
-        #     pdb.update(r, doc_ids=[r.doc_id])
-        #     found +=1
-    print(f"Found: {found}")
-    pdb.close()
-    
     identify_dupes()
     audit_cv_failures()
     audit_all()
