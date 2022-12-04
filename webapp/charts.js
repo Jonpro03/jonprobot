@@ -16,6 +16,7 @@ var localeNum = Intl.NumberFormat(navigator.language, {
   maximumFractionDigits: 2
 });
 
+
 async function buildEstimatesChart(labels) {
   let estimatesData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=estimates", {
     mode: 'cors'
@@ -480,6 +481,7 @@ async function buildEstimatesChart(labels) {
   return chart;
 };
 
+
 async function buildSharesChart(labels) {
   let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=shares", {
     mode: 'cors'
@@ -594,6 +596,7 @@ async function buildSharesChart(labels) {
   return chart;
 };
 
+
 async function buildStatsChart(labels) {
   let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=stats", {
     mode: 'cors'
@@ -667,6 +670,7 @@ async function buildStatsChart(labels) {
           pointBackgroundColor: '#289418'
         },
         {
+          hidden: true,
           yAxisID: "yPct",
           data: data.trim_pcts,
           label: "Trim %",
@@ -768,12 +772,24 @@ async function buildStatsChart(labels) {
   return chart;
 };
 
+
 async function buildPostsChart(labels) {
   let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=posts", {
     mode: 'cors'
   }).then(function (response) {
     return response.json();
   });
+
+  let account = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/highscores", {
+    mode: 'cors'
+  }).then(function (response) {
+    return response.json();
+  });
+
+  let sampleSize=[];
+  for (var i=0; i < account.high.length; i++) {
+    sampleSize[i] = (data.active_users[i] / account.high[i] * 100.0).toFixed(2);
+  }
 
   var ctx = document.getElementById("chartCanvas");
   var chart = new Chart(ctx, {
@@ -787,18 +803,16 @@ async function buildPostsChart(labels) {
           yAxisID: "y",
           label: "Active Shareholders",
           data: data.active_users,
-          backgroundColor: '#93186c',
-          borderColor: '#E024A5',
-          backgroundColor: 'transparent',
+          backgroundColor: '#D45102',
+          borderColor: '#A11F12',
           type: "line"
         },
         {
           yAxisID: "y",
           label: "Stale Shareholders",
           data: data.stale_users,
-          backgroundColor: '#A11F12',
-          borderColor: '#871B0F',
-          backgroundColor: 'transparent',
+          backgroundColor: '#871B0F',
+          borderColor: '#A11F12',
           type: "line"
         },
         {
@@ -806,6 +820,13 @@ async function buildPostsChart(labels) {
           label: "Daily Posts",
           data: data.daily,
           backgroundColor: '#11979C'
+        },
+        {
+          yAxisID: "yPct",
+          label: "Sample Size",
+          data: sampleSize,
+          backgroundColor: '#6FA142',
+          type: "line"
         }
       ]
     },
@@ -824,8 +845,7 @@ async function buildPostsChart(labels) {
           },
         },
         ybar: {
-          position: "right",
-          stacked: true,
+          position: "left",
           min: 0,
           ticks: {
             callback: (val) => (localeNum.format(val)),
@@ -837,16 +857,30 @@ async function buildPostsChart(labels) {
           },
         },
         y: {
-          position: "left",
+          position: "right",
           min: 0,
           max: 25000,
           ticks: {
             callback: (val) => (localeNum.format(val)),
-            //color: "#E024A5"
+            color: "#A11F12"
           },
           title: {
             display: true,
             text: "Number of Shareholders"
+          },
+        },
+        yPct: {
+          type: "linear",
+          position: "right",
+          min: 0,
+          max: 10,
+          ticks: {
+            callback: (val) => (val.toLocaleString()+'%'),
+            color: "#6FA142"
+          },
+          title: {
+            display: true,
+            text: "Sample Percent"
           },
         },
       },
@@ -969,6 +1003,7 @@ async function buildGrowthChart() {
   return chart;
 };
 
+
 async function buildPurchasePowerChart() {
   let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=power", {
     mode: 'cors'
@@ -1040,6 +1075,7 @@ async function buildPurchasePowerChart() {
   });
   return chart;
 };
+
 
 async function buildDistributionChart(labels) {
   let data = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/chart?data=distribution", {
@@ -1146,6 +1182,7 @@ async function buildDistributionChart(labels) {
   return chart;
 };
 
+
 async function buildHighscoreChart() {
   const hsData = await fetch("https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/dashboard/highscores", {
     mode: 'cors'
@@ -1232,9 +1269,11 @@ async function buildHighscoreChart() {
   return hsScatterChart;
 };
 
+
 (async function() {
 
 })();
+
 
 async function setupCharts() {
   Chart.defaults.color = '#EEE';

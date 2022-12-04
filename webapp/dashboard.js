@@ -208,7 +208,7 @@ function updateDonutData(donutData, stats) {
     document.getElementById('title').innerText = 'GameStop DRS Calculator';
     document.getElementById('acctsLbl').innerText = 'Accounts:';
   }
-  
+
   // Handle diff b/w drsbot and scraper
   if (datasource === "drsbot") {
     stats.trimmed_average = stats.trimmed_average / stats.accts_per_ape;
@@ -359,7 +359,7 @@ function updateDonutData(donutData, stats) {
     updateDonutData(donutData, stats);
     updateDonut(donut, donutData);
   };
-  
+
   document.getElementById("outstandingValue").innerHTML = localeFormat.format(donutData.total_outstanding);
   document.getElementById("insiderHolding").innerHTML = '-' + localeFormat.format(donutData.insider);
   document.getElementById("insiderHoldingPct").innerHTML = '-' + Math.round(donutData.insider / donutData.total_outstanding * 100) + '%';
@@ -414,10 +414,8 @@ function updateDonutData(donutData, stats) {
   await new Promise(r => setTimeout(r, 600));
   showOutstanding = true;
   document.getElementById("instOtherBtn").checked = true;
-  document.getElementById("instOtherBtn").dispatchEvent(new Event('change'));  
+  document.getElementById("instOtherBtn").dispatchEvent(new Event('change'));
   await new Promise(r => setTimeout(r, 600));
-
-  
 
   // let t = new bootstrap.Toast(document.getElementById("alertToast"));
   // var alerted = localStorage.getItem('hiring') || '';
