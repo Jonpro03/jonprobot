@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <title>💎👐 COMPUTERSHARED.NET</title>
@@ -69,21 +70,19 @@
       <div class="row">
         <div class="col-12 fs-4">
           <h1 class="text-center">Frequently Asked Questions</h1>
-          </br>
 
-          <a name="1" />
-          <div class="col-12">
+          <a name="1"></a>
+          <div class="col-12 body-copy">
             <h2>1. Is this DRSBot?</h2>
             <p>It is not. Computershared.net is a project that scrapes reddit for images, and is non-interactive.</p>
             <p>You can, however, view the Calculator with DRSBot results on computershared.net by changing Dataset to
               DRSBot, or by visiting
               <a href="https://www.computershared.net?bot=drsbot" target="_blank">computershared.net?bot=drsbot</a>.
             </p>
-            </br>
           </div>
 
-          <a name="2" />
-          <div class="col-12">
+          <a name="2"></a>
+          <div class="col-12 body-copy">
             <h2>2. What is Trimmed Average?</h2>
             <p>Trimmed average is my solution to the "How representative is reddit to all ComputerShare account
               holders?" problem.
@@ -92,13 +91,11 @@
             <p>In statistics, when there is uncertainty about the sample set not being representative of the whole,
               it's common to trim results from the top and bottom of the dataset.
               After trying a few different values, I found that dropping largest 5% of accounts, and smallest 5% of
-              accounts brought the estimate very close to the actual number.
-              </br>
-              In July of 2022, the trimmed average was reduced to 4% linearly over 30 days.</p>
-            </br>
+              accounts brought the estimate very close to the actual number.</p>
+            <p>In July of 2022, the trimmed average was reduced to 4% linearly over 30 days.</p>
           </div>
-          <a name="2.5" />
-          <div class="col-12">
+          <a name="2.5"></a>
+          <div class="col-12 body-copy">
             <h2>2.5. What is the 180-day window?</h2>
             <p>It really just means that if I haven't seen an image from a given user in the last 6 months, I no
               longer include their portfolio in the Sample Set.
@@ -108,11 +105,10 @@
             <p>You can view the current sample size by clicking the <i class="fas fa-question-circle"
                 style="display: inline"></i> button next to the METRIC selector on the Calculator.
             </p>
-            </br>
           </div>
 
-          <a name="3" />
-          <div class="col-12">
+          <a name="3"></a>
+          <div class="col-12 body-copy">
             <h2>3. How do you predict how many shares are Direct-Registered? How accurate is the prediction?</h2>
             <p>Honestly, you're looking at my best guess. My best guess is based on the simple formula:
             <figure>
@@ -125,11 +121,10 @@
             <p>The estimate has been fairly accurate over time, usually underestimating. The estimate based on the
               Trimmed Average is fitted every quarter so that it aligns with the actual progress released by Gamestop.
             </p>
-            </br>
           </div>
 
-          <a name="4" />
-          <div class="col-12">
+          <a name="4"></a>
+          <div class="col-12 body-copy">
             <h2>4. I don't see my post.</h2>
             <p>This can happen for a variety of reasons. You might be surprised at how many people will post then
               delete before I have a chance to scrape it.</p>
@@ -137,11 +132,10 @@
               should capture. This can be because the image's resolution is too high, has moire patterns, or it isn't
               an image post at all.</p>
             <p>If you were missed out and would like to be included, just shoot me a DM with a link to your post.</p>
-            </br>
           </div>
 
-          <a name="5" />
-          <div class="col-12">
+          <a name="5"></a>
+          <div class="col-12 body-copy">
             <h2>5. I updated my existing post using the comments section in r/GMEOrphans but it didn't update on
               computershared.net.</h2>
             <p>While the computershared.net scraper does scrape the r/GMEOrphans subreddit for images, it does not
@@ -149,19 +143,17 @@
             <p>Every post is scraped only once (no more than 15m after creation).
               If you update a post after it's been scraped, computershared.net will never know. The only way to update
               a record for my scraper is to make a new image-post on one of the scraped subreddits.</p>
-            </br>
           </div>
 
-          <a name="5.5" />
-          <div class="col-12">
+          <a name="5.5"></a>
+          <div class="col-12 body-copy">
             <h2>5.5. r/GMEOrphans does not allow me to make a second post.</h2>
             <p>That's regrettable, but I am not a moderator there. Updating an existing post/image will not update
               your record with the reddit scraper.</p>
-            </br>
           </div>
 
-          <a name="6" />
-          <div class="col-12">
+          <a name="6"></a>
+          <div class="col-12 body-copy">
             <h2>6. When/How often does the site update?</h2>
             <p>For the scraper, nothing new goes out to the site until I review/audit. I do this every evening.
               A UTC day for me ends at 6pm and it takes about an hour to review everything and another hour for my
@@ -169,24 +161,22 @@
             <p>Sometimes I just don't feel like doing it in the evening and it won't be until the middle of the next
               day or so. There is an "As Of" at the bottom of the Calculator that will update when new results are
               published.</p>
-            </br>
           </div>
 
-          <a name="7" />
-          <div class="col-12">
+          <a name="7"></a>
+          <div class="col-12 body-copy">
             <h2>7. Do you check for fakes/duplicates?</h2>
             <p>The scraper does keep a database of image hashes, and this is useful in identifying reused images or
               images posted twice (usually by the same author on multiple subreddits).
               Duplicate images/posts are accounted for by computershared.net.</p>
             <p>Computershared.net does not check for faked posts, but the Reddit community is very good at spotting
               faked images. Computershared.net does not count posts identified by the community as fake.</p>
-            </br>
           </div>
 
-          <a name="8" />
-          <div class="col-12">
+          <a name="8"></a>
+          <div class="col-12 body-copy">
             <h2>8. Why does the site show the wrong value for my post?</h2>
-            There are a couple of reasons this can happen:
+            <p>There are a couple of reasons this can happen:</p>
             <ul>
               <li>You have multiple Computershare accounts and the scraper incorrectly guessed how many accounts you
                 have or whether you have merged your accounts into one. The logic for account compliation always makes
@@ -197,11 +187,10 @@
                 enough. Contact me.</li>
               <li>Your post was identified as a fake by the community.</li>
             </ul>
-            </br>
           </div>
 
-          <a name="9" />
-          <div class="col-12">
+          <a name="9"></a>
+          <div class="col-12 body-copy">
             <h2>9. Are you coordinating with DRSBot? Are you using DRSBot data too?</h2>
             <p>No. We've looked at collaborating/combining data before, but frankly our methodologies are too
               dissimilar and the resulting effort to do so can't be justified.</p>
@@ -209,11 +198,10 @@
               dissimilar ways and arrive at the same result is more valuable than combining efforts.
               Doubly so when Gamestop began releasing DRS Actuals and we weren't that far off.
             </p>
-            </br>
           </div>
 
-          <a name="10" />
-          <div class="col-12">
+          <a name="10"></a>
+          <div class="col-12 body-copy">
             <h2>10. Tell me about the setup.</h2>
             <p>The solution is cloud-hybrid. I do scraping/data processing onsite because it's significantly cheaper
               than running in the cloud. The backend is all python
@@ -228,25 +216,24 @@
             <p>Cloud hosting is all AWS. APIs are API Gateway and DynamoDB, or API Gateway, Lambda, and S3.
               Front end assets are in S3, and CloudFront as the CDN for geo-caching.
             </p>
-            </br>
           </div>
 
-          <a name="11" />
-          <div class="col-12">
+          <a name="11"></a>
+          <div class="col-12 body-copy">
             <h2>11. Can I have access to the data?</h2>
             <p>Yes. If you just want the raw CSV files that I use for statistics and metrics, download them with the
-              following URL:
-              </br>
-              <strong>https://s3-us-west-2.amazonaws.com/computershared-assets/results/YYYY-MM-DD.csv</strong>
-              </br>
-              Months and Days are 0-padded.
+              following URL (Months and Days are 0-padded):</p>
+            <p>
+              <a href="https://s3-us-west-2.amazonaws.com/computershared-assets/results/YYYY-MM-DD.csv"
+                target="_blank">https://s3-us-west-2.amazonaws.com/computershared-assets/results/YYYY-MM-DD.csv</a>
             </p>
             <p>
-              The following API data is also available:
-              </br>
-              </br>
-              <strong>Base URL:</strong> https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/
-            <table class="table table-secondary table-striped">
+              The following API data is also available:</p>
+            <p><a href="https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/"
+                target="_blank">Base
+                URL: https://5o7q0683ig.execute-api.us-west-2.amazonaws.com/prod/computershared/</a>
+            </p>
+            <table class="table table-secondary table-striped data-table">
               <thead>
                 <tr>
                   <th scope="col">Path</th>
@@ -384,25 +371,25 @@
 
               </tbody>
             </table>
-            </p>
+
             <p>
               If an API returns <strong>LastEvaluatedKey</strong>, the results have been paginated. Pull the reddit
               username and post id (u and id respectively) and pass it into the next request as
-              <strong>resumeUser</strong> and
-              <strong>resumeId</strong>.
+              <strong>resumeUser</strong> and <strong>resumeId</strong>.
             </p>
+          </div>
+        </div>
+        <div id="footerRow" class="row">
+          <div class="text-muted mb-4">
+            This site is not affiliated with Computershare or GameStop.
             </br>
           </div>
         </div>
       </div>
     </div>
-
-    <div id="footerRow" class="row">
-      <div class="text-muted mb-4">
-        This site is not affiliated with Computershare or GameStop.
-        </br>
-      </div>
     </div>
+
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
       integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>

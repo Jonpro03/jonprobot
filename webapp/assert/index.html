@@ -64,70 +64,73 @@
   </header>
 
   <main class="container-fluid">
-    <div id="pageContent" class="container-xxl py-4">
-      <h1 class="pt-5 text-center">Hello!</h1>
-      <div class="fs-3">
-        <p>
-          It has been nearly 6 months since the computershared.net reddit scraper has seen a post from you. This could
-          be because it's goofed up, or something else.
-        </p>
-        <p>
-          You have a few options. Would you like to:
-        <ul>
-          <li class="pb-4">Assert that the most recent post still accurately reflects your account balance
-            </br>
-            <button class="btn btn-secondary">Assert</button>
-          </li>
-          <li class="pb-4">Let the scraper know that it missed a more recent post
-            </br>
-            <button class="btn btn-secondary">Missed one</button>
-          </li>
-          <li class="pb-4">Make a new post on Reddit with an up-to-date screenshot
-            </br>
-            <a href="https://www.reddit.com/">
-              <button class="btn btn-secondary">Take me to Reddit</button>
-            </a>
-          </li>
-          <li class="pb-4">Let the reddit scraper know that you've closed or lowered your position:
-            </br>
-            <div class="input-group">
-              <input type="text" class="form-control text-end" placeholder="0" style="max-width: 10em;" />
-              <button class="btn btn-secondary">Update my Balance</button>
-            </div>
-          </li>
-          <li class="pb-4">Do nothing at all. I don't mind being dropped from computershared.net's sample set
-            </br>
-            <a href="../">
-              <button class="btn btn-secondary">Wave goodbye</button>
-            </a>
-          </li>
-        </ul>
-        Whatever you choose, thank you for taking the time to help computershared.net.
-        </p>
+    <div id="pageContent" class="container-xxl">
+      <div class="row">
+        <div class="col-12 fs-4">
+          <h1>Confirm your Share Data!</h1>
+          <h2 class="pt-5"><i class="fab fa-reddit-alien"></i> Hello Reddit Person!</h2>
+          <div class="fs-4  body-copy">
+            <p>It has been nearly 6 months since the computershared.net reddit scraper has seen a post from you, which
+              means
+              your shares are soon going to <a href="#" target="_blank">drop out</a> of the data we show on this site.
+            </p>
+            <p>This could be because the scraper goofed up, or perhaps you havent added any shares for a while or just
+              didnt
+              post on Reddit. If you still want us to count your shares, you have a few easy options:</p>
+            <ul class="assert-options">
+              <li class="pb-4"><span>Assert that your most <a href="#" target="_blank">recent post</a> still accurately
+                  reflects your Computershare GME account balance</span>
+                <button class="btn btn-primary">Yep, it's correct</button>
+              </li>
+              <li class="pb-4"><span>Let the scraper know that it missed a more recent post</span>
+                <button class="btn btn-secondary">Missed one</button>
+              </li>
+              <li class="pb-4"><span>Make a new post on Reddit with an up-to-date screenshot</span>
+                <a href="https://www.reddit.com/">
+                  <button class="btn btn-secondary">Take me to Reddit</button>
+                </a>
+              </li>
+              <li class="pb-4"><span>Let the reddit scraper know that you've closed or lowered your position:</span>
+                <div class="input-group">
+                  <input type="text" class="form-control text-end" placeholder="0" />
+                  <button class="btn btn-secondary">Update my Balance</button>
+                </div>
+              </li>
+              <li class="pb-4"><span>Do nothing at all. I don't mind being dropped from computershared.net's sample
+                  set</span>
+                <a href="../">
+                  <button class="btn btn-secondary">Wave goodbye</button>
+                </a>
+              </li>
+            </ul>
+            <p>Whatever you choose, thank you for taking the time to help computershared.net.</p>
+          </div>
+        </div>
+      </div>
+      <div id="footerRow">
+        <div class="text-muted mb-4">
+          This site is not affiliated with Computershare or GameStop.
+          </br>
+        </div>
       </div>
     </div>
+  </main>
 
-    <div id="footerRow" class="row">
-      <div class="text-muted mb-4">
-        This site is not affiliated with Computershare or GameStop.
-        </br>
-      </div>
-    </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-      crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
-      integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
-      crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+    integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+    crossorigin="anonymous"></script>
 
-    <script src="../error.js?a=219"></script>
-    <script src="../donate.js?a=219"></script>
-    <script src="assert.js?a=220"></script>
+  <script src="../error.js?a=219"></script>
+  <script src="../donate.js?a=219"></script>
+  <script src="assert.js?a=220"></script>
 
 </body>
 
