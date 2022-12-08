@@ -112,6 +112,16 @@ a {
   color: #E024A5;
 }
 
+.ctaButton {
+  background-color: #93186c;
+  border-color: #93186c;
+}
+
+.ctaButton:hover {
+  background-color: #E024A5;
+  border-color: #E024A5;
+}
+
 .navbar-nav .active {
   color: #E0A63A !important;
 }
