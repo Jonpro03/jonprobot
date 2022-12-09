@@ -97,6 +97,11 @@ Share Ownership
   border-bottom: 1px solid #6c757d !important;
 }
 
+.source {
+  text-align: right;
+  padding-right: 10px !important;
+}
+
 .form-switch {
   padding-left: 3em;
 }
@@ -114,6 +119,19 @@ Share Ownership
 }
 
 @media (max-width: 1199px) {
+  .row {
+    --bs-gutter-x: 0;
+  }
+
+  .source {
+    text-align: right;
+    padding-right: 0 !important;
+  }
+
+  .form-switch {
+    padding-left: 3.7rem;
+  }
+
   .ownership-left {
     width: 43%;
   }
@@ -128,6 +146,10 @@ Share Ownership
 }
 
 @media (max-width: 900px) {
+  .form-switch {
+    padding-left: 3.5rem;
+  }
+
   .ownership-left {
     width: 47%;
   }
@@ -273,12 +295,12 @@ footer {
 }
 
 .container-xxl {
-  max-width: 85%;
+  max-width: 87%;
 }
 
 @media (max-width: 830px) {
   .container-xxl {
-    max-width: 90%;
+    max-width: 91%;
   }
 }
 
