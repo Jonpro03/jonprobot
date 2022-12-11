@@ -7,7 +7,7 @@ showHelpModal = function (articleName) {
       helpModalTitle.innerHTML = "DRS Estimate Line Chart";
       helpModalBody.innerHTML = `<p>
       This chart shows how many shares are estimated to have been direct-registered over time.
-      <img src="site-images/estimates.png?a=219" class="card-img-top" alt="estimates chart">
+      <img src="site-images/estimates.png?aa=225" class="card-img-top" alt="estimates chart">
       <strong>X-Axis:</strong> Date
       </br>
       <strong>Y-Axis:</strong> Share Count
@@ -23,7 +23,7 @@ showHelpModal = function (articleName) {
       and <a target="_blank" href="https://en.wikipedia.org/wiki/Average#Median">Median</a> (Yellow) are shown,
       but can be enabled by clicking it in the top legend.
       <div class="ratio ratio-4x3">
-        <video autoplay playsinline webkit-playsinline loop class="embed-responsive-item" src="site-images/estimates.mp4?a=219" type="video/mp4"></video>
+        <video autoplay playsinline webkit-playsinline loop class="embed-responsive-item" src="site-images/estimates.mp4?aa=225" type="video/mp4"></video>
       </div>
       </p>
       <p>
@@ -37,7 +37,7 @@ showHelpModal = function (articleName) {
       helpModalBody.innerHTML = `<p>
       This chart illustrates data collected from the Reddit Sample Set. Keep in mind that this only shows
       data that has been sampled from Reddit, and does not represent all Computershare Accounts.
-      <img src="site-images/shares.png?a=219" class="card-img-top" alt="shares chart">
+      <img src="site-images/shares.png?aa=225" class="card-img-top" alt="shares chart">
       <strong>X-Axis:</strong> Date
       </br>
       <strong>Left Y-Axis:</strong> Cumulative Share Count
@@ -52,7 +52,7 @@ showHelpModal = function (articleName) {
       The Yellow Lines (stacked on top) illustrate the number of Shares that have been added to existing Computershare Accounts.
       </br>
       These data points can be viewed individually by toggling them in the chart's top legend.
-      <img src="site-images/shares2.png?a=219" class="card-img-top" alt="shares chart">
+      <img src="site-images/shares2.png?aa=225" class="card-img-top" alt="shares chart">
       </p>
       <p>
       This chart is zoomed in to fit your device's screen. Zoom with mousewheel or pinching. Scroll by dragging left or right.
@@ -65,7 +65,7 @@ showHelpModal = function (articleName) {
       helpModalBody.innerHTML = `<p>
       This chart illustrates data collected from the Reddit Sample Set. Keep in mind that this only shows
       data that has been sampled from Reddit, and does not represent all Computershare Accounts.
-      <img src="site-images/highscores.png?a=219" class="card-img-top" alt="highscores chart">
+      <img src="site-images/highscores.png?aa=225" class="card-img-top" alt="highscores chart">
       <strong>X-Axis:</strong> Date
       </br>
       <strong>Y-Axis:</strong> Number of Accounts Derived from Account Number
@@ -87,7 +87,7 @@ showHelpModal = function (articleName) {
       helpModalBody.innerHTML = `<p>
       This chart shows various statistics of the Reddit Sample Set over time.
       
-      <img src="site-images/stats.png?a=219" class="card-img-top" alt="statistics chart">
+      <img src="site-images/stats.png?aa=225" class="card-img-top" alt="statistics chart">
       <strong>X-Axis:</strong> Date
       </br>
       <strong>Y-Axis:</strong> Share Count
@@ -125,7 +125,7 @@ showHelpModal = function (articleName) {
       <a target="_blank" href="https://en.wikipedia.org/wiki/Histogram">histogram</a> 
       of individual account balances over a 
       <a target="_blank" href="https://en.wikipedia.org/wiki/Geometric_progression">geometric progression</a> distribution.
-      <img src="site-images/distribution.png?a=219" class="card-img-top" alt="histogram chart">
+      <img src="site-images/distribution.png?aa=225" class="card-img-top" alt="histogram chart">
       <strong>X-Axis:</strong> Number of Shares
       </br>
       <strong>Y-Axis:</strong> Number of Accounts
@@ -137,7 +137,7 @@ showHelpModal = function (articleName) {
       <p>
       <h3>Example</h3>
       <p>In the following image, there are 2205 accounts with at least 128 shares, but fewer than 256 shares.
-      <img src="site-images/distribution2.png?a=219" class="card-img-top" alt="histogram chart">
+      <img src="site-images/distribution2.png?aa=225" class="card-img-top" alt="histogram chart">
       </p>
       `;
       break;
@@ -146,7 +146,7 @@ showHelpModal = function (articleName) {
       helpModalTitle.innerHTML = "Account Growth Line Chart";
       helpModalBody.innerHTML = `<p>
       This chart plots how existing (sampled) Computershare Accounts have changed over time.
-      <img src="site-images/growth.png?a=219" class="card-img-top" alt="growth chart">
+      <img src="site-images/growth.png?aa=225" class="card-img-top" alt="growth chart">
       <strong>X-Axis:</strong> Week Beginning Date
       </br>
       <strong>Y-Axis:</strong> Percent Accounts Grew
@@ -162,7 +162,7 @@ showHelpModal = function (articleName) {
       helpModalTitle.innerHTML = "Purchase Power USD/Week Line Chart";
       helpModalBody.innerHTML = `<p>
       This chart estimates the ability of the sample to register new shares.
-      <img src="site-images/power.png?a=219" class="card-img-top" alt="purchase power chart">
+      <img src="site-images/power.png?aa=225" class="card-img-top" alt="purchase power chart">
       <strong>X-Axis:</strong> Week Beginning Date
       </br>
       <strong>Y-Axis:</strong> Median Purchasing Power in USD/week.
@@ -206,7 +206,7 @@ showHelpModal = function (articleName) {
       Additionally, the scraper looks for computershare account numbers, which are incremental and can be multiplied with metrics of the sample set
       to estimate total shares registered, as illustrated in the <strong>DRS Estimation</strong> section:
       <div class="ratio ratio-4x3">
-        <video autoplay playsinline webkit-playsinline loop class="embed-responsive-item" src="site-images/metric.mp4?a=219" type="video/mp4"></video>
+        <video autoplay playsinline webkit-playsinline loop class="embed-responsive-item" src="site-images/metric.mp4?aa=225" type="video/mp4"></video>
       </div>
       Computershared.net enables you to estimate the total using <strong>Average</strong> (Mean), <strong>Median</strong>, <strong>Mode</strong>, and <strong>Trimmed Average</strong>.
       </br>
@@ -226,20 +226,20 @@ showHelpModal = function (articleName) {
       These ownership allocations can be toggled to customize the progress calculation, and share allocation donut.
       The following example illustrates how to setup the site for one who believes that all shares except ones owned by Insiders need to be direct registered:
       <div class="ratio ratio-4x3">
-        <video autoplay playsinline webkit-playsinline loop class="embed-responsive-item" src="site-images/calculator.mp4?a=219" type="video/mp4"></video>
+        <video autoplay playsinline webkit-playsinline loop class="embed-responsive-item" src="site-images/calculator.mp4?aa=225" type="video/mp4"></video>
       </div>
       As a user of the site, you can select any combination of allocations you desire.
       </p>
       <p>
       The donut can also be used to compare allocations to each other. The following example can be used to compare retail to insiders.
       <div class="ratio ratio-4x3">
-        <video autoplay playsinline webkit-playsinline loop class="embed-responsive-item" src="site-images/calculator3.mp4?a=219" type="video/mp4"></video>
+        <video autoplay playsinline webkit-playsinline loop class="embed-responsive-item" src="site-images/calculator3.mp4?aa=225" type="video/mp4"></video>
       </div>
       </p>
       <p>
       Another useful comparison is retail to remaining...
       <div class="ratio ratio-4x3">
-        <video autoplay playsinline webkit-playsinline loop class="embed-responsive-item" src="site-images/calculator2.mp4?a=219" type="video/mp4"></video>
+        <video autoplay playsinline webkit-playsinline loop class="embed-responsive-item" src="site-images/calculator2.mp4?aa=225" type="video/mp4"></video>
       </div>
       </p>
       `;
