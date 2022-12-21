@@ -1,11 +1,11 @@
 body::before {
-  height: 58px;
+  height: 36px;
   content: "";
   display: block;
 }
 
 .col-12::before {
-  height: 58px;
+  height: 36px;
   content: "";
   display: block;
 }

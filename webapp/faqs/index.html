@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" crossorigin="anonymous">
 
   <!-- Custom styles for this template -->
-  <link href="../dashboard.css?aa=225" rel="stylesheet">
+  <link href="../dashboard.css?a=226" rel="stylesheet">
 </head>
 
 <body id="main" class="bg-dark text-white font-monospace">
@@ -40,7 +40,7 @@
                 <i class="fas fa-question"></i> FAQs &nbsp;
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item d-none">
               <a class="nav-link" aria-current="page" href="/login/">
                 <i class="fab fa-reddit-alien"></i> My Data &nbsp;
               </a>
@@ -92,11 +92,11 @@
               it's common to trim results from the top and bottom of the dataset.
               After trying a few different values, I found that dropping largest 5% of accounts, and smallest 5% of
               accounts brought the estimate very close to the actual number.</p>
-            <p>In July of 2022, the trimmed average was reduced to 4% linearly over 30 days.</p>
+            <p>Recently, the trim was reduced to 3.75% to better align with actuals.</p>
           </div>
           <a name="2.5"></a>
           <div class="col-12 body-copy">
-            <h2>2.5. What is the 180-day window?</h2>
+            <h2>2.5. What is the 365-day window?</h2>
             <p>It really just means that if I haven't seen an image from a given user in the last 6 months, I no
               longer include their portfolio in the Sample Set.
               While this does reduce the Sample Size drastically (roughly 10% -> 6%), it does increase the accuracy of
@@ -402,8 +402,8 @@
       integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
       crossorigin="anonymous"></script>
 
-    <script src="../error.js?aa=225"></script>
-    <script src="../donate.js?aa=225"></script>
+    <script src="../error.js?a=226"></script>
+    <script src="../donate.js?a=226"></script>
 
 </body>
 
