@@ -38,7 +38,13 @@ function updateDonut(donut, donutData) {
   if (donutData.apeDrs != 0) {
     data.push(donutData.apeDrs);
     colors.push("#93186c");
-    labels.push("Retail DRS");
+    labels.push("Retail Book");
+  }
+
+  if (donutData.apePlan != 0) {
+    data.push(donutData.apePlan);
+    colors.push("#9C13AB");
+    labels.push("Retail Plan");
   }
 
   if (showOutstanding) {
@@ -124,17 +130,21 @@ function updateDonutData(donutData, stats) {
         donutData.apeDrs = stats.average * donutData.computershare_accounts;
         break;
     }
+    donutData.apePlan = Math.round(donutData.apeDrs * 0.027);
+    donutData.apeDrs -= donutData.apePlan;
   }
 
 
   donutData.float = donutData.total_outstanding - donutData.insider - donutData.stagnant - donutData.etfs - donutData.mfs - donutData.inst_fuckery;
-  donutData.remaining = donutData.float - donutData.apeDrs;
-  donutData.pctComplete = (donutData.apeDrs / donutData.float) * 100;
+  donutData.remaining = donutData.float - donutData.apeDrs - donutData.apePlan;
+  donutData.pctComplete = ((donutData.apeDrs + donutData.apePlan) / donutData.float) * 100;
   document.getElementById("remainingValue").innerHTML = localeFormat.format(donutData.remaining);
   document.getElementById("remainingValuePct").innerHTML = Math.round(donutData.remaining / donutData.total_outstanding * 100) + '%';
   document.getElementById("floatLocked").innerHTML = Math.round(donutData.pctComplete * 100) / 100 + "%";
   document.getElementById("apeDrs").innerHTML = '-' + localeFormat.format(donutData.apeDrs);
+  document.getElementById("apePlan").innerHTML = '-' + localeFormat.format(donutData.apePlan);
   document.getElementById("apeDrsPct").innerHTML = '-' + Math.round(donutData.apeDrs / donutData.total_outstanding * 100) + '%';
+  document.getElementById("apePlanPct").innerHTML = '-' + Math.round(donutData.apePlan / donutData.total_outstanding * 100) + '%';
 }
 
 (async function () {
@@ -147,6 +157,7 @@ function updateDonutData(donutData, stats) {
   document.getElementById("insiderSwitch").checked = false;
   document.getElementById("stagnantSwitch").checked = false;
   document.getElementById("apesSwitch").checked = false;
+  document.getElementById("apesPlanSwitch").checked = false;
 
   Chart.defaults.color = '#EEE';
   Chart.defaults.defaultLineColor = '#AAA';
@@ -202,7 +213,8 @@ function updateDonutData(donutData, stats) {
     document.getElementById('instOtherBtnLbl').innerText = 'Inst:';
     document.getElementById('mfSwitchLbl').innerText = 'MFs:';
     document.getElementById('stagnantSwitchLbl').innerText = 'Stagnant:';
-    document.getElementById('apesSwitchLbl').innerText = 'DRS:';
+    document.getElementById('apesSwitchLbl').innerText = 'Book:';
+    document.getElementById('apesPlanLbl').innerText = 'Plan:';
     document.getElementById('remainingLbl').innerText = 'DRS Left:';
     document.getElementById('registeredLbl').innerText = 'Progress:';
     document.getElementById('title').innerText = 'GameStop DRS Calculator';
@@ -229,6 +241,7 @@ function updateDonutData(donutData, stats) {
   });
   //subtract stagnant insiders
   donutData.insider -= donutData.stagnant;
+  donutData.apePlan = 0;
 
   document.getElementById("asof").innerHTML = "Last Updated " + new Date(donutData.last_update).toDateString().toLocaleString();
 
@@ -243,6 +256,7 @@ function updateDonutData(donutData, stats) {
     let insiderEnabled = document.getElementById("insiderSwitch").checked;
     let stagnantEnabled = document.getElementById("stagnantSwitch").checked;
     let apeEnabled = document.getElementById("apesSwitch").checked;
+    let apePlanEnabled = document.getElementById("apesPlanSwitch").checked;
 
     let etfObj = document.getElementById("donutDataEtfs");
     let mfsObj = document.getElementById("donutDataMfs");
@@ -250,6 +264,7 @@ function updateDonutData(donutData, stats) {
     let insiderObj = document.getElementById("donutDataInsider");
     let stagnantObj = document.getElementById("donutDataStagnant");
     let apeObj = document.getElementById("donutDataApe");
+    let apePlanObj = document.getElementById("donutDataApePlan");
 
     if (etfEnabled) {
       document.getElementById("ETF").classList.remove("text-muted");
@@ -302,6 +317,15 @@ function updateDonutData(donutData, stats) {
       donutData.apeDrs = 0;
     }
 
+    if (apePlanEnabled) {
+      updateDonutData(donutData, stats);
+      document.getElementById("RP").classList.remove("text-muted");
+      donutData.apePlan = parseFloat(apePlanObj.innerHTML);
+    } else {
+      document.getElementById("RP").classList.add("text-muted");
+      donutData.apePlan = 0;
+    }
+
     updateDonutData(donutData, stats);
     updateDonut(donut, donutData);
   }
@@ -312,6 +336,7 @@ function updateDonutData(donutData, stats) {
   document.getElementById("insiderSwitch").addEventListener("change", handleHoldingToggle);
   document.getElementById("stagnantSwitch").addEventListener("change", handleHoldingToggle);
   document.getElementById("apesSwitch").addEventListener("change", handleHoldingToggle);
+  document.getElementById("apesPlanSwitch").addEventListener("change", handleHoldingToggle);
 
   // Setup the page
   document.getElementById("sampledAccounts").innerHTML = stats.sampled_accounts.toLocaleString() + " accounts";
@@ -355,7 +380,10 @@ function updateDonutData(donutData, stats) {
         break;
     }
     document.getElementById("apeDrsTotal").innerHTML = donutData.apeDrs.toLocaleString();
+    donutData.apePlan = Math.round(donutData.apeDrs * 0.027);
+    donutData.apeDrs -= donutData.apePlan;
     document.getElementById("apeDrs").innerHTML = '-' + donutData.apeDrs.toLocaleString();
+    document.getElementById("apePlan").innerHTML = '-' + donutData.apePlan.toLocaleString();
     updateDonutData(donutData, stats);
     updateDonut(donut, donutData);
   };
@@ -372,7 +400,9 @@ function updateDonutData(donutData, stats) {
   document.getElementById("institutionalOther").innerHTML = '-' + localeFormat.format(donutData.inst_fuckery);
   document.getElementById("institutionalOtherPct").innerHTML = '-' + Math.round(donutData.inst_fuckery / donutData.total_outstanding * 100) + '%';
   document.getElementById("apeDrs").innerHTML = '-' + localeFormat.format(donutData.apeDrs);
+  document.getElementById("apePlan").innerHTML = '-' + localeFormat.format(donutData.apePlan);
   document.getElementById("apeDrsPct").innerHTML = '-' + Math.round(donutData.apeDrs / donutData.total_outstanding * 100) + '%';
+  document.getElementById("apePlanPct").innerHTML = '-' + Math.round(donutData.apePlan / donutData.total_outstanding * 100) + '%';
   document.getElementById("apeDrsTotal").innerHTML = donutData.apeDrs.toLocaleString();
   document.getElementById("remainingValue").innerHTML = localeFormat.format(donutData.remaining);
   document.getElementById("remainingValuePct").innerHTML = Math.round(donutData.remaining / donutData.total_outstanding * 100) + '%';
@@ -411,6 +441,9 @@ function updateDonutData(donutData, stats) {
   await new Promise(r => setTimeout(r, 600));
   document.getElementById("apesSwitch").checked = true;
   document.getElementById("apesSwitch").dispatchEvent(new Event('change'));
+  await new Promise(r => setTimeout(r, 600));
+  document.getElementById("apesPlanSwitch").checked = true;
+  document.getElementById("apesPlanSwitch").dispatchEvent(new Event('change'));
   await new Promise(r => setTimeout(r, 600));
   showOutstanding = true;
   document.getElementById("instOtherBtn").checked = true;

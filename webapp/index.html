@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" crossorigin="anonymous">
 
   <!-- Custom styles for this template -->
-  <link href="dashboard.css?a=226" rel="stylesheet">
+  <link href="dashboard.css?a=229" rel="stylesheet">
 </head>
 
 <body id="main" class="bg-dark text-white font-monospace">
@@ -236,11 +236,21 @@
                     <div class="col-3 text-monospace text-right ownership-right" id="stagnantHoldingPct">%</div>
                   </div>
 
+                  <div id="RP" class="row my-3">
+                    <div class="form-check form-switch col-5 ownership-left">
+                      <input id="apesPlanSwitch" class="form-check-input" type="checkbox" style="border-color:#9C13AB">
+                      <label id="apesPlanLbl" class="form-check-label" for="apesPlanSwitch" style="color:#9C13AB">Retail
+                        Plan:</label>
+                    </div>
+                    <div class="col-4 text-monospace text-right ownership-center" id="apePlan"></div>
+                    <div class="col-3 text-monospace text-right ownership-right" id="apePlanPct">%</div>
+                  </div>
+
                   <div id="R" class="row my-3 border-bottom">
                     <div class="form-check form-switch col-5 ownership-left">
                       <input id="apesSwitch" class="form-check-input" type="checkbox" style="border-color:#E024A5">
                       <label id="apesSwitchLbl" class="form-check-label" for="apesSwitch" style="color:#E024A5">Retail
-                        DRS:</label>
+                        Book:</label>
                     </div>
                     <div class="col-4 text-monospace text-right ownership-center" id="apeDrs"></div>
                     <div class="col-3 text-monospace text-right ownership-right" id="apeDrsPct">%</div>
@@ -407,6 +417,7 @@
   <div id="donutDataInsider" style="display:none;">3</div>
   <div id="donutDataStagnant" style="display:none;">4</div>
   <div id="donutDataApe" style="display:none;"></div>
+  <div id="donutDataApePlan" style="display:none;"></div>
 
   <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
     <div id="alertToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
@@ -457,12 +468,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.0/chartjs-plugin-zoom.min.js"></script>
   <script type="text/javascript" src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
 
-  <script src="error.js?a=226"></script>
-  <script src="learn.js?a=226"></script>
-  <script src="donate.js?a=226"></script>
-  <script src="dashboard.js?a=226"></script>
-  <script src="charts.js?a=226"></script>
-  <script src="data.js?a=226"></script>
+  <script src="error.js?a=229"></script>
+  <script src="learn.js?a=229"></script>
+  <script src="donate.js?a=229"></script>
+  <script src="dashboard.js?a=229"></script>
+  <script src="charts.js?a=229"></script>
+  <script src="data.js?a=229"></script>
 
 </body>
 

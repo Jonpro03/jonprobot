@@ -257,10 +257,18 @@ a {
 }
 
 #apesSwitch:checked {
-  background-color: #93186c;
+  background-color: #E024A5;
 }
 
 #apesSwitch {
+  background-color: #333;
+}
+
+#apesPlanSwitch:checked {
+  background-color: #9C13AB;
+}
+
+#apesPlanSwitch {
   background-color: #333;
 }
 
