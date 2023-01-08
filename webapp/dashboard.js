@@ -115,6 +115,7 @@ function buildDonut() {
 function updateDonutData(donutData, stats) {
   let statSelected = document.getElementById("avgSelector").value
   donutData.apeDrs = 0;
+  donutData.apePlan = 0;
   if (document.getElementById("apesSwitch").checked) {
     switch (statSelected) {
       case "median":
@@ -132,6 +133,9 @@ function updateDonutData(donutData, stats) {
     }
     donutData.apePlan = Math.round(donutData.apeDrs * 0.027);
     donutData.apeDrs -= donutData.apePlan;
+    if (!document.getElementById("apesPlanSwitch").checked) {
+      donutData.apePlan = 0;
+    }
   }
 
 
